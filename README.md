@@ -3,6 +3,9 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![pytest](https://img.shields.io/badge/tested%20with-pytest-orange.svg)](https://pytest.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![spaCy](https://img.shields.io/badge/spaCy-3.7%2B-09a3d5.svg)](https://spacy.io/)
+[![Transformers](https://img.shields.io/badge/🤗-Transformers-yellow.svg)](https://huggingface.co/transformers/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 Un proyecto tutorial tipo **Koan** para aprender **Procesamiento de Lenguaje Natural (NLP)** usando **Test-Driven Development (TDD)** en Python.
 
@@ -15,30 +18,46 @@ Los **Koans** son ejercicios de aprendizaje donde:
 
 ## 🚀 Inicio Rápido
 
+### ⚡ Quick Start (5 minutos)
+
 ```bash
 # 1. Clonar el repositorio
-git clone <tu-repo>
-cd NLP-Koan
+git clone https://github.com/jjmmolina/nlp-koans.git
+cd nlp-koans
 
 # 2. Crear entorno virtual
 python -m venv venv
 .\venv\Scripts\activate  # Windows
 # source venv/bin/activate  # Linux/Mac
 
-# 3. Instalar dependencias
+# 3. Instalar dependencias básicas (instala lo mínimo para empezar)
+pip install pytest nltk
+
+# 4. ¡Empezar con el primer koan!
+pytest koans/01_tokenization/test_tokenization.py -v
+# Verás tests fallando - ¡es lo esperado! 🎯
+```
+
+### 📦 Instalación Completa
+
+Para usar TODOS los koans (incluyendo los avanzados):
+
+```bash
+# Instalar todas las dependencias (puede tardar)
 pip install -r requirements.txt
 
-# 4. Descargar modelos de spaCy y NLTK
+# Descargar modelos de spaCy
 python -m spacy download es_core_news_sm
 python -m spacy download en_core_web_sm
-python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('averaged_perceptron_tagger'); nltk.download('wordnet'); nltk.download('omw-1.4')"
 
-# 5. Ejecutar todos los tests
+# Descargar recursos de NLTK
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords'); nltk.download('averaged_perceptron_tagger'); nltk.download('wordnet'); nltk.download('omw-1.4'); nltk.download('punkt_tab')"
+
+# Ejecutar todos los tests
 pytest
-
-# 6. Ejecutar un koan específico
-pytest koans/01_tokenization/test_tokenization.py -v
 ```
+
+> 💡 **Consejo**: Empieza con el Quick Start. Instala el resto cuando llegues a koans avanzados.
 
 ## 📚 Estructura de Koans
 
@@ -55,6 +74,42 @@ pytest koans/01_tokenization/test_tokenization.py -v
 | **09** | Language Models | transformers | Generación de texto |
 
 ## 🎓 Cómo Usar Este Tutorial
+
+### 🎯 Tu Primer Koan en 3 Pasos
+
+**Paso 1: Ejecuta el test (verás que falla)**
+```bash
+cd koans/01_tokenization
+pytest test_tokenization.py::TestTokenizationBasics::test_tokenize_words_nltk_spanish -v
+```
+
+Verás:
+```
+FAILED - AssertionError: La lista no debe estar vacía
+```
+
+**Paso 2: Abre `tokenization.py` y encuentra:**
+```python
+def tokenize_words_nltk(text: str) -> List[str]:
+    # TODO: Implementa la tokenización de palabras con nltk.word_tokenize()
+    # Pista: from nltk.tokenize import word_tokenize
+    return []  # ← Esto está mal, retorna lista vacía
+```
+
+**Paso 3: Implementa la solución:**
+```python
+def tokenize_words_nltk(text: str) -> List[str]:
+    from nltk.tokenize import word_tokenize
+    return word_tokenize(text)  # ← ¡Así está bien!
+```
+
+**Verifica:**
+```bash
+pytest test_tokenization.py::TestTokenizationBasics::test_tokenize_words_nltk_spanish -v
+# ✅ PASSED - ¡Felicidades!
+```
+
+**¡Repite este proceso con todas las funciones!** 🔄
 
 ### Paso 1: Empieza con el Primer Koan
 ```bash
@@ -89,8 +144,11 @@ Abre `tokenization.py` y completa las funciones marcadas con `# TODO`
 ## 📖 Documentación Adicional
 
 - 📘 [**GUIA.md**](GUIA.md) - Guía detallada paso a paso
-- 🤝 [**CONTRIBUTING.md**](CONTRIBUTING.md) - Cómo contribuir
+- 🗺️ [**LEARNING_PATH.md**](LEARNING_PATH.md) - Ruta de aprendizaje optimizada con tiempos estimados
+- ❓ [**FAQ.md**](FAQ.md) - Preguntas frecuentes y troubleshooting
+- 🤝 [**CONTRIBUTING.md**](CONTRIBUTING.md) - Cómo contribuir al proyecto
 - 📄 [**LICENSE**](LICENSE) - Licencia MIT
+- 📊 [**PROJECT_SUMMARY.md**](PROJECT_SUMMARY.md) - Resumen técnico del proyecto
 
 ## 🌟 Orden Recomendado
 
@@ -112,12 +170,68 @@ Se recomienda seguir el orden de los koans (01 → 09) ya que cada uno construye
 3. **Experimenta**: Prueba con tus propios textos
 4. **Usa VS Code**: Configurado con tareas y debugging
 
-## 🎯 VS Code Integration
+## � VS Code Integration
 
 Este proyecto está optimizado para VS Code con:
 - ✅ Configuración de testing automática
 - ✅ Debugging integrado
 - ✅ Tasks para ejecutar koans individuales
+
+## 🏆 Quick Wins - Tus Primeros 30 Minutos
+
+¿Quieres ver resultados inmediatos? Sigue esto:
+
+### 1️⃣ Setup Rápido (5 min)
+```bash
+git clone https://github.com/jjmmolina/nlp-koans.git
+cd nlp-koans
+python -m venv venv
+.\venv\Scripts\activate  # Windows
+pip install pytest nltk
+```
+
+### 2️⃣ Tu Primera Victoria (10 min)
+```bash
+cd koans/01_tokenization
+pytest test_tokenization.py::TestCustomTokenization::test_custom_tokenize_spaces -v
+```
+
+Abre `tokenization.py` y cambia:
+```python
+def custom_tokenize(text: str, delimiter: str = " ") -> List[str]:
+    return []  # ❌ MAL
+```
+
+Por:
+```python
+def custom_tokenize(text: str, delimiter: str = " ") -> List[str]:
+    return text.split(delimiter)  # ✅ BIEN
+```
+
+Ejecuta el test de nuevo:
+```bash
+pytest test_tokenization.py::TestCustomTokenization::test_custom_tokenize_spaces -v
+# ✅ PASSED!
+```
+
+**🎉 ¡Felicidades! Completaste tu primer koan.**
+
+### 3️⃣ Siguiente Nivel (15 min)
+
+Ahora implementa `tokenize_words_nltk()`:
+1. Lee el archivo `HINTS.md`
+2. Sigue las pistas nivel por nivel
+3. Haz pasar el test
+
+```bash
+pytest test_tokenization.py::TestTokenizationBasics::test_tokenize_words_nltk_spanish -v
+```
+
+**💪 ¡Ya dominas tokenización básica!**
+
+---
+
+**Continúa con el resto del Koan 01 y estarás oficialmente en camino al dominio de NLP.** 🚀
 
 ## 🤝 Contribuir
 
