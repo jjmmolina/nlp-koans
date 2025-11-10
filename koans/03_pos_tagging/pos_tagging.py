@@ -25,14 +25,14 @@ from typing import List, Tuple, Dict
 def pos_tag_nltk(text: str) -> List[Tuple[str, str]]:
     """
     Etiqueta gramaticalmente un texto usando NLTK.
-    
+
     Ejemplo:
         >>> pos_tag_nltk("Python is awesome")
         [('Python', 'NNP'), ('is', 'VBZ'), ('awesome', 'JJ')]
-    
+
     Args:
         text: Texto a etiquetar
-        
+
     Returns:
         Lista de tuplas (palabra, etiqueta)
     """
@@ -46,19 +46,19 @@ def pos_tag_nltk(text: str) -> List[Tuple[str, str]]:
 def pos_tag_spacy(text: str, lang: str = "es") -> List[Tuple[str, str, str]]:
     """
     Etiqueta gramaticalmente usando spaCy.
-    
+
     spaCy proporciona etiquetas más detalladas y universales.
-    
+
     Ejemplo:
         >>> pos_tag_spacy("Python es genial")
         [('Python', 'PROPN', 'nombre propio'),
          ('es', 'AUX', 'verbo auxiliar'),
          ('genial', 'ADJ', 'adjetivo')]
-    
+
     Args:
         text: Texto a etiquetar
         lang: Idioma ('es' o 'en')
-        
+
     Returns:
         Lista de tuplas (palabra, etiqueta_universal, etiqueta_detallada)
     """
@@ -73,15 +73,15 @@ def pos_tag_spacy(text: str, lang: str = "es") -> List[Tuple[str, str, str]]:
 def extract_nouns(text: str, lang: str = "es") -> List[str]:
     """
     Extrae todos los sustantivos de un texto.
-    
+
     Ejemplo:
         >>> extract_nouns("El gato y el perro juegan")
         ['gato', 'perro']
-    
+
     Args:
         text: Texto a analizar
         lang: Idioma
-        
+
     Returns:
         Lista de sustantivos
     """
@@ -93,15 +93,15 @@ def extract_nouns(text: str, lang: str = "es") -> List[str]:
 def extract_verbs(text: str, lang: str = "es") -> List[str]:
     """
     Extrae todos los verbos de un texto.
-    
+
     Ejemplo:
         >>> extract_verbs("El gato come y el perro corre")
         ['come', 'corre']
-    
+
     Args:
         text: Texto a analizar
         lang: Idioma
-        
+
     Returns:
         Lista de verbos
     """
@@ -113,15 +113,15 @@ def extract_verbs(text: str, lang: str = "es") -> List[str]:
 def extract_adjectives(text: str, lang: str = "es") -> List[str]:
     """
     Extrae todos los adjetivos de un texto.
-    
+
     Ejemplo:
         >>> extract_adjectives("El gato negro es muy rápido")
         ['negro', 'rápido']
-    
+
     Args:
         text: Texto a analizar
         lang: Idioma
-        
+
     Returns:
         Lista de adjetivos
     """
@@ -132,15 +132,15 @@ def extract_adjectives(text: str, lang: str = "es") -> List[str]:
 def get_pos_statistics(text: str, lang: str = "es") -> Dict[str, int]:
     """
     Calcula estadísticas de POS tags en un texto.
-    
+
     Ejemplo:
         >>> get_pos_statistics("El gato negro come")
         {'DET': 1, 'NOUN': 1, 'ADJ': 1, 'VERB': 1}
-    
+
     Args:
         text: Texto a analizar
         lang: Idioma
-        
+
     Returns:
         Diccionario con conteo de cada POS tag
     """
@@ -152,18 +152,18 @@ def get_pos_statistics(text: str, lang: str = "es") -> Dict[str, int]:
 def find_noun_phrases(text: str, lang: str = "es") -> List[str]:
     """
     Encuentra frases nominales (noun phrases) en un texto.
-    
+
     Una frase nominal es un grupo de palabras con un sustantivo como núcleo.
     Ejemplo: "el gato negro", "mi casa grande"
-    
+
     Ejemplo:
         >>> find_noun_phrases("El gato negro duerme")
         ['El gato negro']
-    
+
     Args:
         text: Texto a analizar
         lang: Idioma
-        
+
     Returns:
         Lista de frases nominales
     """
@@ -172,20 +172,22 @@ def find_noun_phrases(text: str, lang: str = "es") -> List[str]:
     pass
 
 
-def pos_pattern_match(text: str, pattern: List[str], lang: str = "es") -> List[List[str]]:
+def pos_pattern_match(
+    text: str, pattern: List[str], lang: str = "es"
+) -> List[List[str]]:
     """
     Encuentra secuencias de palabras que coinciden con un patrón de POS tags.
-    
+
     Ejemplo:
         >>> # Buscar patrón ADJ + NOUN (adjetivo + sustantivo)
         >>> pos_pattern_match("El gato negro y el perro blanco", ["ADJ", "NOUN"])
         [['negro', 'gato'], ['blanco', 'perro']]
-    
+
     Args:
         text: Texto a analizar
         pattern: Lista de POS tags a buscar (en orden)
         lang: Idioma
-        
+
     Returns:
         Lista de secuencias que coinciden con el patrón
     """

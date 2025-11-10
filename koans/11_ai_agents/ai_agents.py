@@ -63,9 +63,8 @@ def create_simple_agent(
         Ver THEORY.md para entender la arquitectura de agentes.
     """
     # TODO: Implementa creación de agente con LangChain
-    # Necesitarás inicializar un LLM, preparar las herramientas, y crear el agente.
-    # El AgentExecutor envuelve el agente para ejecutar el loop de razonamiento.
-    # Ver HINTS.md para la estructura completa.
+    # Pista: Necesitas inicializar un LLM y crear un AgentExecutor
+    # Consulta HINTS.md para la estructura completa
     pass
 
 
@@ -101,9 +100,7 @@ def run_agent(agent: Any, query: str, verbose: bool = True) -> Dict[str, Any]:
         del agente, la acción tomada, y la observación resultante.
     """
     # TODO: Ejecuta el agente con la consulta
-    # El agente espera un dict con la key "input".
-    # Puedes acceder a los pasos intermedios en el resultado.
-    # Ver HINTS.md para la estructura del resultado.
+    # Pista: El agente espera un dict con "input"
     pass
 
 
@@ -145,9 +142,7 @@ def create_react_agent(tools: List[Tool], model: str = "gpt-4o-mini") -> Any:
         para ejemplos del formato de pensamiento del agente.
     """
     # TODO: Implementa agente ReAct
-    # Necesitas el prompt template específico de ReAct.
-    # LangChain Hub tiene prompts pre-configurados que puedes usar.
-    # Ver HINTS.md para cómo acceder al prompt de ReAct.
+    # Pista: Busca el prompt template específico de ReAct
     pass
 
 
@@ -193,9 +188,7 @@ def create_conversational_agent(
         Ver THEORY.md para comparar diferentes estrategias de memoria.
     """
     # TODO: Implementa agente con memoria
-    # Necesitas crear el objeto de memoria apropiado según el tipo.
-    # La memoria se pasa al AgentExecutor al crear el agente.
-    # Ver HINTS.md para cada tipo de memoria.
+    # Pista: Crea el objeto de memoria apropiado según el tipo
     pass
 
 
@@ -227,9 +220,7 @@ def create_calculator_tool() -> Tool:
         mejores prácticas de diseño de herramientas.
     """
     # TODO: Implementa herramienta de calculadora
-    # Necesitas crear una función que evalúe expresiones matemáticas.
-    # ADVERTENCIA: eval() puede ser peligroso. En producción usa ast.literal_eval o una librería.
-    # Ver HINTS.md para implementación segura.
+    # Pista: Crea una función que evalúe expresiones matemáticas de forma segura
     pass
 
 
@@ -264,9 +255,7 @@ def create_search_tool() -> Tool:
         para otras opciones de búsqueda.
     """
     # TODO: Implementa herramienta de búsqueda
-    # LangChain tiene integraciones pre-hechas para DuckDuckGo.
-    # Necesitas importar y configurar la herramienta correcta.
-    # Ver HINTS.md para el import específico.
+    # Pista: LangChain tiene integraciones para DuckDuckGo
     pass
 
 
@@ -313,9 +302,7 @@ def create_custom_tool(
         de herramientas de LangChain. Ver THEORY.md para patrones avanzados.
     """
     # TODO: Implementa herramienta personalizada
-    # Simplemente envuelve la función en un objeto Tool de LangChain.
-    # El resto del trabajo lo hace el framework.
-    # Ver HINTS.md para el código exacto.
+    # Pista: Envuelve la función en un objeto Tool de LangChain
     pass
 
 
@@ -361,9 +348,7 @@ def agent_with_callbacks(agent: Any, query: str) -> Dict[str, Any]:
         Ver THEORY.md para ejemplos de callbacks avanzados.
     """
     # TODO: Implementa ejecución con callbacks
-    # Usa context manager para capturar información de la ejecución.
-    # Los callbacks específicos de OpenAI te dan tokens y costos automáticamente.
-    # Ver HINTS.md para el patrón de uso.
+    # Pista: Usa context manager para capturar métricas
     pass
 
 
@@ -414,7 +399,5 @@ def multi_agent_collaboration(
         avanzadas multi-agente.
     """
     # TODO: Implementa sistema multi-agente
-    # Crea dos agentes con roles diferentes.
-    # El output del primero se convierte en input del segundo.
-    # Ver HINTS.md para el patrón de coordinación.
+    # Pista: Crea dos agentes y coordina su ejecución secuencial
     pass

@@ -55,9 +55,8 @@ def call_openai_chat(
         Consulta THEORY.md para entender los diferentes modelos disponibles.
     """
     # TODO: Implementa la llamada a OpenAI Chat API
-    # Necesitarás importar la librería de OpenAI y crear un cliente.
-    # La respuesta viene en un objeto con una estructura específica.
-    # Ver HINTS.md para más detalles.
+    # Pista: Necesitas crear un cliente de OpenAI e invocar chat.completions
+    # Consulta HINTS.md para detalles sobre la estructura de la respuesta
     pass
 
 
@@ -90,9 +89,8 @@ def call_openai_streaming(
         de una palabra, o varios caracteres.
     """
     # TODO: Implementa streaming de OpenAI
-    # Necesitas activar el parámetro de streaming en la llamada a la API.
-    # Los chunks tienen una estructura diferente a la respuesta normal.
-    # Ver HINTS.md para entender cómo iterar sobre el stream.
+    # Pista: Activa streaming y procesa chunks en un loop
+    # Consulta HINTS.md para entender la estructura de los chunks
     pass
 
 
@@ -126,9 +124,8 @@ def call_anthropic_claude(
         Consulta THEORY.md para comparar las APIs.
     """
     # TODO: Implementa llamada a Claude
-    # Necesitarás la librería de Anthropic y la API key correspondiente.
-    # La estructura de respuesta es diferente a OpenAI.
-    # Ver HINTS.md para los detalles específicos.
+    # Pista: La librería anthropic tiene un patrón diferente a OpenAI
+    # Consulta HINTS.md para detalles de la API de Anthropic
     pass
 
 
@@ -156,9 +153,8 @@ def call_google_gemini(prompt: str, model: str = "gemini-1.5-flash") -> str:
         conversaciones). Ver THEORY.md para más detalles sobre las diferencias.
     """
     # TODO: Implementa llamada a Gemini
-    # Google usa una librería diferente llamada google-generativeai.
-    # El modelo se crea primero y luego se usa para generar contenido.
-    # Ver HINTS.md para los detalles de configuración.
+    # Pista: google.generativeai tiene un patrón diferente
+    # Consulta HINTS.md para la configuración de Gemini
     pass
 
 
@@ -208,9 +204,8 @@ def openai_function_calling(
         qué argumentos. Ver THEORY.md para entender el flujo completo.
     """
     # TODO: Implementa function calling
-    # Necesitas pasar las funciones en el formato 'tools' de la API.
-    # La respuesta incluirá 'tool_calls' si el modelo decide usar una función.
-    # Ver HINTS.md para la estructura exacta del request y response.
+    # Pista: Usa el formato 'tools' y procesa 'tool_calls' en la respuesta
+    # Consulta HINTS.md para la estructura completa
     pass
 
 
@@ -248,9 +243,7 @@ def calculate_token_cost(
         para entender cómo se calculan los tokens.
     """
     # TODO: Implementa cálculo de costo
-    # Crea un diccionario con los precios por modelo (input_price, output_price).
-    # Calcula: (prompt_tokens / 1M * input_price) + (completion_tokens / 1M * output_price)
-    # Ver HINTS.md para la estructura de datos sugerida.
+    # Pista: Crea un diccionario con precios por modelo
     pass
 
 
@@ -289,9 +282,8 @@ def compare_llm_outputs(
         y registrar el error. Ver HINTS.md para estrategias de error handling.
     """
     # TODO: Implementa comparación multi-modelo
-    # Necesitas identificar qué API llamar según el nombre del modelo.
-    # Usa try/except para manejar errores de cada modelo independientemente.
-    # Ver HINTS.md para el patrón de manejo de errores.
+    # Pista: Identifica qué API llamar según el nombre del modelo
+    # Usa try/except para manejar errores independientemente
     pass
 
 
@@ -330,8 +322,5 @@ def safe_llm_call(
         para mejores prácticas de resiliencia.
     """
     # TODO: Implementa llamada con reintentos
-    # Usa un loop con try/except para capturar errores.
-    # Implementa backoff exponencial con time.sleep(2 ** attempt).
-    # Registra los errores pero continúa intentando hasta max_retries.
-    # Ver HINTS.md para el patrón completo de retry logic.
+    # Pista: Usa backoff exponencial con time.sleep(2 ** attempt)
     pass

@@ -19,6 +19,7 @@ def create_openai_embedding(
 ) -> List[float]:
     """Crea embedding con OpenAI API"""
     # TODO: Implementar con openai.embeddings.create()
+    # Pista: Consulta HINTS.md para detalles de la API
     pass
 
 
@@ -26,7 +27,7 @@ def create_sentence_transformer_embedding(
     text: str, model: str = "all-MiniLM-L6-v2"
 ) -> np.ndarray:
     """Crea embedding con Sentence Transformers (local, gratis)"""
-    # TODO: from sentence_transformers import SentenceTransformer
+    # TODO: Importa SentenceTransformer y crea embeddings localmente
     pass
 
 
@@ -34,13 +35,14 @@ def cosine_similarity_search(
     query_embedding: List[float], document_embeddings: List[List[float]], top_k: int = 5
 ) -> List[Tuple[int, float]]:
     """Encuentra documentos más similares por similitud coseno"""
-    # TODO: Implementar búsqueda por similitud
+    # TODO: Implementar búsqueda por similitud coseno
+    # Pista: Calcula la similitud entre query y cada documento
     pass
 
 
 def create_chromadb_collection(collection_name: str):
     """Crea colección en ChromaDB para búsqueda vectorial"""
-    # TODO: import chromadb; client = chromadb.Client()
+    # TODO: Crea cliente ChromaDB y colección
     pass
 
 
@@ -48,19 +50,19 @@ def add_documents_to_chromadb(
     collection, documents: List[str], metadatas: List[dict] = None
 ):
     """Añade documentos a ChromaDB con embeddings automáticos"""
-    # TODO: collection.add(documents=documents, metadatas=metadatas, ids=[...])
+    # TODO: Añade documentos con IDs y metadatos opcionales
     pass
 
 
 def search_chromadb(collection, query: str, top_k: int = 5) -> List[dict]:
     """Busca en ChromaDB"""
-    # TODO: return collection.query(query_texts=[query], n_results=top_k)
+    # TODO: Ejecuta búsqueda semántica en la colección
     pass
 
 
 def create_faiss_index(embeddings: np.ndarray):
     """Crea índice FAISS para búsqueda rápida"""
-    # TODO: import faiss; return faiss.IndexFlatL2(dimension)
+    # TODO: Crea índice FAISS con la dimensión correcta
     pass
 
 
@@ -68,5 +70,5 @@ def semantic_search_with_reranking(
     query: str, documents: List[str], top_k: int = 5
 ) -> List[Tuple[str, float]]:
     """Búsqueda semántica con reranking"""
-    # TODO: 1. Embedding, 2. Búsqueda inicial, 3. Rerank con cross-encoder
+    # TODO: 1. Búsqueda inicial con embeddings, 2. Rerank con cross-encoder
     pass

@@ -18,43 +18,43 @@ def chunk_documents(
     documents: List[str], chunk_size: int = 500, overlap: int = 50
 ) -> List[str]:
     """Divide documentos en chunks para RAG"""
-    # TODO: from langchain.text_splitter import RecursiveCharacterTextSplitter
+    # TODO: Usa RecursiveCharacterTextSplitter de LangChain
     pass
 
 
 def create_vector_store(documents: List[str]):
     """Crea vector store con ChromaDB"""
-    # TODO: from langchain.vectorstores import Chroma
+    # TODO: Importa Chroma de langchain.vectorstores y crea el store
     pass
 
 
 def create_retriever(vector_store, search_type: str = "similarity", k: int = 4):
     """Crea retriever para búsqueda"""
-    # TODO: return vector_store.as_retriever(search_type=search_type, search_kwargs={"k": k})
+    # TODO: Convierte el vector store en retriever con parámetros de búsqueda
     pass
 
 
 def basic_rag_chain(retriever, llm):
     """Crea RAG chain básico con LangChain"""
-    # TODO: from langchain.chains import RetrievalQA
+    # TODO: Usa RetrievalQA de langchain.chains
     pass
 
 
 def rag_with_citations(query: str, retriever, llm) -> Dict[str, any]:
     """RAG con referencias a fuentes"""
-    # TODO: return {"answer": ..., "sources": [...]}
+    # TODO: Recupera documentos y genera respuesta con fuentes
     pass
 
 
 def multi_query_rag(query: str, retriever, llm, num_queries: int = 3) -> str:
     """RAG con expansión de consultas múltiples"""
-    # TODO: from langchain.retrievers import MultiQueryRetriever
+    # TODO: Usa MultiQueryRetriever de langchain.retrievers
     pass
 
 
 def rag_fusion(query: str, retrievers: List, llm) -> str:
     """RAG con múltiples estrategias de retrieval"""
-    # TODO: Combinar resultados de múltiples retrievers
+    # TODO: Combina resultados de múltiples retrievers
     pass
 
 
@@ -62,7 +62,7 @@ def conversational_rag(
     chat_history: List[Tuple[str, str]], question: str, retriever, llm
 ) -> Dict[str, any]:
     """RAG conversacional con historial"""
-    # TODO: from langchain.chains import ConversationalRetrievalChain
+    # TODO: Usa ConversationalRetrievalChain de langchain.chains
     pass
 
 
@@ -70,5 +70,5 @@ def evaluate_rag_response(
     question: str, answer: str, context: List[str], ground_truth: str = None
 ) -> Dict[str, float]:
     """Evalúa calidad de respuesta RAG"""
-    # TODO: Calcular faithfulness, answer_relevancy, context_precision
+    # TODO: Calcula métricas: faithfulness, answer_relevancy, context_precision
     pass
