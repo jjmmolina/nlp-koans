@@ -2,23 +2,57 @@
 
 ## 🎯 Introducción
 
-Este documento consolida toda la teoría de los 13 Koans de NLP, desde los fundamentos hasta las técnicas más avanzadas de IA moderna.
+Este documento consolida toda la teoría de los 13 Koans de NLP, desde los fundamentos hasta las técnicas más avanzadas de IA moderna. Está pensado como referencia viva mientras resuelves cada Koan con TDD.
 
 **Path de Aprendizaje:**
 ```
 PARTE 1: Fundamentos (Koans 1-4)
-  ↓ Tokenization → Normalization → POS Tagging → NER
+    ↓ Tokenization → Normalization → POS Tagging → NER
 PARTE 2: Aplicaciones Clásicas (Koans 5-6)
-  ↓ Text Classification → Sentiment Analysis
+    ↓ Text Classification → Sentiment Analysis
 PARTE 3: Representaciones (Koans 7-9)
-  ↓ Word Embeddings → Transformers → Language Models
+    ↓ Word Embeddings → Transformers → Language Models
 PARTE 4: NLP Moderna (Koans 10-13)
-  ↓ Modern LLMs → AI Agents → Semantic Search → RAG
+    ↓ Modern LLMs → AI Agents → Semantic Search → RAG
 ```
+
+### 🗂️ Cómo usar este documento
+1. Revisa el Koan correspondiente y lee primero su `THEORY.md` local (ej: `koans/01_tokenization/THEORY.md`).
+2. Vuelve aquí para profundizar o conectar conceptos entre Koans.
+3. Usa los tests para guiar tu implementación (aprendizaje activo → menos copia/pega).
+4. Consulta `CHEATSHEET.md` para recordatorios rápidos y `LEARNING_PATH.md` para progresión sugerida.
+5. Si te atascas, mira las pistas en `HINTS.md` del Koan (no mires soluciones externas antes de intentar).
+
+### 📑 Tabla de Contenidos
+- [🎯 Introducción](#-introducción)
+- [📖 PARTE 1: Fundamentos del NLP](#-parte-1-fundamentos-del-nlp)
+    - [1️⃣ Tokenization](#1️⃣-tokenization)
+    - [2️⃣ Stemming & Lemmatization](#2️⃣-stemming--lemmatization)
+    - [3️⃣ POS Tagging](#3️⃣-pos-tagging)
+    - [4️⃣ Named Entity Recognition](#4️⃣-named-entity-recognition)
+- [📊 PARTE 2: Aplicaciones Clásicas](#-parte-2-aplicaciones-clásicas)
+    - [5️⃣ Text Classification](#5️⃣-text-classification)
+    - [6️⃣ Sentiment Analysis](#6️⃣-sentiment-analysis)
+- [🧮 PARTE 3: Representaciones Vectoriales](#-parte-3-representaciones-vectoriales)
+    - [7️⃣ Word Embeddings](#7️⃣-word-embeddings)
+    - [8️⃣ Transformers](#8️⃣-transformers)
+    - [9️⃣ Language Models](#9️⃣-language-models)
+- [� PARTE 4: NLP Moderna](#-parte-4-nlp-moderna)
+    - [🔟 Modern LLMs](#🔟-modern-llms)
+    - [1️⃣1️⃣ AI Agents](#1️⃣1️⃣-ai-agents)
+    - [1️⃣2️⃣ Semantic Search](#1️⃣2️⃣-semantic-search)
+    - [1️⃣3️⃣ RAG (Retrieval-Augmented Generation)](#1️⃣3️⃣-rag-retrieval-augmented-generation)
+- [🧪 Evaluación y Métricas](#-evaluación-y-métricas)
+- [⚠️ Pitfalls Comunes](#️-pitfalls-comunes)
+- [📘 Glosario Esencial](#-glosario-esencial)
+- [🎓 Resumen Final](#-resumen-final)
+- [📚 Recursos](#recursos)
+
+> Nota: Los anchors de GitHub eliminan emojis; si algún enlace falla, usa búsqueda rápida (Ctrl+F) por el título.
 
 ---
 
-# 📖 PARTE 1: Fundamentos del NLP
+# �📖 PARTE 1: Fundamentos del NLP
 
 ## 1️⃣ Tokenization
 
@@ -782,14 +816,18 @@ Answer: 11
 
 **OpenAI:**
 ```python
-import openai
+from openai import OpenAI
 
-response = openai.ChatCompletion.create(
-    model="gpt-4",
+client = OpenAI()  # Usa variable de entorno OPENAI_API_KEY
+
+response = client.chat.completions.create(
+    model="gpt-4o",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Explain quantum computing"}
-    ]
+    ],
+    temperature=0.7,
+    max_tokens=400
 )
 
 print(response.choices[0].message.content)
@@ -1219,6 +1257,77 @@ print(results)
 # faithfulness: 0.92      (respuesta fiel al contexto)
 # answer_relevancy: 0.88  (respuesta relevante a query)
 ```
+
+---
+
+# 🧪 Evaluación y Métricas
+
+| Categoría | Métrica | Uso | Notas |
+|-----------|---------|-----|-------|
+| Clasificación | Accuracy | Balanceado | No usar con clases desbalanceadas |
+| Clasificación | Precision / Recall / F1 | Desbalance | F1 = armoniza precision/recall |
+| Ranking / Retrieval | MRR, nDCG | Search / RAG | Evalúa orden de resultados |
+| Language Modeling | Perplexity | Calidad LM | Menor = mejor (cuidado con comparar modelos distintos) |
+| Generación | BLEU / ROUGE / METEOR | Resumen / Traducción | Métricas clásicas superficiales |
+| Generación | BERTScore / Embedding similarity | Parafraseo | Captura similitud semántica |
+| RAG | Faithfulness | Veracidad vs contexto | ¿La respuesta se apoya en documentos? |
+| RAG | Context Precision / Recall | Calidad retrieval | ¿Documentos recuperados contienen la respuesta? |
+| LLM | Toxicity / Bias Scores | Seguridad | Usa clasificadores adicionales |
+| Latencia / Throughput | Tiempo ms / req/s | Producción | Optimización de coste |
+| Coste | Tokens usados / $ | LLM APIs | Monitoriza para escalado |
+
+**Checklist de evaluación rápida:**
+1. ¿Datos limpios y particionados sin leakage? (train/val/test)
+2. ¿Métricas adecuadas al tipo de tarea?
+3. ¿Control de clase mayoritaria/desbalance?
+4. ¿Medición de coste por 1K tokens si usas APIs?
+5. ¿Benchmarks reproducibles (semillas fijas)?
+
+---
+
+# ⚠️ Pitfalls Comunes
+| Pitfall | Descripción | Mitigación |
+|---------|-------------|------------|
+| Data Leakage | Información de test en entrenamiento | Separar temprano y congelar splits |
+| Overfitting | Modelo memoriza ejemplos | Regularización, early stopping, data augmentation |
+| Prompt Injection | Usuario manipula contexto | Sanitizar inputs, delimitar contextos, validación reglas |
+| Hallucinations | Respuestas inventadas | RAG + citaciones + verificación post-hoc |
+| Bias / Toxicidad | Lenguaje ofensivo / sesgado | Filtros, red-teaming, balanced datasets |
+| Tokenización Defectuosa | OOV / segmentación rara | Subword tokenizers + normalización |
+| Long Context Truncation | Pérdida de información | Sliding windows / chunking + retrieval |
+| Evaluación Incorrecta | Métrica no representa objetivo | Definir KPIs antes de entrenar |
+| Cost Explosion | Uso excesivo de tokens | Cache embeddings, resumir historial, batching |
+| Race Conditions en Agents | Herramientas en paralelo se pisan | Cola de tareas / locking / diseño step-wise |
+
+---
+
+# 📘 Glosario Esencial
+| Término | Definición |
+|---------|------------|
+| Token | Unidad mínima (palabra, subpalabra, carácter) |
+| Embedding | Vector denso que representa significado |
+| Attention | Mecanismo que pondera relevancia entre tokens |
+| Perplexity | Exponencial de la entropía; menor = mejor LM |
+| RAG | Recuperar contexto + generar respuesta |
+| Few-Shot | Dar pocos ejemplos en el prompt para guiar |
+| Zero-Shot | Inferir sin ejemplos explícitos |
+| Chain-of-Thought | Desglose paso a paso de razonamiento |
+| ReAct | Alterna razonamiento y acciones con herramientas |
+| Retrieval | Proceso de encontrar documentos relevantes |
+| Faithfulness | Grado en que la respuesta se ajusta al contexto |
+| Hallucination | Contenido no soportado por datos/contexto |
+| Vector Store | Índice de embeddings para búsqueda rápida |
+| Hybrid Search | Combina keyword y vector search |
+| Prompt | Instrucciones + contexto enviadas al LLM |
+| Temperature | Control de aleatoriedad en sampling |
+
+**Cross-links útiles:**
+- `README.md` (visión general del proyecto)
+- `CHEATSHEET.md` (atajos y recordatorios)
+- `LEARNING_PATH.md` (secuencia sugerida)
+- Koans individuales: `koans/<n>_*/THEORY.md` (profundización por tema)
+
+---
 
 ---
 
