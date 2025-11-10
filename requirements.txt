@@ -29,12 +29,32 @@ requests>=2.31.0
 openai>=1.0.0
 anthropic>=0.18.0
 google-generativeai>=0.3.0
+ollama>=0.1.0  # Local LLMs (alternativa gratis)
+
+# Modern LLM Tools (2025 - Technology Radar)
+instructor>=1.0.0  # Structured outputs + validation
+dspy-ai>=2.0.0  # Programming over prompting
+guardrails-ai>=0.4.0  # Safety + validation
+mem0ai>=0.1.0  # Memoria personalizada
+outlines>=0.0.30  # Constrained generation
 
 # LangChain & Agents (Koans 11, 13)
 langchain>=0.1.0
 langchain-openai>=0.0.5
 langchain-community>=0.0.20
+langgraph>=0.0.20  # Multi-agent workflows
 duckduckgo-search>=4.0.0
+
+# Observability & Testing
+langsmith>=0.1.0  # Tracing y debugging
+wandb>=0.16.0  # Experiment tracking
+deepeval>=0.20.0  # LLM evaluation
+pytest-vcr>=1.0.0  # Replay HTTP requests
+hypothesis>=6.0.0  # Property-based testing
+
+# Security & Safety
+presidio-analyzer>=2.2.0  # PII detection
+presidio-anonymizer>=2.2.0  # PII masking
 
 # Semantic Search & Vector Databases (Koans 12-13)
 sentence-transformers>=2.2.0

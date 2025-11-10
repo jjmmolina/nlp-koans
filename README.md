@@ -85,10 +85,12 @@ pytest
 ### 🔮 Nivel Experto - LLMs Modernos (Koans 10-13)
 | Koan | Tema | Librerías | Conceptos |
 |------|------|-----------|-----------|
-| **10** | Modern LLMs & APIs | OpenAI, Anthropic, Google | GPT-4, Claude, Gemini, streaming, function calling |
-| **11** | AI Agents | LangChain, LangChain Tools | ReAct pattern, herramientas, memoria, callbacks |
-| **12** | Semantic Search | sentence-transformers, ChromaDB, FAISS | Embeddings, vector databases, búsqueda semántica |
-| **13** | RAG | LangChain, ChromaDB | Retrieval-Augmented Generation, document chunking, evaluation |
+| **10** | Modern LLMs & APIs | OpenAI, Anthropic, **Ollama** | GPT-4, Claude, Gemini, local LLMs, streaming, function calling, **structured outputs** |
+| **11** | AI Agents | LangChain, LangGraph | ReAct pattern, herramientas, memoria, callbacks, **DSPy** |
+| **12** | Semantic Search | sentence-transformers, ChromaDB, FAISS | Embeddings, vector databases, búsqueda semántica, **híbrida** |
+| **13** | RAG | LangChain, ChromaDB, **Instructor** | Retrieval-Augmented Generation, chunking, **evaluation**, **observabilidad** |
+
+> 🆕 **Novedades 2025**: Ollama para LLMs locales (sin API keys), Instructor para outputs estructurados, DSPy para optimización automática, Guardrails AI para seguridad, LangSmith para observabilidad.
 
 ## 🎓 Cómo Usar Este Tutorial
 
@@ -177,7 +179,9 @@ Se recomienda seguir el orden de los koans (01 → 13) ya que cada uno construye
 - 🧠 **Avanzado (Koans 8-9)**: Transformers y LLMs - 8-10 horas
 - 🔮 **Experto (Koans 10-13)**: APIs modernas, Agentes, RAG - 10-15 horas
 
-> 💡 **Los koans 10-13 requieren API keys** para OpenAI, Anthropic o Google. Puedes obtenerlas gratis con créditos de prueba.
+> 💡 **Los koans 10-13 ahora incluyen alternativas locales con Ollama** (sin API keys necesarias). Las API keys comerciales (OpenAI, Anthropic) son opcionales para comparar modelos.
+
+> 🔬 **Tech Radar 2025**: El curso incorpora técnicas del Thoughtworks Technology Radar Vol. 33: DSPy (programming over prompting), Instructor (structured outputs), Guardrails AI (safety), LangSmith (observabilidad), y Mem0 (memoria personalizada).
 
 **Prerrequisitos**:
 - ✅ Python básico (variables, funciones, clases)
