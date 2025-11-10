@@ -4,6 +4,50 @@
 
 Este documento consolida toda la teoría de los 13 Koans de NLP, desde los fundamentos hasta las técnicas más avanzadas de IA moderna. Está pensado como referencia viva mientras resuelves cada Koan con TDD.
 
+### ¿Qué es el Procesamiento de Lenguaje Natural?
+
+El **Procesamiento de Lenguaje Natural (NLP)** es una rama de la Inteligencia Artificial que se enfoca en la interacción entre computadoras y el lenguaje humano. El objetivo es permitir que las máquinas comprendan, interpreten y generen texto de manera similar a como lo hacen los humanos.
+
+**¿Por qué es importante el NLP?**
+- **Ubicuidad del lenguaje**: El texto es omnipresente en nuestras vidas (redes sociales, correos, documentos, web)
+- **Extracción de conocimiento**: Hay información valiosa oculta en grandes volúmenes de texto
+- **Automatización**: Permite automatizar tareas que antes requerían comprensión humana
+- **Accesibilidad**: Hace la tecnología más accesible mediante interfaces conversacionales
+
+**Aplicaciones prácticas del NLP:**
+- 💬 **Chatbots y asistentes virtuales** (Siri, Alexa, ChatGPT)
+- 📧 **Clasificación de correos** (spam detection, categorización)
+- 🌐 **Traducción automática** (Google Translate, DeepL)
+- 📊 **Análisis de sentimientos** (monitoreo de marca, análisis de opiniones)
+- 🔍 **Búsqueda semántica** (Google Search, recomendaciones)
+- 📝 **Resumen automático** (noticias, documentos legales)
+- 🎯 **Extracción de información** (NER para finanzas, medicina)
+
+### Evolución del NLP
+
+El campo del NLP ha evolucionado dramáticamente en las últimas décadas:
+
+**Era 1: Reglas y Heurísticas (1950-1990)**
+- Sistemas basados en reglas escritas manualmente
+- Ejemplo: ELIZA (1966), primer chatbot con reglas pattern-matching
+- Limitaciones: No escalables, frágiles ante variaciones del lenguaje
+
+**Era 2: Aprendizaje Estadístico (1990-2010)**
+- Modelos probabilísticos (N-gramas, HMM)
+- Machine Learning clásico (Naive Bayes, SVM)
+- Requería feature engineering manual
+
+**Era 3: Deep Learning (2010-2020)**
+- Word embeddings (Word2Vec, GloVe) capturan semántica
+- Redes neuronales (RNN, LSTM) procesan secuencias
+- CNNs para clasificación de texto
+
+**Era 4: Transformers y LLMs (2017-presente)**
+- 2017: Transformer revoluciona el campo ("Attention is All You Need")
+- 2018: BERT introduce pre-entrenamiento bidireccional
+- 2020: GPT-3 demuestra capacidades emergentes con scale
+- 2022-2025: Era de LLMs masivos (GPT-4, Claude, Llama, Gemini)
+
 **Path de Aprendizaje:**
 ```
 PARTE 1: Fundamentos (Koans 1-4)
@@ -74,7 +118,30 @@ PARTE 4: NLP Moderna (Koans 10-13)
 
 ### ¿Qué es Tokenization?
 
-Dividir texto en unidades (tokens): palabras, subpalabras, caracteres.
+La **tokenización** es el proceso fundamental de dividir texto en unidades más pequeñas llamadas "tokens". Es el primer paso en prácticamente cualquier pipeline de NLP, ya que las máquinas no pueden procesar texto crudo directamente.
+
+**¿Por qué es necesaria la tokenización?**
+
+Los modelos de NLP trabajan con números, no con texto. La tokenización es el puente que permite:
+1. **Representar** el texto de forma estructurada
+2. **Contar** frecuencias de palabras o caracteres
+3. **Limitar** el vocabulario a un tamaño manejable
+4. **Manejar** palabras desconocidas (Out-of-Vocabulary)
+
+**Ejemplo del problema OOV (Out-of-Vocabulary):**
+
+```python
+# Vocabulario del modelo: ["hello", "world", "python"]
+# Input: "hello amazing world"
+
+# Word-level tokenization:
+tokens = ["hello", "amazing", "world"]
+# Problema: "amazing" no está en el vocabulario → [UNK]
+
+# Subword tokenization:
+tokens = ["hello", "amaz", "##ing", "world"]
+# Solución: Descompone "amazing" en subpalabras conocidas
+```
 
 ```python
 # Word tokenization
@@ -89,7 +156,10 @@ Dividir texto en unidades (tokens): palabras, subpalabras, caracteres.
 
 ### Tipos de Tokenización
 
-**1. Word Tokenization:**
+**1. Word Tokenization (Tokenización por Palabras):**
+
+La forma más intuitiva: dividir por espacios y puntuación.
+
 ```python
 import nltk
 nltk.download('punkt')
@@ -99,20 +169,66 @@ tokens = nltk.word_tokenize(text)
 # ['I', 'love', 'Python', '!']
 ```
 
-**2. Sentence Tokenization:**
+**Ventajas:**
+- Simple y rápido
+- Fácil de interpretar
+- Funciona bien para lenguajes con espacios claros (inglés, español)
+
+**Desventajas:**
+- Vocabulario enorme (millones de palabras únicas)
+- No maneja bien palabras compuestas o variaciones morfológicas
+- Problemas con idiomas sin espacios (chino, japonés)
+
+**2. Sentence Tokenization (Tokenización por Oraciones):**
+
+Divide texto en oraciones completas. Útil para análisis a nivel de documento.
+
 ```python
 text = "Hello. How are you? I'm fine."
 sentences = nltk.sent_tokenize(text)
 # ['Hello.', 'How are you?', "I'm fine."]
 ```
 
-**3. Subword Tokenization (BPE, WordPiece):**
+**Casos de uso:**
+- Resumen automático (seleccionar oraciones clave)
+- Análisis de coherencia textual
+- Traducción automática (traducir oración por oración)
+
+**3. Subword Tokenization (Tokenización por Subpalabras):**
+
+Técnica moderna que balancea vocabulario vs. granularidad. Utilizada por modelos Transformer.
+
 ```python
 from transformers import AutoTokenizer
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 tokens = tokenizer.tokenize("unhappiness")
 # ['un', '##hap', '##pi', '##ness']
+```
+
+**Algoritmos comunes:**
+- **BPE (Byte Pair Encoding)**: Usado por GPT, RoBERTa
+- **WordPiece**: Usado por BERT
+- **SentencePiece**: Usado por T5, ALBERT (no requiere pre-tokenización)
+
+**Ventajas de subword:**
+- Vocabulario fijo y pequeño (30k-50k tokens)
+- Maneja palabras raras y neologismos
+- Funciona con cualquier idioma
+- Sin problema de OOV
+
+**Ejemplo práctico - Comparación:**
+
+```python
+text = "I enjoyed unhappiness"
+
+# Word-level (vocabulario: 50,257 palabras en GPT-2)
+# → ["I", "enjoyed", "unhappiness"]  
+# Si "unhappiness" no está: ["I", "enjoyed", "[UNK]"]
+
+# Subword-level (vocabulario: 50,257 subwords)
+# → ["I", "enjoyed", "un", "##hap", "##pi", "##ness"]
+# ¡Siempre funciona! Combina piezas conocidas
 ```
 
 ### Herramientas
@@ -478,36 +594,112 @@ print(result)
 
 ### Dense Vector Representations
 
-Representar palabras como vectores densos.
+Los **embeddings** son representaciones numéricas densas de palabras que capturan su significado semántico. Son una de las innovaciones más importantes en NLP moderno.
+
+**El problema con one-hot encoding:**
 
 ```python
-# One-hot (sparse)
-"cat" → [0, 0, 1, 0, 0, ..., 0]  # 10,000 dims
+# Vocabulario: ["cat", "dog", "king", "queen"]
 
-# Embedding (dense)
-"cat" → [0.2, -0.4, 0.1, ...]  # 300 dims
+# One-hot (sparse - vectores de 10,000+ dimensiones)
+"cat"   → [1, 0, 0, 0]
+"dog"   → [0, 1, 0, 0]
+"king"  → [0, 0, 1, 0]
+"queen" → [0, 0, 0, 1]
+
+# Problemas:
+# 1. Dimensionalidad enorme (tamaño del vocabulario)
+# 2. No captura relaciones: distancia("cat", "dog") = distancia("cat", "king")
+# 3. Sparse: 99.99% son ceros → ineficiente
+```
+
+**La solución: Embeddings densos**
+
+```python
+# Embedding (dense - 300 dimensiones típicamente)
+"cat"   → [0.2, -0.4, 0.1, 0.8, ..., 0.3]  # 300 dims
+"dog"   → [0.3, -0.3, 0.2, 0.7, ..., 0.4]  # 300 dims
+"king"  → [0.5, 0.6, -0.2, 0.1, ..., -0.1] # 300 dims
+"queen" → [0.4, 0.5, -0.3, 0.2, ..., -0.2] # 300 dims
+
+# Ventajas:
+# 1. Dimensionalidad fija y pequeña (100-300 dims)
+# 2. Captura similitud semántica: distancia("cat", "dog") < distancia("cat", "king")
+# 3. Aritmética semántica: king - man + woman ≈ queen
+```
+
+**Propiedades mágicas de los embeddings:**
+
+Los embeddings aprenden relaciones geométricas sorprendentes:
+
+```python
+# Analogías
+vector("king") - vector("man") + vector("woman") ≈ vector("queen")
+vector("Paris") - vector("France") + vector("Italy") ≈ vector("Rome")
+
+# Similitud semántica
+similitud("dog", "puppy")     → 0.85  # Alta
+similitud("dog", "car")       → 0.12  # Baja
+similitud("good", "great")    → 0.78  # Alta
+
+# Clustering
+# Palabras similares se agrupan en el espacio vectorial:
+# ["cat", "dog", "puppy"] → cluster de animales
+# ["king", "queen", "prince"] → cluster de realeza
 ```
 
 ### Word2Vec
 
-**CBOW (Continuous Bag of Words):**
+**Word2Vec** (2013) fue revolucionario: aprendizaje no supervisado de embeddings desde texto crudo.
+
+**Dos arquitecturas:**
+
+**1. CBOW (Continuous Bag of Words):**
+
+Predice palabra central dado el contexto.
+
 ```
-Context → Target
-"I ___ Python" → "love"
+Input: Context words → Output: Target word
+"I ___ Python programming" → "love"
+
+Ejemplo:
+Context: ["I", "Python", "programming"]
+Target: "love"
+
+# Rápido, mejor para corpus pequeños
 ```
 
-**Skip-gram:**
+**2. Skip-gram:**
+
+Predice contexto dada una palabra central.
+
 ```
-Target → Context
-"love" → "I", "Python"
+Input: Target word → Output: Context words
+"love" → ["I", "Python", "programming"]
+
+# Más lento, mejor para corpus grandes
+# Funciona mejor con palabras raras
 ```
+
+**¿Cómo aprende Word2Vec?**
+
+1. **Ventana deslizante**: Recorre el texto con una ventana (ej: 5 palabras)
+2. **Pares de entrenamiento**: Crea pares (palabra, contexto)
+3. **Red neuronal shallow**: 1 capa oculta que aprende embeddings
+4. **Objetivo**: Maximizar la probabilidad de que palabras cercanas tengan embeddings similares
 
 **Implementación:**
 ```python
 from gensim.models import Word2Vec
 
 sentences = [["I", "love", "Python"], ["Python", "is", "great"]]
-model = Word2Vec(sentences, vector_size=100, window=5, min_count=1)
+model = Word2Vec(
+    sentences, 
+    vector_size=100,    # Dimensión de embeddings
+    window=5,           # Tamaño de ventana de contexto
+    min_count=1,        # Ignora palabras con frecuencia < min_count
+    sg=0                # 0=CBOW, 1=Skip-gram
+)
 
 # Similitud
 similarity = model.wv.similarity("Python", "programming")
@@ -572,39 +764,164 @@ cluster_2: [car, vehicle, truck]
 
 ### Revolución del NLP
 
-**Attention is All You Need** (2017)
+En 2017, el paper **"Attention is All You Need"** de Google revolucionó el NLP al introducir la arquitectura Transformer. Desde entonces, prácticamente todos los modelos state-of-the-art se basan en Transformers.
 
-**Antes (RNN/LSTM):**
-- Procesamiento secuencial → lento
-- Difícil capturar dependencias largas
+**¿Por qué son revolucionarios?**
 
-**Después (Transformers):**
-- Procesamiento paralelo → rápido
-- Self-attention → captura todo el contexto
-
-### Arquitectura
-
+**Antes de Transformers (RNN/LSTM):**
 ```
-INPUT
-  ↓
-Embeddings + Positional Encoding
-  ↓
-ENCODER (N capas)
-  - Multi-Head Attention
-  - Feed Forward
-  - Layer Norm
-  ↓
-DECODER (N capas)
-  - Masked Attention
-  - Cross Attention
-  - Feed Forward
-  ↓
-OUTPUT
+Procesamiento:  [w1] → [w2] → [w3] → [w4]
+                  ↓      ↓      ↓      ↓
+Problemas:
+- ❌ Secuencial: no paralelizable → lento
+- ❌ Gradiente vanishing en secuencias largas
+- ❌ Difícil capturar dependencias lejanas
+- ❌ Memoria limitada del estado oculto
 ```
 
-### Self-Attention
+**Después de Transformers:**
+```
+Procesamiento:  [w1, w2, w3, w4] → todas a la vez
+                  ↓    ↓    ↓    ↓
+Ventajas:
+- ✅ Paralelo: procesa todo el input simultáneamente
+- ✅ Self-attention: cada palabra ve todas las demás
+- ✅ Sin límite de distancia: captura dependencias largas
+- ✅ Escalable: funciona con GPUs/TPUs
+```
 
-Cada palabra "atiende" a todas las demás.
+**Ejemplo de dependencia larga:**
+
+```python
+text = "The cat, which was sitting on the mat and looking out the window, meowed."
+
+# RNN/LSTM: 
+# Al llegar a "meowed", el contexto de "cat" está difuso (12 palabras atrás)
+
+# Transformer:
+# "meowed" puede atender directamente a "cat" sin importar la distancia
+# Attention("meowed", "cat") = 0.92 (alta atención)
+# Attention("meowed", "window") = 0.15 (baja atención)
+```
+
+### Arquitectura del Transformer
+
+```
+INPUT: "The cat sat"
+  ↓
+📝 Token Embeddings: convierte palabras → vectores
+  + Positional Encoding: añade información de posición
+  ↓
+🔍 ENCODER (N capas, típicamente 6-12)
+  1. Multi-Head Self-Attention
+     - Cada palabra "mira" a todas las demás
+     - Múltiples "cabezas" capturan diferentes relaciones
+  2. Feed Forward Network
+     - Transforma representaciones
+  3. Layer Normalization + Residual Connections
+     - Estabiliza entrenamiento
+  ↓
+Contextualized Representations
+  ↓
+🎯 DECODER (N capas) - solo para tareas seq-to-seq
+  1. Masked Self-Attention (no ve el futuro)
+  2. Cross-Attention (atiende al encoder)
+  3. Feed Forward
+  ↓
+📊 OUTPUT: probabilidades sobre vocabulario
+```
+
+### Self-Attention: El Corazón del Transformer
+
+**Intuición:**
+
+Self-Attention permite que cada palabra "entienda su contexto" mirando a todas las demás palabras.
+
+```python
+Sentence: "The bank of the river"
+
+# Sin atención (word2vec):
+"bank" → vector fijo (podría ser banco financiero o orilla)
+
+# Con self-attention:
+"bank" mira a: ["The", "of", "the", "river"]
+# Conclusion: alta atención a "river" → "bank" = orilla
+# bank vector ajustado al contexto
+
+Sentence: "The bank approved the loan"
+
+"bank" mira a: ["The", "approved", "the", "loan"]
+# Conclusion: alta atención a "approved", "loan" → "bank" = banco financiero
+# bank vector diferente al anterior
+```
+
+**Mecánica de Attention:**
+
+```python
+# Para cada palabra:
+# 1. Crear Query, Key, Value vectors
+
+Query (Q):   "¿Qué estoy buscando?"
+Key (K):     "¿Qué ofrezco?"
+Value (V):   "¿Qué información tengo?"
+
+# 2. Calcular attention scores
+score(word_i, word_j) = dot_product(Q_i, K_j) / sqrt(d_k)
+
+# 3. Softmax para obtener pesos
+attention_weights = softmax(scores)
+
+# 4. Weighted sum de valores
+output_i = sum(attention_weights * Values)
+```
+
+**Ejemplo numérico simple:**
+
+```python
+Input: "cat sat"
+
+# Vectors simplificados (en realidad son 512-1024 dims)
+cat_Q = [1, 0]    cat_K = [1, 0]    cat_V = [0.8, 0.2]
+sat_Q = [0, 1]    sat_K = [0, 1]    sat_V = [0.3, 0.7]
+
+# Attention de "cat" a todas las palabras:
+score(cat, cat) = dot([1,0], [1,0]) = 1
+score(cat, sat) = dot([1,0], [0,1]) = 0
+
+attention_weights_cat = softmax([1, 0]) = [0.73, 0.27]
+
+# Output de "cat":
+cat_output = 0.73 * [0.8, 0.2] + 0.27 * [0.3, 0.7]
+           = [0.665, 0.335]
+
+# "cat" presta más atención a sí mismo (0.73) que a "sat" (0.27)
+```
+
+### Multi-Head Attention
+
+En lugar de una sola attention, usamos múltiples "cabezas" en paralelo.
+
+```python
+# 8 cabezas típicamente
+
+Head 1: Captura relaciones sintácticas (sujeto-verbo)
+Head 2: Captura relaciones semánticas (sinónimos)
+Head 3: Captura co-referencias (pronombres)
+...
+Head 8: Captura otra relación
+
+# Cada cabeza aprende patrones diferentes
+# Luego se concatenan y proyectan
+
+"The cat sat" →
+  Head 1: "cat" ← "sat" (relación sujeto-verbo)
+  Head 2: "cat" ← "The" (determinante-sustantivo)
+  Head 3: ...
+```
+
+**¿Por qué múltiples cabezas?**
+
+Una sola cabeza podría "distraerse" con un solo tipo de relación. Múltiples cabezas permiten capturar diferentes aspectos simultáneamente.
 
 ```python
 "The cat sat on the mat"
@@ -1252,36 +1569,183 @@ def hybrid_search(query, alpha=0.5):
 
 ### Concepto
 
-Combinar recuperación de información + generación de LLM.
+**RAG** combina lo mejor de dos mundos: la capacidad de recuperación de información de bases de datos/documentos con la generación de texto natural de los LLMs.
 
 ```
-USER QUERY
+USER QUERY: "¿Cuál es la política de vacaciones de la empresa?"
     ↓
-RETRIEVE relevant documents
+1. RETRIEVE: Buscar documentos relevantes
+   → Encuentra: "Employee_Handbook.pdf - Section 5.2: Vacation Policy"
     ↓
-AUGMENT prompt with context
+2. AUGMENT: Enriquecer el prompt con contexto
+   → "Based on this context: [text from handbook], answer: [query]"
     ↓
-GENERATE response with LLM
+3. GENERATE: LLM responde con información precisa
+   → "Según el manual, los empleados tienen 15 días de vacaciones..."
 ```
 
-### ¿Por qué RAG?
+### ¿Por qué necesitamos RAG?
 
-**Problemas de LLMs:**
-- Conocimiento desactualizado
-- Alucinaciones
-- Sin acceso a datos privados
+**Limitaciones de LLMs sin RAG:**
+
+```python
+# ❌ Problema 1: Conocimiento desactualizado
+User: "Who won the 2024 World Cup?"
+LLM: "I don't have information past my knowledge cutoff in 2023"
+
+# ❌ Problema 2: Alucinaciones
+User: "What is our company's vacation policy?"
+LLM: "Most companies offer 10-15 days..." 
+# ¡Inventó una respuesta! No tiene acceso a documentos internos
+
+# ❌ Problema 3: Sin datos privados
+User: "Summarize the Q3 earnings report"
+LLM: "I don't have access to your company's financial documents"
+
+# ❌ Problema 4: No puede citar fuentes
+User: "What does the contract say about termination?"
+LLM: [Da respuesta pero no puede mostrar la cláusula exacta]
+```
 
 **Solución RAG:**
-```python
-# Sin RAG
-Query: "What is our company's vacation policy?"
-LLM: [Alucina respuesta genérica]
 
-# Con RAG
-Query: "What is our company's vacation policy?"
-1. Retrieve: [Company handbook section on vacations]
-2. Augment: "Based on this context: [context], answer: [query]"
-3. Generate: [Respuesta basada en documento real]
+```python
+# ✅ Con RAG
+User: "What is our company's vacation policy?"
+
+1. Retrieve: 
+   - Busca en: Employee_Handbook.pdf, HR_Policies.docx
+   - Encuentra: "Section 5.2: Employees receive 20 days PTO annually..."
+
+2. Augment:
+   prompt = f"""
+   Context: {retrieved_documents}
+   
+   Question: {user_query}
+   
+   Answer based ONLY on the provided context. If the answer is not in the context, say so.
+   """
+
+3. Generate:
+   LLM: "According to Section 5.2 of the Employee Handbook, employees receive 
+        20 days of PTO annually, accrued monthly at 1.67 days per month."
+   
+   Sources: [Employee_Handbook.pdf - Page 23]
+
+# ✅ Respuesta precisa + cita fuente + sin alucinaciones
+```
+
+### Anatomía de un Sistema RAG
+
+**Pipeline completo:**
+
+```
+📄 OFFLINE (Indexación - una vez)
+│
+├─ 1. Cargar Documentos
+│    - PDFs, Word, web pages, bases de datos
+│    - Extraer texto crudo
+│
+├─ 2. Chunking (Dividir en fragmentos)
+│    - Tamaño: 500-1500 tokens típicamente
+│    - Overlap: 100-200 tokens (para no perder contexto)
+│    - Estrategias: por párrafos, por secciones, semántico
+│
+├─ 3. Generar Embeddings
+│    - Convertir cada chunk → vector (768-1536 dims)
+│    - Modelos: text-embedding-ada-002, sentence-transformers
+│
+└─ 4. Almacenar en Vector Database
+     - Pinecone, Chroma, FAISS, Qdrant
+     - Permite búsqueda rápida por similitud
+
+🔍 ONLINE (Query - cada vez)
+│
+├─ 1. Embed Query del Usuario
+│    - "¿política de vacaciones?" → vector[...]
+│
+├─ 2. Retrieve (Buscar chunks relevantes)
+│    - Similitud coseno con chunks indexados
+│    - Top-k (típicamente 3-5 chunks más relevantes)
+│
+├─ 3. Reranking (Opcional pero recomendado)
+│    - Reordenar resultados con modelo especializado
+│    - Modelos: cross-encoders, Cohere rerank
+│
+├─ 4. Augment (Construir prompt)
+│    - Combinar: system prompt + context + query
+│    - Límite: < tamaño de contexto del LLM (8k, 32k, 128k tokens)
+│
+└─ 5. Generate (LLM responde)
+     - GPT-4, Claude, Llama
+     - Respuesta + metadata (sources, confidence)
+```
+
+### Chunking Strategies (Crítico para calidad)
+
+**¿Por qué dividir en chunks?**
+
+```python
+# ❌ Sin chunking (documento completo)
+document = "50 pages de employee handbook"  # ~50,000 tokens
+
+Problemas:
+- Excede límite de contexto (4k-128k tokens)
+- Embedding pierde detalles al comprimir
+- LLM se "pierde" en texto largo
+- Costo alto ($$$)
+
+# ✅ Con chunking
+chunks = [
+    "Section 1: Introduction (500 tokens)",
+    "Section 2: Benefits (600 tokens)",
+    "Section 3: Vacation Policy (550 tokens)",  # ← relevante
+    ...
+]
+
+# Solo enviamos los 3-5 chunks más relevantes al LLM
+```
+
+**Estrategias de chunking:**
+
+**1. Fixed-size (tamaño fijo):**
+
+```python
+chunk_size = 1000      # tokens
+chunk_overlap = 200    # overlap para no perder contexto en los bordes
+
+text = "Very long document..."
+chunks = split_by_size(text, chunk_size, chunk_overlap)
+
+# Ventajas: Simple, predecible
+# Desventajas: Puede partir oraciones/párrafos
+```
+
+**2. Semantic chunking (semántico):**
+
+```python
+# Divide por temas/secciones naturales
+
+chunks = split_by_semantic_similarity(text)
+# Detecta cambios de tema usando embeddings
+
+# Ventajas: Chunks coherentes
+# Desventajas: Tamaños variables
+```
+
+**3. Document structure (estructura):**
+
+```python
+# Usa estructura del documento (headers, secciones)
+
+chunks = [
+    "# Introduction\n...",
+    "# Section 1: Benefits\n...",
+    "## Subsection 1.1: Healthcare\n...",
+]
+
+# Ventajas: Mantiene jerarquía
+# Desventajas: Depende de buena estructura
 ```
 
 ### Implementación Básica
