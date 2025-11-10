@@ -36,11 +36,9 @@ def get_word_vector_spacy(word: str, lang: str = "es") -> np.ndarray:
         Vector numpy
     """
     # TODO: Implementa obtención de vector
-    # Pistas:
-    # 1. Carga el modelo spaCy
-    # 2. doc = nlp(word)
-    # 3. return doc.vector
-    return np.array([])
+    # Pista: spaCy puede procesar texto y cada documento tiene un atributo de vector
+    # Consulta HINTS.md para más detalles
+    pass
 
 
 def get_text_vector_spacy(text: str, lang: str = "es") -> np.ndarray:
@@ -57,9 +55,8 @@ def get_text_vector_spacy(text: str, lang: str = "es") -> np.ndarray:
     Returns:
         Vector numpy
     """
-    # TODO: Obtén el vector del documento completo
-    # doc.vector promedia los vectores de todas las palabras
-    return np.array([])
+    # TODO: Similar a get_word_vector_spacy pero con texto completo
+    pass
 
 
 def cosine_similarity_words(word1: str, word2: str, lang: str = "es") -> float:
@@ -84,11 +81,8 @@ def cosine_similarity_words(word1: str, word2: str, lang: str = "es") -> float:
         Similitud (0-1)
     """
     # TODO: Implementa similitud coseno
-    # Pistas:
-    # 1. Obtén vectores de ambas palabras
-    # 2. from scipy.spatial.distance import cosine
-    # 3. similarity = 1 - cosine(vec1, vec2)
-    return 0.0
+    # Pista: Necesitas obtener vectores y calcular similitud coseno (ya está importada)
+    pass
 
 
 def find_most_similar(word: str, candidates: List[str], lang: str = "es", top_n: int = 3) -> List[Tuple[str, float]]:
@@ -109,10 +103,8 @@ def find_most_similar(word: str, candidates: List[str], lang: str = "es", top_n:
         Lista de tuplas (palabra, similitud) ordenadas por similitud
     """
     # TODO: Implementa búsqueda de similares
-    # 1. Calcula similitud con cada candidato
-    # 2. Ordena por similitud descendente
-    # 3. Retorna top_n
-    return []
+    # Pista: Calcula similitud con cada candidato y ordena
+    pass
 
 
 def word_analogy(word_a: str, word_b: str, word_c: str, candidates: List[str], lang: str = "es") -> str:
@@ -134,9 +126,8 @@ def word_analogy(word_a: str, word_b: str, word_c: str, candidates: List[str], l
         Palabra más apropiada
     """
     # TODO: Implementa analogía
-    # 1. vector_resultado = vector_a - vector_b + vector_c
-    # 2. Encuentra el candidato más cercano a vector_resultado
-    return ""
+    # Pista: Los vectores se pueden sumar y restar algebraicamente
+    pass
 
 
 def get_document_similarity(text1: str, text2: str, lang: str = "es") -> float:
@@ -158,8 +149,8 @@ def get_document_similarity(text1: str, text2: str, lang: str = "es") -> float:
         Similitud (0-1)
     """
     # TODO: Calcula similitud entre documentos
-    # Usa get_text_vector_spacy para ambos textos
-    return 0.0
+    # Combina funciones anteriores
+    pass
 
 
 def cluster_words_by_similarity(words: List[str], threshold: float = 0.7, lang: str = "es") -> List[List[str]]:
@@ -180,5 +171,5 @@ def cluster_words_by_similarity(words: List[str], threshold: float = 0.7, lang: 
         Lista de clusters (listas de palabras similares)
     """
     # TODO: Implementa clustering simple
-    # Agrupa palabras con similitud >= threshold
-    return []
+    # Agrupa palabras con similitud por encima del threshold
+    pass

@@ -31,12 +31,9 @@ def analyze_sentiment_simple(text: str, lang: str = "es") -> Dict:
         Diccionario con label y score
     """
     # TODO: Implementa análisis de sentimientos con transformers
-    # Pistas:
-    # 1. from transformers import pipeline
-    # 2. classifier = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
-    # 3. result = classifier(text)
-    # 4. return result[0]
-    return {}
+    # Pista: Usa pipeline de transformers para "sentiment-analysis"
+    # Consulta HINTS.md para más detalles
+    pass
 
 
 def analyze_sentiment_batch(texts: List[str], lang: str = "es") -> List[Dict]:
@@ -55,8 +52,9 @@ def analyze_sentiment_batch(texts: List[str], lang: str = "es") -> List[Dict]:
     Returns:
         Lista de resultados
     """
-    # TODO: Procesa múltiples textos en batch
-    return []
+    # TODO: Procesa múltiples textos
+    # Pista: Los pipelines pueden procesar listas de textos
+    pass
 
 
 def get_sentiment_label(text: str, lang: str = "es") -> str:
@@ -74,8 +72,8 @@ def get_sentiment_label(text: str, lang: str = "es") -> str:
     Returns:
         Etiqueta de sentimiento
     """
-    # TODO: Extrae solo el label del resultado
-    return ""
+    # TODO: Usa la función anterior y extrae solo el label
+    pass
 
 
 def get_sentiment_score(text: str, lang: str = "es") -> float:
@@ -94,7 +92,7 @@ def get_sentiment_score(text: str, lang: str = "es") -> float:
         Score de confianza (0-1)
     """
     # TODO: Extrae solo el score
-    return 0.0
+    pass
 
 
 def classify_sentiment_simple(text: str) -> str:
@@ -112,8 +110,8 @@ def classify_sentiment_simple(text: str) -> str:
         'positivo', 'negativo', o 'neutral'
     """
     # TODO: Implementa clasificación simple
-    # Usa analyze_sentiment_simple y mapea los resultados
-    return "neutral"
+    # Mapea los resultados a categorías en español
+    pass
 
 
 def analyze_text_emotions(text: str) -> Dict[str, float]:
@@ -133,8 +131,8 @@ def analyze_text_emotions(text: str) -> Dict[str, float]:
         Diccionario con emociones y scores
     """
     # TODO: Implementa análisis de emociones
-    # Pista: Usa pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base")
-    return {}
+    # Pista: Necesitas un modelo específico de emociones
+    pass
 
 
 def sentiment_statistics(texts: List[str]) -> Dict:
@@ -158,11 +156,6 @@ def sentiment_statistics(texts: List[str]) -> Dict:
     Returns:
         Diccionario con estadísticas
     """
-    # TODO: Calcula estadísticas
-    return {
-        'total': 0,
-        'positive': 0,
-        'negative': 0,
-        'neutral': 0,
-        'avg_score': 0.0
-    }
+    # TODO: Calcula estadísticas agregadas
+    # Analiza todos los textos y cuenta por categoría
+    pass

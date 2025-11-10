@@ -14,6 +14,7 @@ Librerías usadas:
 import nltk
 from typing import List
 from nltk.tokenize import word_tokenize, sent_tokenize
+
 # TODO: Descarga los recursos necesarios de NLTK
 # Descomenta estas líneas cuando las necesites:
 # nltk.download('punkt')
@@ -34,10 +35,10 @@ def tokenize_words_nltk(text: str) -> List[str]:
     Returns:
         Lista de tokens (palabras y signos de puntuación)
     """
-    # TODO: Implementa la tokenización de palabras con nltk.word_tokenize()
-    # Pista: from nltk.tokenize import word_tokenize
-
-    return word_tokenize(text)
+    # TODO: Implementa la tokenización de palabras
+    # Pista: Necesitas usar la función word_tokenize que ya está importada arriba
+    # ¿Qué debes retornar?
+    pass
 
 
 def tokenize_sentences_nltk(text: str) -> List[str]:
@@ -55,8 +56,9 @@ def tokenize_sentences_nltk(text: str) -> List[str]:
     Returns:
         Lista de oraciones
     """
-    # TODO: Implementa la tokenización de oraciones con nltk.sent_tokenize()
-    return sent_tokenize(text)
+    # TODO: Implementa la tokenización de oraciones
+    # Pista: Similar a word_tokenize, pero para oraciones. Ya está importada arriba.
+    pass
 
 
 def tokenize_words_spacy(text: str, lang: str = "es") -> List[str]:
@@ -78,15 +80,12 @@ def tokenize_words_spacy(text: str, lang: str = "es") -> List[str]:
     """
     # TODO: Implementa la tokenización con spaCy
     # Pistas:
-    # 1. import spacy
-    # 2. Carga el modelo: nlp = spacy.load("es_core_news_sm") o "en_core_web_sm"
-    # 3. Procesa el texto: doc = nlp(text)
-    # 4. Extrae los tokens: [token.text for token in doc]
-    import spacy
-    nlp = spacy.load("es_core_news_sm")
-    doc = nlp(text)
-    return [token.text for token in doc]
-    
+    # 1. Importa spacy
+    # 2. Carga el modelo correcto según el idioma
+    # 3. Procesa el texto con el modelo
+    # 4. Extrae los tokens (cada token tiene un atributo .text)
+    # Consulta HINTS.md si necesitas más ayuda
+    pass
 
 
 def custom_tokenize(text: str, delimiter: str = " ") -> List[str]:
@@ -106,9 +105,9 @@ def custom_tokenize(text: str, delimiter: str = " ") -> List[str]:
     Returns:
         Lista de tokens
     """
-    # TODO: Implementa una tokenización simple con str.split()
-    return text.split(delimiter)
-
+    # TODO: Implementa una tokenización simple
+    # Pista: Los strings en Python tienen un método que divide por un delimitador
+    pass
 
 
 def count_tokens(text: str) -> dict:
@@ -127,12 +126,10 @@ def count_tokens(text: str) -> dict:
     """
     # TODO: Implementa el conteo de tokens
     # Pistas:
-    # 1. Usa tokenize_words_nltk() para obtener los tokens
-    # 2. Usa collections.Counter o un diccionario para contar
-    # 3. Convierte a minúsculas para normalizar
-    from collections import Counter
-    tokens = tokenize_words_nltk(text.lower())
-    return dict(Counter(tokens))
+    # 1. Primero tokeniza el texto (puedes usar una función que ya creaste)
+    # 2. Normaliza a minúsculas
+    # 3. Cuenta las frecuencias (mira collections.Counter o usa un dict)
+    pass
 
 
 def remove_punctuation_tokens(tokens: List[str]) -> List[str]:
@@ -150,6 +147,7 @@ def remove_punctuation_tokens(tokens: List[str]) -> List[str]:
         Lista de tokens sin puntuación
     """
     # TODO: Filtra los tokens que NO sean puntuación
-    # Pista: import string; usa string.punctuation
-    import string
-    return [token for token in tokens if token not in string.punctuation]
+    # Pistas:
+    # 1. El módulo string tiene una constante con todos los signos de puntuación
+    # 2. Usa una list comprehension para filtrar
+    pass

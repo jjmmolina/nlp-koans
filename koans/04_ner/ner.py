@@ -33,10 +33,11 @@ def extract_entities_spacy(text: str, lang: str = "es") -> List[Tuple[str, str]]
     """
     # TODO: Implementa extracción de entidades con spaCy
     # Pistas:
-    # 1. Carga el modelo spaCy
+    # 1. Carga el modelo spaCy apropiado
     # 2. Procesa el texto
-    # 3. Extrae: [(ent.text, ent.label_) for ent in doc.ents]
-    return []
+    # 3. Los documentos procesados tienen un atributo .ents con las entidades
+    # Consulta HINTS.md para más ayuda
+    pass
 
 
 def extract_persons(text: str, lang: str = "es") -> List[str]:
@@ -54,8 +55,9 @@ def extract_persons(text: str, lang: str = "es") -> List[str]:
     Returns:
         Lista de nombres de personas
     """
-    # TODO: Filtra entidades con label_ == 'PER' o 'PERSON'
-    return []
+    # TODO: Filtra entidades de tipo PERSONA
+    # Pista: Primero extrae todas las entidades, luego filtra por tipo
+    pass
 
 
 def extract_organizations(text: str, lang: str = "es") -> List[str]:
@@ -73,8 +75,8 @@ def extract_organizations(text: str, lang: str = "es") -> List[str]:
     Returns:
         Lista de organizaciones
     """
-    # TODO: Filtra entidades con label_ == 'ORG'
-    return []
+    # TODO: Filtra entidades de tipo ORGANIZACIÓN
+    pass
 
 
 def extract_locations(text: str, lang: str = "es") -> List[str]:
@@ -92,8 +94,9 @@ def extract_locations(text: str, lang: str = "es") -> List[str]:
     Returns:
         Lista de lugares
     """
-    # TODO: Filtra entidades con label_ == 'LOC' o 'GPE' (Geo-Political Entity)
-    return []
+    # TODO: Filtra entidades de tipo LUGAR
+    # Nota: Puede ser 'LOC' o 'GPE' dependiendo del modelo
+    pass
 
 
 def extract_dates(text: str, lang: str = "es") -> List[str]:
@@ -111,8 +114,8 @@ def extract_dates(text: str, lang: str = "es") -> List[str]:
     Returns:
         Lista de expresiones temporales
     """
-    # TODO: Filtra entidades con label_ == 'DATE' o 'TIME'
-    return []
+    # TODO: Filtra entidades de tipo FECHA/TIEMPO
+    pass
 
 
 def group_entities_by_type(text: str, lang: str = "es") -> Dict[str, List[str]]:
@@ -135,8 +138,8 @@ def group_entities_by_type(text: str, lang: str = "es") -> Dict[str, List[str]]:
         Diccionario con entidades agrupadas por tipo
     """
     # TODO: Implementa agrupación de entidades
-    # Usa collections.defaultdict o un diccionario normal
-    return {}
+    # Pista: Recorre las entidades y agrúpalas por su label_
+    pass
 
 
 def count_entity_types(text: str, lang: str = "es") -> Dict[str, int]:
@@ -155,7 +158,8 @@ def count_entity_types(text: str, lang: str = "es") -> Dict[str, int]:
         Diccionario con conteo por tipo
     """
     # TODO: Cuenta las entidades por tipo
-    return {}
+    # Pista: Similar a group_entities_by_type pero solo cuentas
+    pass
 
 
 def find_entity_context(text: str, entity: str, window: int = 5, lang: str = "es") -> str:
@@ -180,9 +184,9 @@ def find_entity_context(text: str, entity: str, window: int = 5, lang: str = "es
     # TODO: Implementa extracción de contexto
     # Pistas:
     # 1. Procesa el texto con spaCy
-    # 2. Busca la entidad en doc.ents
-    # 3. Obtén los tokens alrededor: doc[start-window:end+window]
-    return ""
+    # 2. Busca la entidad específica en doc.ents
+    # 3. Obtén los tokens alrededor usando índices de span
+    pass
 
 
 def visualize_entities(text: str, lang: str = "es") -> str:
@@ -203,5 +207,5 @@ def visualize_entities(text: str, lang: str = "es") -> str:
         Texto con entidades marcadas
     """
     # TODO: Implementa visualización simple
-    # Reemplaza cada entidad por [TIPO: entidad] en el texto
-    return ""
+    # Pista: Construye un nuevo string insertando marcadores alrededor de las entidades
+    pass

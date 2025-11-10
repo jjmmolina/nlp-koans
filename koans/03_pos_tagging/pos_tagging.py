@@ -38,9 +38,9 @@ def pos_tag_nltk(text: str) -> List[Tuple[str, str]]:
     """
     # TODO: Implementa POS tagging con NLTK
     # Pistas:
-    # 1. Tokeniza el texto: from nltk.tokenize import word_tokenize
-    # 2. Aplica POS tagging: nltk.pos_tag(tokens)
-    return []
+    # 1. Primero necesitas tokenizar el texto
+    # 2. Luego aplica nltk.pos_tag() a los tokens
+    pass
 
 
 def pos_tag_spacy(text: str, lang: str = "es") -> List[Tuple[str, str, str]]:
@@ -64,10 +64,10 @@ def pos_tag_spacy(text: str, lang: str = "es") -> List[Tuple[str, str, str]]:
     """
     # TODO: Implementa con spaCy
     # Pistas:
-    # 1. Carga el modelo
+    # 1. Carga el modelo de spaCy
     # 2. Procesa el texto
-    # 3. Extrae: [(token.text, token.pos_, token.tag_) for token in doc]
-    return []
+    # 3. Cada token tiene atributos: .text, .pos_, .tag_
+    pass
 
 
 def extract_nouns(text: str, lang: str = "es") -> List[str]:
@@ -85,9 +85,9 @@ def extract_nouns(text: str, lang: str = "es") -> List[str]:
     Returns:
         Lista de sustantivos
     """
-    # TODO: Extrae solo los tokens con POS == 'NOUN'
-    # Usa pos_tag_spacy y filtra por pos == 'NOUN' o pos == 'PROPN'
-    return []
+    # TODO: Extrae solo los tokens con POS == 'NOUN' o 'PROPN'
+    # Pista: Usa la función pos_tag_spacy y filtra por categoría
+    pass
 
 
 def extract_verbs(text: str, lang: str = "es") -> List[str]:
@@ -106,7 +106,8 @@ def extract_verbs(text: str, lang: str = "es") -> List[str]:
         Lista de verbos
     """
     # TODO: Extrae tokens con POS == 'VERB' o 'AUX'
-    return []
+    # Similar a extract_nouns pero con diferentes categorías
+    pass
 
 
 def extract_adjectives(text: str, lang: str = "es") -> List[str]:
@@ -125,7 +126,7 @@ def extract_adjectives(text: str, lang: str = "es") -> List[str]:
         Lista de adjetivos
     """
     # TODO: Extrae tokens con POS == 'ADJ'
-    return []
+    pass
 
 
 def get_pos_statistics(text: str, lang: str = "es") -> Dict[str, int]:
@@ -144,8 +145,8 @@ def get_pos_statistics(text: str, lang: str = "es") -> Dict[str, int]:
         Diccionario con conteo de cada POS tag
     """
     # TODO: Cuenta la frecuencia de cada POS tag
-    # Usa collections.Counter o un diccionario
-    return {}
+    # Pista: collections.Counter es muy útil aquí
+    pass
 
 
 def find_noun_phrases(text: str, lang: str = "es") -> List[str]:
@@ -167,11 +168,8 @@ def find_noun_phrases(text: str, lang: str = "es") -> List[str]:
         Lista de frases nominales
     """
     # TODO: Implementa extracción de noun chunks con spaCy
-    # Pistas:
-    # 1. Procesa el texto con spaCy
-    # 2. Usa doc.noun_chunks
-    # 3. Extrae el texto: [chunk.text for chunk in doc.noun_chunks]
-    return []
+    # Pista: spaCy tiene un atributo especial en el doc para esto
+    pass
 
 
 def pos_pattern_match(text: str, pattern: List[str], lang: str = "es") -> List[List[str]]:
@@ -193,7 +191,7 @@ def pos_pattern_match(text: str, pattern: List[str], lang: str = "es") -> List[L
     """
     # TODO: Implementa búsqueda de patrones
     # Pistas:
-    # 1. Obtén los POS tags con pos_tag_spacy
-    # 2. Busca ventanas del tamaño del patrón
-    # 3. Compara los POS tags con el patrón
-    return []
+    # 1. Obtén los POS tags del texto
+    # 2. Recorre el texto buscando ventanas del tamaño del patrón
+    # 3. Compara los POS tags de cada ventana con el patrón
+    pass

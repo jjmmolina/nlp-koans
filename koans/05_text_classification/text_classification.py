@@ -42,11 +42,11 @@ def create_tfidf_features(texts: List[str], max_features: int = 100) -> Tuple:
     """
     # TODO: Implementa creación de características TF-IDF
     # Pistas:
-    # 1. from sklearn.feature_extraction.text import TfidfVectorizer
-    # 2. vectorizer = TfidfVectorizer(max_features=max_features)
-    # 3. features = vectorizer.fit_transform(texts)
-    # 4. return vectorizer, features
-    return None, None
+    # 1. Necesitas TfidfVectorizer (ya está importado)
+    # 2. Crea una instancia con max_features
+    # 3. Usa fit_transform para ajustar y transformar los textos
+    # 4. Retorna tanto el vectorizer como la matriz de características
+    pass
 
 
 def create_bow_features(texts: List[str], max_features: int = 100) -> Tuple:
@@ -67,7 +67,8 @@ def create_bow_features(texts: List[str], max_features: int = 100) -> Tuple:
         Tupla (vectorizer, features_matrix)
     """
     # TODO: Implementa BoW con CountVectorizer
-    return None, None
+    # Pista: Similar a TF-IDF pero con CountVectorizer (ya importado)
+    pass
 
 
 def train_naive_bayes_classifier(X_train, y_train):
@@ -89,10 +90,8 @@ def train_naive_bayes_classifier(X_train, y_train):
         Clasificador entrenado
     """
     # TODO: Implementa entrenamiento con MultinomialNB
-    # clf = MultinomialNB()
-    # clf.fit(X_train, y_train)
-    # return clf
-    return None
+    # Pista: Crea una instancia, llama a fit(), y retorna el clasificador
+    pass
 
 
 def train_logistic_regression_classifier(X_train, y_train):
@@ -111,8 +110,8 @@ def train_logistic_regression_classifier(X_train, y_train):
     Returns:
         Clasificador entrenado
     """
-    # TODO: Implementa con LogisticRegression
-    return None
+    # TODO: Implementa con LogisticRegression (ya importado)
+    pass
 
 
 def predict_class(classifier, vectorizer, text: str) -> int:
@@ -133,10 +132,10 @@ def predict_class(classifier, vectorizer, text: str) -> int:
         Clase predicha
     """
     # TODO: Implementa predicción
-    # 1. Transforma el texto con vectorizer.transform([text])
-    # 2. Predice con classifier.predict(features)
-    # 3. Retorna la predicción
-    return 0
+    # Pistas:
+    # 1. Transforma el texto a características
+    # 2. Usa el método predict del clasificador
+    pass
 
 
 def predict_proba(classifier, vectorizer, text: str) -> np.ndarray:
@@ -155,8 +154,8 @@ def predict_proba(classifier, vectorizer, text: str) -> np.ndarray:
     Returns:
         Array de probabilidades
     """
-    # TODO: Usa classifier.predict_proba()
-    return np.array([])
+    # TODO: Usa predict_proba() en lugar de predict()
+    pass
 
 
 def evaluate_classifier(classifier, X_test, y_test) -> dict:
@@ -176,10 +175,11 @@ def evaluate_classifier(classifier, X_test, y_test) -> dict:
         Diccionario con métricas
     """
     # TODO: Implementa evaluación
-    # 1. Predice: y_pred = classifier.predict(X_test)
-    # 2. Calcula accuracy: accuracy_score(y_test, y_pred)
-    # 3. Genera reporte: classification_report(y_test, y_pred)
-    return {"accuracy": 0.0, "report": ""}
+    # Pistas:
+    # 1. Haz predicciones
+    # 2. Calcula accuracy (ya está importado accuracy_score)
+    # 3. Genera classification_report (ya está importado)
+    pass
 
 
 def get_top_features(vectorizer, classifier, class_label: int, top_n: int = 10) -> List[str]:
@@ -201,10 +201,10 @@ def get_top_features(vectorizer, classifier, class_label: int, top_n: int = 10) 
     """
     # TODO: Implementa extracción de top features
     # Pistas:
-    # 1. Obtén los coeficientes o feature importances del clasificador
-    # 2. Obtén los nombres de features: vectorizer.get_feature_names_out()
-    # 3. Ordena por importancia y retorna top_n
-    return []
+    # 1. Obtén los coeficientes del clasificador (attr coef_)
+    # 2. Obtén los nombres de las características del vectorizer
+    # 3. Ordena por importancia y toma top_n
+    pass
 
 
 def build_simple_spam_classifier(emails: List[str], labels: List[int]) -> Tuple:
@@ -224,7 +224,5 @@ def build_simple_spam_classifier(emails: List[str], labels: List[int]) -> Tuple:
         Tupla (clasificador, vectorizador)
     """
     # TODO: Implementa clasificador completo
-    # 1. Crea características con create_tfidf_features
-    # 2. Entrena clasificador con train_naive_bayes_classifier
-    # 3. Retorna (clasificador, vectorizador)
-    return None, None
+    # Combina las funciones anteriores para crear un pipeline completo
+    pass
