@@ -37,3 +37,7 @@ data/
 
 # Logs
 *.log
+
+# Generated files
+NLP_Koans_Teoria_Completa.html
+NLP_Koans_Teoria_Completa.pdf
