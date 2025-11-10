@@ -25,6 +25,22 @@ sentencepiece>=0.1.99
 tqdm>=4.66.0
 requests>=2.31.0
 
+# LLM APIs (Koans 10-13)
+openai>=1.0.0
+anthropic>=0.18.0
+google-generativeai>=0.3.0
+
+# LangChain & Agents (Koans 11, 13)
+langchain>=0.1.0
+langchain-openai>=0.0.5
+langchain-community>=0.0.20
+duckduckgo-search>=4.0.0
+
+# Semantic Search & Vector Databases (Koans 12-13)
+sentence-transformers>=2.2.0
+chromadb>=0.4.0
+faiss-cpu>=1.7.4
+
 # Optional: Jupyter for experimentation
 jupyter>=1.0.0
 ipykernel>=6.25.0

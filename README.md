@@ -61,17 +61,34 @@ pytest
 
 ## 📚 Estructura de Koans
 
+### 🎯 Nivel Básico (Koans 1-4)
 | Koan | Tema | Librerías | Conceptos |
 |------|------|-----------|-----------|
 | **01** | Tokenización | NLTK, spaCy | Separación de texto en palabras/oraciones |
 | **02** | Stemming & Lemmatization | NLTK, spaCy | Normalización de palabras |
 | **03** | POS Tagging | spaCy, NLTK | Etiquetado gramatical |
 | **04** | Named Entity Recognition | spaCy | Extracción de entidades |
+
+### 🚀 Nivel Intermedio (Koans 5-7)
+| Koan | Tema | Librerías | Conceptos |
+|------|------|-----------|-----------|
 | **05** | Text Classification | scikit-learn | Clasificación de textos |
 | **06** | Sentiment Analysis | transformers | Análisis de sentimientos |
 | **07** | Word Embeddings | spaCy, gensim | Representaciones vectoriales |
+
+### 🧠 Nivel Avanzado (Koans 8-9)
+| Koan | Tema | Librerías | Conceptos |
+|------|------|-----------|-----------|
 | **08** | Transformers | transformers (Hugging Face) | Modelos preentrenados |
 | **09** | Language Models | transformers | Generación de texto |
+
+### 🔮 Nivel Experto - LLMs Modernos (Koans 10-13)
+| Koan | Tema | Librerías | Conceptos |
+|------|------|-----------|-----------|
+| **10** | Modern LLMs & APIs | OpenAI, Anthropic, Google | GPT-4, Claude, Gemini, streaming, function calling |
+| **11** | AI Agents | LangChain, LangChain Tools | ReAct pattern, herramientas, memoria, callbacks |
+| **12** | Semantic Search | sentence-transformers, ChromaDB, FAISS | Embeddings, vector databases, búsqueda semántica |
+| **13** | RAG | LangChain, ChromaDB | Retrieval-Augmented Generation, document chunking, evaluation |
 
 ## 🎓 Cómo Usar Este Tutorial
 
@@ -152,7 +169,15 @@ Abre `tokenization.py` y completa las funciones marcadas con `# TODO`
 
 ## 🌟 Orden Recomendado
 
-Se recomienda seguir el orden de los koans (01 → 09) ya que cada uno construye sobre conceptos anteriores.
+Se recomienda seguir el orden de los koans (01 → 13) ya que cada uno construye sobre conceptos anteriores.
+
+**Niveles de Aprendizaje**:
+- 🎯 **Básico (Koans 1-4)**: Fundamentos de NLP - 6-8 horas
+- 🚀 **Intermedio (Koans 5-7)**: ML aplicado a NLP - 8-10 horas  
+- 🧠 **Avanzado (Koans 8-9)**: Transformers y LLMs - 8-10 horas
+- 🔮 **Experto (Koans 10-13)**: APIs modernas, Agentes, RAG - 10-15 horas
+
+> 💡 **Los koans 10-13 requieren API keys** para OpenAI, Anthropic o Google. Puedes obtenerlas gratis con créditos de prueba.
 
 **Prerrequisitos**:
 - ✅ Python básico (variables, funciones, clases)
