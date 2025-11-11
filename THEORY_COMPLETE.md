@@ -75,39 +75,186 @@ PARTE 4: NLP Moderna (Koans 10-13)
 - [1️⃣ Tokenization](#1-tokenization)
     - [¿Qué es Tokenization?](#qué-es-tokenization)
     - [Tipos de Tokenización](#tipos-de-tokenización)
-    - [Herramientas](#herramientas)
+        - [1. Word Tokenization (Tokenización por Palabras)](#1-word-tokenization-tokenización-por-palabras)
+        - [2. Sentence Tokenization (Tokenización por Oraciones)](#2-sentence-tokenization-tokenización-por-oraciones)
+        - [3. Character Tokenization](#3-character-tokenization)
+        - [4. Subword Tokenization](#4-subword-tokenization)
+    - [Comparativa de Métodos](#comparativa-de-métodos)
+    - [Tokenización en Diferentes Idiomas](#tokenización-en-diferentes-idiomas)
+        - [Inglés](#inglés)
+        - [Español](#español)
+        - [Chino](#chino)
+        - [Alemán](#alemán)
+        - [Japonés](#japonés)
+    - [Herramientas y Bibliotecas](#herramientas-y-bibliotecas)
+        - [1. NLTK (Natural Language Toolkit)](#1-nltk-natural-language-toolkit)
+        - [2. spaCy](#2-spacy)
+        - [3. Transformers (Hugging Face)](#3-transformers-hugging-face)
+    - [Comparativa de Performance](#comparativa-de-performance)
+    - [Casos Especiales](#casos-especiales)
+        - [1. Contracciones](#1-contracciones)
+        - [2. Números y Fechas](#2-números-y-fechas)
+        - [3. URLs y Emails](#3-urls-y-emails)
+        - [4. Hashtags y Mentions](#4-hashtags-y-mentions)
+    - [Tokenización Moderna (Subword Tokenization)](#tokenización-moderna-subword-tokenization)
+        - [¿Por qué Subword?](#por-qué-subword)
+        - [BPE (Byte-Pair Encoding)](#bpe-byte-pair-encoding)
+        - [WordPiece](#wordpiece)
+        - [SentencePiece](#sentencepiece)
+    - [Best Practices](#best-practices)
+        - [1. Elegir el Tokenizer Apropiado](#1-elegir-el-tokenizer-apropiado)
+        - [2. Consistencia](#2-consistencia)
+        - [3. Normalización](#3-normalización)
+    - [Resumen](#resumen)
 - [2️⃣ Stemming & Lemmatization](#2-stemming-lemmatization)
-    - [Normalización de Texto](#normalización-de-texto)
-    - [Algoritmos de Stemming](#algoritmos-de-stemming)
+    - [Introducción a la Normalización de Texto](#introducción-a-la-normalización-de-texto)
+    - [Stemming](#stemming)
+        - [Algoritmo Porter Stemmer (1980)](#algoritmo-porter-stemmer-1980)
+        - [Lancaster Stemmer (Paice-Husk, 1990)](#lancaster-stemmer-paice-husk-1990)
+        - [Snowball Stemmer (Porter2, 2001)](#snowball-stemmer-porter2-2001)
+        - [Problemas del Stemming](#problemas-del-stemming)
     - [Lemmatization](#lemmatization)
-    - [Comparación](#comparación)
+        - [WordNet Lemmatizer (NLTK)](#wordnet-lemmatizer-nltk)
+        - [Part-of-Speech (POS) Tags](#part-of-speech-pos-tags)
+        - [Lemmatization con POS Tagging Automático](#lemmatization-con-pos-tagging-automático)
+        - [spaCy Lemmatization](#spacy-lemmatization)
+    - [Comparación Stemming vs Lemmatization](#comparación-stemming-vs-lemmatization)
+        - [Comparativa Directa](#comparativa-directa)
+        - [Tabla Comparativa](#tabla-comparativa)
+        - [Cuándo Usar Cada Uno](#cuándo-usar-cada-uno)
+    - [Casos de Uso](#casos-de-uso)
+        - [1. Búsqueda de Información](#1-búsqueda-de-información)
+        - [2. Reducción de Features para ML](#2-reducción-de-features-para-ml)
+    - [Comparativa de Herramientas](#comparativa-de-herramientas)
+    - [Resumen](#resumen)
 - [3️⃣ POS Tagging](#3-pos-tagging)
-    - [Part-of-Speech Tagging](#part-of-speech-tagging)
-    - [Tagsets](#tagsets)
-    - [Herramientas](#herramientas)
-    - [Algoritmos](#algoritmos)
+    - [Introducción al Part-of-Speech Tagging](#introducción-al-part-of-speech-tagging)
+    - [Tagsets: Sistemas de Etiquetas](#tagsets-sistemas-de-etiquetas)
+        - [Penn Treebank Tagset (PTB) - 45 etiquetas](#penn-treebank-tagset-ptb-45-etiquetas)
+        - [Universal Dependencies (UD) - 17 etiquetas](#universal-dependencies-ud-17-etiquetas)
+    - [Implementación con NLTK](#implementación-con-nltk)
+    - [Implementación con spaCy](#implementación-con-spacy)
+    - [Español con spaCy](#español-con-spacy)
+    - [Algoritmos de POS Tagging](#algoritmos-de-pos-tagging)
+        - [1. Hidden Markov Models (HMM)](#1-hidden-markov-models-hmm)
+        - [2. Maximum Entropy (MaxEnt)](#2-maximum-entropy-maxent)
+        - [3. Conditional Random Fields (CRF)](#3-conditional-random-fields-crf)
+        - [4. Deep Learning (BiLSTM, Transformers)](#4-deep-learning-bilstm-transformers)
+    - [Comparativa de Herramientas](#comparativa-de-herramientas)
+    - [Aplicaciones de POS Tagging](#aplicaciones-de-pos-tagging)
+        - [1. Mejora de Lemmatization](#1-mejora-de-lemmatization)
+        - [2. Named Entity Recognition](#2-named-entity-recognition)
+        - [3. Text-to-Speech](#3-text-to-speech)
+        - [4. Information Extraction](#4-information-extraction)
+    - [Desafíos del POS Tagging](#desafíos-del-pos-tagging)
+        - [1. Ambigüedad](#1-ambigüedad)
+        - [2. Palabras Fuera de Vocabulario (OOV)](#2-palabras-fuera-de-vocabulario-oov)
+        - [3. Dominios Específicos](#3-dominios-específicos)
+    - [Resumen](#resumen)
 - [4️⃣ Named Entity Recognition](#4-named-entity-recognition)
-    - [¿Qué es NER?](#qué-es-ner)
+    - [Introducción a NER](#introducción-a-ner)
     - [Tipos de Entidades](#tipos-de-entidades)
-    - [BIO Tagging](#bio-tagging)
-    - [Implementación](#implementación)
-    - [Herramientas](#herramientas)
+        - [OntoNotes 5.0 (18 tipos) - Usado por spaCy](#ontonotes-50-18-tipos-usado-por-spacy)
+        - [CoNLL 2003 (4 tipos) - Dataset benchmark clásico](#conll-2003-4-tipos-dataset-benchmark-clásico)
+    - [BIO Tagging Scheme](#bio-tagging-scheme)
+    - [Implementación con spaCy](#implementación-con-spacy)
+        - [Ejemplo Básico](#ejemplo-básico)
+        - [Acceso a Atributos](#acceso-a-atributos)
+        - [Visualización](#visualización)
+    - [Español con spaCy](#español-con-spacy)
+    - [Métodos de NER](#métodos-de-ner)
+        - [1. Rule-Based (Basado en Reglas)](#1-rule-based-basado-en-reglas)
+        - [2. Machine Learning (CRF, HMM)](#2-machine-learning-crf-hmm)
+        - [3. Deep Learning (BiLSTM-CRF, Transformers)](#3-deep-learning-bilstm-crf-transformers)
+    - [Comparativa de Herramientas](#comparativa-de-herramientas)
+    - [Training Custom NER Models](#training-custom-ner-models)
+        - [Con spaCy](#con-spacy)
+        - [Con Transformers (Fine-tuning)](#con-transformers-fine-tuning)
+    - [Desafíos del NER](#desafíos-del-ner)
+        - [1. Entidades Ambiguas](#1-entidades-ambiguas)
+        - [2. Nested Entities (Entidades Anidadas)](#2-nested-entities-entidades-anidadas)
+        - [3. Entidades Multi-palabra](#3-entidades-multi-palabra)
+        - [4. Variaciones Lingüísticas](#4-variaciones-lingüísticas)
+    - [Aplicaciones de NER](#aplicaciones-de-ner)
+        - [1. Extracción de Información](#1-extracción-de-información)
+        - [2. Question Answering](#2-question-answering)
+        - [3. Content Classification](#3-content-classification)
+        - [4. Anonymization](#4-anonymization)
+    - [Resumen](#resumen)
 - [5️⃣ Text Classification](#5-text-classification)
-    - [Clasificación de Documentos](#clasificación-de-documentos)
+    - [Introducción a Text Classification](#introducción-a-text-classification)
+    - [Pipeline de Text Classification](#pipeline-de-text-classification)
     - [Feature Engineering](#feature-engineering)
+        - [1. Bag of Words (BoW)](#1-bag-of-words-bow)
+        - [2. N-grams](#2-n-grams)
+        - [3. TF-IDF (Term Frequency - Inverse Document Frequency)](#3-tf-idf-term-frequency-inverse-document-frequency)
+        - [Parámetros Importantes](#parámetros-importantes)
     - [Modelos Clásicos](#modelos-clásicos)
-    - [Pipeline Completo](#pipeline-completo)
+        - [1. Naive Bayes](#1-naive-bayes)
+        - [2. Logistic Regression](#2-logistic-regression)
+        - [3. Support Vector Machines (SVM)](#3-support-vector-machines-svm)
+        - [4. Random Forest](#4-random-forest)
+    - [Pipeline Completo con scikit-learn](#pipeline-completo-con-scikit-learn)
     - [Evaluación](#evaluación)
+        - [Métricas Principales](#métricas-principales)
+        - [Confusion Matrix](#confusion-matrix)
+    - [Comparativa de Modelos](#comparativa-de-modelos)
+    - [Hyperparameter Tuning](#hyperparameter-tuning)
+    - [Casos de Uso](#casos-de-uso)
+        - [1. Spam Detection](#1-spam-detection)
+        - [2. Sentiment Analysis](#2-sentiment-analysis)
+        - [3. Topic Classification](#3-topic-classification)
+        - [4. Intent Classification (Chatbots)](#4-intent-classification-chatbots)
+    - [Resumen](#resumen)
 - [6️⃣ Sentiment Analysis](#6-sentiment-analysis)
-    - [Análisis de Sentimiento](#análisis-de-sentimiento)
-    - [Enfoques](#enfoques)
+    - [Introducción al Sentiment Analysis](#introducción-al-sentiment-analysis)
+    - [Enfoques para Sentiment Analysis](#enfoques-para-sentiment-analysis)
+        - [1. Lexicon-Based (Basado en Diccionarios)](#1-lexicon-based-basado-en-diccionarios)
+        - [2. Machine Learning](#2-machine-learning)
+        - [3. Deep Learning (Transformers)](#3-deep-learning-transformers)
     - [Niveles de Análisis](#niveles-de-análisis)
+        - [1. Document-Level Sentiment](#1-document-level-sentiment)
+        - [2. Sentence-Level Sentiment](#2-sentence-level-sentiment)
+        - [3. Aspect-Based Sentiment Analysis (ABSA)](#3-aspect-based-sentiment-analysis-absa)
+    - [Casos de Uso](#casos-de-uso)
+        - [1. Análisis de Reviews de Productos](#1-análisis-de-reviews-de-productos)
+        - [2. Monitoreo de Redes Sociales](#2-monitoreo-de-redes-sociales)
+        - [3. Análisis de Feedback de Clientes](#3-análisis-de-feedback-de-clientes)
+        - [4. Análisis Financiero](#4-análisis-financiero)
+    - [Desafíos del Sentiment Analysis](#desafíos-del-sentiment-analysis)
+        - [1. Sarcasmo e Ironía](#1-sarcasmo-e-ironía)
+        - [2. Contexto y Dominio](#2-contexto-y-dominio)
+        - [3. Negaciones](#3-negaciones)
+        - [4. Aspectos Múltiples](#4-aspectos-múltiples)
+        - [5. Emojis y Lenguaje Informal](#5-emojis-y-lenguaje-informal)
+    - [Fine-tuning de Modelos Transformers](#fine-tuning-de-modelos-transformers)
+        - [Ejemplo con Hugging Face](#ejemplo-con-hugging-face)
+    - [Comparativa de Enfoques](#comparativa-de-enfoques)
+    - [Evaluación](#evaluación)
+    - [Resumen](#resumen)
 - [7️⃣ Word Embeddings](#7-word-embeddings)
-    - [Dense Vector Representations](#dense-vector-representations)
-    - [Word2Vec](#word2vec)
-    - [GloVe](#glove)
-    - [FastText](#fasttext)
-    - [Propiedades Mágicas](#propiedades-mágicas)
+    - [Introducción a Word Embeddings](#introducción-a-word-embeddings)
+    - [Propiedades Mágicas de los Embeddings](#propiedades-mágicas-de-los-embeddings)
+        - [1. Similitud Semántica](#1-similitud-semántica)
+        - [2. Analogías (Aritmética Semántica)](#2-analogías-aritmética-semántica)
+        - [3. Clustering Semántico](#3-clustering-semántico)
+    - [Word2Vec (2013)](#word2vec-2013)
+        - [Dos Arquitecturas](#dos-arquitecturas)
+        - [Arquitectura Word2Vec](#arquitectura-word2vec)
+        - [Implementación con Gensim](#implementación-con-gensim)
+        - [Parámetros Importantes](#parámetros-importantes)
+    - [GloVe (Global Vectors for Word Representation)](#glove-global-vectors-for-word-representation)
+    - [FastText (Facebook, 2016)](#fasttext-facebook-2016)
+    - [Comparativa: Word2Vec vs GloVe vs FastText](#comparativa-word2vec-vs-glove-vs-fasttext)
+    - [Uso en Downstream Tasks](#uso-en-downstream-tasks)
+        - [Clasificación de Texto](#clasificación-de-texto)
+    - [Visualización de Embeddings](#visualización-de-embeddings)
+        - [t-SNE (2D projection)](#t-sne-2d-projection)
+    - [Limitaciones de Word Embeddings](#limitaciones-de-word-embeddings)
+        - [1. Polisemia (Múltiples Significados)](#1-polisemia-múltiples-significados)
+        - [2. Sesgos Sociales](#2-sesgos-sociales)
+        - [3. Falta de Contexto](#3-falta-de-contexto)
+    - [Resumen](#resumen)
 - [8️⃣ Transformers](#8-transformers)
     - [Revolución del NLP](#revolución-del-nlp)
     - [Arquitectura del Transformer](#arquitectura-del-transformer)
@@ -211,269 +358,2202 @@ tokens = ["hello", "amaz", "##ing", "world"]
 
 ### Tipos de Tokenización
 
-**1. Word Tokenization (Tokenización por Palabras):**
+#### 1. Word Tokenization (Tokenización por Palabras)
 
-La forma más intuitiva: dividir por espacios y puntuación.
+La forma más común: dividir texto en palabras.
+
+**Método Ingenuo:**
+```python
+# ❌ Demasiado simple
+text = "Hello, world!"
+tokens = text.split()  # ["Hello,", "world!"]
+# Problema: puntuación pegada a palabras
+```
+
+**Método con Regex:**
+```python
+import re
+
+text = "Hello, world! How are you?"
+tokens = re.findall(r'\w+|[^\w\s]', text)
+# ["Hello", ",", "world", "!", "How", "are", "you", "?"]
+```
+
+**NLTK Word Tokenizer:**
+```python
+from nltk.tokenize import word_tokenize
+
+text = "Hello, world! Don't worry."
+tokens = word_tokenize(text)
+# ["Hello", ",", "world", "!", "Do", "n't", "worry", "."]
+```
+
+**spaCy Tokenizer:**
+```python
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+doc = nlp("Hello, world! Don't worry.")
+tokens = [token.text for token in doc]
+# ["Hello", ",", "world", "!", "Do", "n't", "worry", "."]
+```
+
+#### 2. Sentence Tokenization (Tokenización por Oraciones)
+
+Dividir texto en oraciones.
+
+**Desafío:**
+```python
+text = "Dr. Smith works at U.S.A. Inc. He loves NLP."
+# ¿Dónde terminan las oraciones?
+# "Dr." no es fin de oración
+# "U.S.A." tampoco
+# "Inc." tampoco
+# Solo después de "NLP." es fin de oración
+```
+
+**NLTK Sentence Tokenizer:**
+```python
+from nltk.tokenize import sent_tokenize
+
+text = "Dr. Smith works at U.S.A. Inc. He loves NLP."
+sentences = sent_tokenize(text)
+# ["Dr. Smith works at U.S.A. Inc.", "He loves NLP."]
+```
+
+**spaCy Sentence Segmentation:**
+```python
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+doc = nlp("Dr. Smith works at U.S.A. Inc. He loves NLP.")
+sentences = [sent.text for sent in doc.sents]
+# ["Dr. Smith works at U.S.A. Inc.", "He loves NLP."]
+```
+
+#### 3. Character Tokenization
+
+Dividir en caracteres individuales.
 
 ```python
-import nltk
-nltk.download('punkt')
+text = "Hello"
+tokens = list(text)
+# ["H", "e", "l", "l", "o"]
+```
 
-text = "I love Python!"
-tokens = nltk.word_tokenize(text)
-# ['I', 'love', 'Python', '!']
+**Cuándo usar:**
+- Modelos de generación de texto
+- OCR (reconocimiento óptico de caracteres)
+- Análisis morfológico detallado
+
+#### 4. Subword Tokenization
+
+Dividir en subpalabras (entre caracteres y palabras completas).
+
+**Problema que Resuelve:**
+```python
+# Vocabulario limitado con palabras completas
+vocab = {"cat", "dog", "run", "running"}
+# ¿Qué hacer con "cats", "dogs", "runner"? ❌ No están en vocabulario
+
+# Con subword tokenization
+vocab = {"cat", "dog", "run", "ning", "s", "er"}
+"cats" → ["cat", "s"] ✅
+"running" → ["run", "ning"] ✅
+"runner" → ["run", "er"] ✅
+```
+
+**BPE (Byte-Pair Encoding):**
+```python
+from tokenizers import Tokenizer
+from tokenizers.models import BPE
+
+tokenizer = Tokenizer(BPE())
+
+# Ejemplo de tokens
+"unhappiness" → ["un", "happiness"]
+"unbelievable" → ["un", "believ", "able"]
+```
+
+**WordPiece (BERT):**
+```python
+from transformers import BertTokenizer
+
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokens = tokenizer.tokenize("unhappiness")
+# ["un", "##happi", "##ness"]
+# "##" indica continuación de palabra
+```
+
+**SentencePiece:**
+```python
+import sentencepiece as spm
+
+# Usado por modelos como T5, XLNet
+sp = spm.SentencePieceProcessor()
+sp.load('model.model')
+tokens = sp.encode_as_pieces('unhappiness')
+# ["▁un", "happiness"]
+# "▁" indica inicio de palabra
+```
+
+### Comparativa de Métodos
+
+| Método | Granularidad | Vocabulario | Uso Principal | Ventajas |
+|--------|--------------|-------------|---------------|----------|
+| **Word** | Palabras completas | Grande | NLP clásico | Interpretable |
+| **Character** | Caracteres | Pequeño (~100) | Generación | Sin OOV |
+| **Subword** | Fragmentos | Medio (10k-50k) | Transformers | Balance |
+
+**OOV = Out Of Vocabulary (palabras desconocidas)**
+
+---
+
+### Tokenización en Diferentes Idiomas
+
+#### Inglés
+
+**Características:**
+- ✅ Espacios separan palabras claramente
+- ⚠️ Contracciones: "don't", "I'm", "we'll"
+- ⚠️ Compuestos con guión: "state-of-the-art"
+- ⚠️ Abreviaturas: "Dr.", "U.S.A."
+
+**Ejemplo:**
+```python
+text = "I'm learning state-of-the-art NLP at Dr. Smith's lab."
+tokens = word_tokenize(text)
+# ["I", "'m", "learning", "state-of-the-art", "NLP", "at", 
+#  "Dr.", "Smith", "'s", "lab", "."]
+```
+
+#### Español
+
+**Características:**
+- ✅ Similar al inglés (espacios como separadores)
+- ⚠️ Contracciones: "del" (de+el), "al" (a+el)
+- ⚠️ Acentos: "están", "número", "día"
+- ⚠️ Interrogación/Exclamación: "¿Cómo estás?"
+
+**Ejemplo:**
+```python
+import spacy
+
+nlp = spacy.load("es_core_news_sm")
+doc = nlp("¿Cómo estás? Voy al mercado.")
+tokens = [token.text for token in doc]
+# ["¿", "Cómo", "estás", "?", "Voy", "al", "mercado", "."]
+```
+
+#### Chino
+
+**Características:**
+- ❌ Sin espacios entre palabras
+- ⚠️ Cada carácter puede ser una palabra o parte de una
+- ⚠️ Requiere diccionarios o modelos ML
+
+**Ejemplo:**
+```python
+import jieba  # Biblioteca popular para chino
+
+text = "我爱自然语言处理"
+tokens = jieba.cut(text)
+# ["我", "爱", "自然语言", "处理"]
+# "我" = yo
+# "爱" = amo
+# "自然语言" = lenguaje natural
+# "处理" = procesamiento
+```
+
+#### Alemán
+
+**Características:**
+- ⚠️ Palabras compuestas largas
+- ⚠️ "Donaudampfschifffahrtsgesellschaft" = Danubio-vapor-navegación-compañía
+
+#### Japonés
+
+**Características:**
+- ❌ Sin espacios
+- ⚠️ Mezcla de 3 sistemas: Hiragana, Katakana, Kanji
+
+---
+
+### Herramientas y Bibliotecas
+
+#### 1. NLTK (Natural Language Toolkit)
+
+**Características:**
+- 📚 Educacional y completo
+- 🐢 Más lento
+- 🎯 Bueno para aprendizaje
+
+**Word Tokenization:**
+```python
+from nltk.tokenize import word_tokenize
+
+text = "Hello, world!"
+tokens = word_tokenize(text)
+```
+
+**Otros Tokenizers:**
+```python
+from nltk.tokenize import (
+    WordPunctTokenizer,
+    TweetTokenizer,
+    MWETokenizer
+)
+
+# WordPunctTokenizer: separa toda puntuación
+tokenizer = WordPunctTokenizer()
+tokenizer.tokenize("Don't worry!")
+# ["Don", "'", "t", "worry", "!"]
+
+# TweetTokenizer: para redes sociales
+tokenizer = TweetTokenizer()
+tokenizer.tokenize("@user Love #NLP! 😊")
+# ["@user", "Love", "#NLP", "!", "😊"]
+
+# MWETokenizer: multi-word expressions
+tokenizer = MWETokenizer([("New", "York"), ("San", "Francisco")])
+tokenizer.tokenize(["I", "live", "in", "New", "York"])
+# ["I", "live", "in", "New_York"]
+```
+
+#### 2. spaCy
+
+**Características:**
+- ⚡ Muy rápido (Cython)
+- 🏭 Orientado a producción
+- 🧠 Incluye modelos pre-entrenados
+
+**Tokenización Básica:**
+```python
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+doc = nlp("Apple is looking at buying U.K. startup for $1 billion")
+
+for token in doc:
+    print(token.text, token.lemma_, token.pos_, token.is_stop)
+```
+
+#### 3. Transformers (Hugging Face)
+
+**Para modelos modernos:**
+```python
+from transformers import AutoTokenizer
+
+# BERT
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+tokens = tokenizer.tokenize("Hello, world!")
+# ['hello', ',', 'world', '!']
+
+# GPT-2
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+tokens = tokenizer.tokenize("Hello, world!")
+# ['Hello', ',', 'Ġworld', '!']
+# 'Ġ' representa espacio
+
+# Encoding completo (tokens → IDs)
+encoded = tokenizer("Hello, world!", return_tensors="pt")
+# {'input_ids': tensor([[...]])}
+```
+
+### Comparativa de Performance
+
+| Biblioteca | Velocidad | Precisión | Idiomas | Uso |
+|------------|-----------|-----------|---------|-----|
+| **NLTK** | 🐢 Lento | ⭐⭐⭐ | ~40 | Educación |
+| **spaCy** | ⚡⚡⚡ Rápido | ⭐⭐⭐⭐ | ~60 | Producción |
+| **Transformers** | ⚡⚡ Medio | ⭐⭐⭐⭐⭐ | 100+ | Deep Learning |
+
+---
+
+### Casos Especiales
+
+#### 1. Contracciones
+
+```python
+from nltk.tokenize import word_tokenize
+
+contractions = ["don't", "I'm", "we'll", "wouldn't", "it's"]
+
+for word in contractions:
+    print(word, "→", word_tokenize(word))
+
+# don't → ['do', "n't"]
+# I'm → ['I', "'m"]
+# we'll → ['we', "'ll"]
+```
+
+#### 2. Números y Fechas
+
+```python
+examples = [
+    "3.14",           # número decimal
+    "1,000",          # mil con coma
+    "01/15/2024",     # fecha
+    "$100.50",        # dinero
+    "10:30",          # hora
+]
+
+for ex in examples:
+    tokens = word_tokenize(ex)
+    print(f"{ex} → {tokens}")
+```
+
+#### 3. URLs y Emails
+
+```python
+from nltk.tokenize import TweetTokenizer
+
+tokenizer = TweetTokenizer()
+
+text = "Visit https://example.com or email user@example.com"
+tokens = tokenizer.tokenize(text)
+# ['Visit', 'https://example.com', 'or', 'email', 'user@example.com']
+```
+
+#### 4. Hashtags y Mentions
+
+```python
+tokenizer = TweetTokenizer()
+
+text = "@user1 Check out #NLP and #DeepLearning! 🚀"
+tokens = tokenizer.tokenize(text)
+# ['@user1', 'Check', 'out', '#NLP', 'and', '#DeepLearning', '!', '🚀']
+```
+
+---
+
+### Tokenización Moderna (Subword Tokenization)
+
+#### ¿Por qué Subword?
+
+```python
+# Problema: Vocabulario infinito
+palabras_posibles = infinitas  # "run", "running", "runner", "runs", ...
+
+# Solución: Subword units
+subwords = {"run", "ning", "er", "s"}
+"running" → ["run", "ning"]
+"runner" → ["run", "er"]
+"runs" → ["run", "s"]
 ```
 
 **Ventajas:**
-- Simple y rápido
-- Fácil de interpretar
-- Funciona bien para lenguajes con espacios claros (inglés, español)
+1. ✅ Vocabulario finito pero flexible
+2. ✅ Maneja palabras desconocidas (OOV)
+3. ✅ Captura morfología
 
-**Desventajas:**
-- Vocabulario enorme (millones de palabras únicas)
-- No maneja bien palabras compuestas o variaciones morfológicas
-- Problemas con idiomas sin espacios (chino, japonés)
+#### BPE (Byte-Pair Encoding)
 
-**2. Sentence Tokenization (Tokenización por Oraciones):**
+Usado por: GPT-2, GPT-3, RoBERTa
 
-Divide texto en oraciones completas. Útil para análisis a nivel de documento.
-
-```python
-text = "Hello. How are you? I'm fine."
-sentences = nltk.sent_tokenize(text)
-# ['Hello.', 'How are you?', "I'm fine."]
+**Algoritmo:**
+```
+1. Empezar con caracteres individuales
+2. Encontrar el par más frecuente
+3. Fusionar ese par en un nuevo símbolo
+4. Repetir hasta llegar al tamaño de vocabulario deseado
 ```
 
-**Casos de uso:**
-- Resumen automático (seleccionar oraciones clave)
-- Análisis de coherencia textual
-- Traducción automática (traducir oración por oración)
+**Ejemplo:**
+```python
+from transformers import GPT2Tokenizer
 
-**3. Subword Tokenization (Tokenización por Subpalabras):**
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
-Técnica moderna que balancea vocabulario vs. granularidad. Utilizada por modelos Transformer.
+text = "unhappiness"
+tokens = tokenizer.tokenize(text)
+# ['un', 'happiness']
 
+text = "unbelievable"
+tokens = tokenizer.tokenize(text)
+# ['un', 'bel', 'iev', 'able']
+```
+
+#### WordPiece
+
+Usado por: BERT, DistilBERT
+
+**Diferencia con BPE:**
+- BPE: fusiona el par más frecuente
+- WordPiece: fusiona el par que maximiza likelihood del corpus
+
+**Ejemplo:**
+```python
+from transformers import BertTokenizer
+
+tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+
+text = "unhappiness"
+tokens = tokenizer.tokenize(text)
+# ['un', '##hap', '##pi', '##ness']
+# "##" indica continuación de palabra
+
+text = "playing"
+tokens = tokenizer.tokenize(text)
+# ['playing']  # En vocabulario como palabra completa
+```
+
+#### SentencePiece
+
+Usado por: T5, ALBERT, XLNet
+
+**Características:**
+- ✅ No requiere pre-tokenización
+- ✅ Funciona directamente en texto raw
+- ✅ Ideal para idiomas sin espacios
+
+**Tokens Especiales:**
 ```python
 from transformers import AutoTokenizer
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-tokens = tokenizer.tokenize("unhappiness")
-# ['un', '##hap', '##pi', '##ness']
+
+# Tokens especiales
+print(tokenizer.cls_token)      # [CLS] - clasificación
+print(tokenizer.sep_token)      # [SEP] - separador
+print(tokenizer.pad_token)      # [PAD] - padding
+print(tokenizer.mask_token)     # [MASK] - masked LM
+print(tokenizer.unk_token)      # [UNK] - unknown
 ```
 
-**Algoritmos comunes:**
-- **BPE (Byte Pair Encoding)**: Usado por GPT, RoBERTa
-- **WordPiece**: Usado por BERT
-- **SentencePiece**: Usado por T5, ALBERT (no requiere pre-tokenización)
+---
 
-**Ventajas de subword:**
-- Vocabulario fijo y pequeño (30k-50k tokens)
-- Maneja palabras raras y neologismos
-- Funciona con cualquier idioma
-- Sin problema de OOV
+### Best Practices
 
-**Ejemplo práctico - Comparación:**
+#### 1. Elegir el Tokenizer Apropiado
 
 ```python
-text = "I enjoyed unhappiness"
+# Para NLP clásico (análisis, clasificación)
+from nltk.tokenize import word_tokenize  # ✅
 
-# Word-level (vocabulario: 50,257 palabras en GPT-2)
-# → ["I", "enjoyed", "unhappiness"]  
-# Si "unhappiness" no está: ["I", "enjoyed", "[UNK]"]
+# Para producción (velocidad importante)
+import spacy  # ✅
 
-# Subword-level (vocabulario: 50,257 subwords)
-# → ["I", "enjoyed", "un", "##hap", "##pi", "##ness"]
-# ¡Siempre funciona! Combina piezas conocidas
+# Para modelos Transformer
+from transformers import AutoTokenizer  # ✅
+
+# Para redes sociales
+from nltk.tokenize import TweetTokenizer  # ✅
 ```
 
-### Herramientas
+#### 2. Consistencia
 
-| Herramienta | Velocidad | Multilingüe | Subword |
-|-------------|-----------|-------------|---------|
-| **NLTK** | ⚡ | ⚠️ | ❌ |
-| **spaCy** | ⚡⚡⚡ | ✅ | ❌ |
-| **Transformers** | ⚡⚡ | ✅ | ✅ |
+```python
+# ✅ Usar el mismo tokenizer en train y test
+tokenizer = word_tokenize
+
+train_tokens = [tokenizer(text) for text in train_data]
+test_tokens = [tokenizer(text) for text in test_data]
+
+# ❌ NO mezclar tokenizers
+train_tokens = [word_tokenize(text) for text in train_data]
+test_tokens = [spacy_tokenize(text) for text in test_data]  # ❌
+```
+
+#### 3. Normalización
+
+```python
+def preprocess(text):
+    # 1. Lowercase
+    text = text.lower()
+    
+    # 2. Tokenizar
+    tokens = word_tokenize(text)
+    
+    # 3. Remover puntuación (opcional)
+    tokens = [t for t in tokens if t.isalnum()]
+    
+    # 4. Remover stopwords (opcional)
+    from nltk.corpus import stopwords
+    stops = set(stopwords.words('english'))
+    tokens = [t for t in tokens if t not in stops]
+    
+    return tokens
+```
+
+---
+
+### Resumen
+
+**Conceptos Clave:**
+- Tokenización es el primer paso en NLP
+- Diferentes niveles: carácter, palabra, subpalabra, oración
+- Herramientas: NLTK (educación), spaCy (producción), Transformers (DL)
+- Subword tokenization (BPE, WordPiece) es estándar en modelos modernos
+
+**Decisiones Importantes:**
+1. ¿Qué nivel de granularidad? (palabra, subpalabra, carácter)
+2. ¿Qué hacer con puntuación?
+3. ¿Cómo manejar casos especiales? (URLs, emojis, etc.)
+4. ¿Normalizar o no? (lowercase, eliminar acentos)
 
 ---
 
 ## 2️⃣ Stemming & Lemmatization
 
-### Normalización de Texto
+### Introducción a la Normalización de Texto
 
-**Stemming:** Corta palabras a raíz (algoritmo rápido, impreciso).
+**¿Por qué Normalizar?**
+
+Las palabras tienen múltiples variaciones morfológicas que representan el mismo concepto:
+
 ```python
-running → run
-runs → run
-runner → runner  # ¡Error!
+palabras = ["run", "runs", "running", "ran", "runner"]
+# ¿Son todas diferentes? Para una computadora, SÍ.
+# Para un humano, todas se relacionan con "correr"
 ```
 
-**Lemmatization:** Reduce a forma base léxica (preciso, requiere diccionario).
+**Solución:** Reducir a una forma canónica
+
 ```python
-running → run
-runs → run
-runner → runner  # ✓ Correcto (es un sustantivo)
+# Después de normalización
+todas → "run"
 ```
 
-### Algoritmos de Stemming
+**Variaciones Morfológicas:**
 
-**Porter Stemmer:**
+**Inflexión** (cambios gramaticales):
+```
+Verbos: walk → walks, walked, walking
+Sustantivos: cat → cats
+Adjetivos: good → better, best
+```
+
+**Derivación** (nuevas palabras):
+```
+happy → happiness, unhappy, happily
+nation → national, nationality, nationalize
+```
+
+**Beneficios:**
+
+1. **Reducción de Vocabulario:**
+```python
+# Antes
+vocab = {"run", "runs", "running", "ran", "runner"}  # 5 palabras
+
+# Después
+vocab = {"run"}  # 1 palabra
+```
+
+2. **Mejora en Búsqueda:**
+```python
+query = "running shoes"
+documento = "Best shoes for runners"
+
+# Sin normalización: NO match ❌
+# Con normalización: "run" match "run" ✅
+```
+
+---
+
+### Stemming
+
+**Concepto:**
+
+Stemming es el proceso de reducir palabras a su raíz (stem) mediante reglas heurísticas, generalmente cortando sufijos.
+
+```python
+running → run
+happiness → happi  # ⚠️ No es palabra real
+studies → studi    # ⚠️ No es palabra real
+```
+
+**Características:**
+- ⚡ Rápido (basado en reglas)
+- ⚠️ No siempre produce palabras reales
+- 🎯 Objetivo: velocidad sobre precisión
+
+#### Algoritmo Porter Stemmer (1980)
+
+El más popular y usado.
+
+**Funcionamiento:**
+```
+Aplica 5 fases de reglas:
+Fase 1: Plurales y -ed, -ing
+Fase 2: -ational → -ate, -ization → -ize
+Fase 3: -icate → -ic, -ative → [nada]
+Fase 4: -al, -ance, -ence, -er, -ic, -able, -ible, -ant, -ment
+Fase 5: -e, -ll → -l
+```
+
+**Ejemplos:**
 ```python
 from nltk.stem import PorterStemmer
 
 stemmer = PorterStemmer()
-words = ["running", "runs", "easily", "fairly"]
-stems = [stemmer.stem(word) for word in words]
-# ['run', 'run', 'easili', 'fairli']
+
+palabras = [
+    "running",     # → run
+    "runner",      # → runner (¡no cambia!)
+    "easily",      # → easili
+    "happiness",   # → happi
+    "connection",  # → connect
+    "conditional", # → condit
+]
+
+for palabra in palabras:
+    print(f"{palabra:15} → {stemmer.stem(palabra)}")
 ```
 
-**Lancaster Stemmer (más agresivo):**
+**Resultados:**
+```
+running         → run
+runner          → runner  # ⚠️ no reduce a "run"
+easily          → easili  # ⚠️ no es palabra real
+happiness       → happi   # ⚠️ no es palabra real
+connection      → connect ✅
+conditional     → condit  # ⚠️ no es palabra real
+```
+
+#### Lancaster Stemmer (Paice-Husk, 1990)
+
+Más agresivo que Porter.
+
+**Ejemplos:**
 ```python
 from nltk.stem import LancasterStemmer
 
 stemmer = LancasterStemmer()
-print(stemmer.stem("running"))  # 'run'
-print(stemmer.stem("maximum"))  # 'maxim'
+
+palabras = ["running", "runner", "easily", "happiness", "maximum"]
+
+for palabra in palabras:
+    print(f"{palabra:15} → {stemmer.stem(palabra)}")
 ```
+
+**Resultados:**
+```
+running         → run
+runner          → run     # ✅ más agresivo
+easily          → easy    # ✅ mejor que Porter
+happiness       → happy   # ✅ reconoce la raíz
+maximum         → maxim
+```
+
+**Características:**
+- ✅ Más agresivo
+- ✅ Reduce más variaciones
+- ⚠️ Mayor riesgo de over-stemming
+
+#### Snowball Stemmer (Porter2, 2001)
+
+Mejora de Porter, con soporte multilingüe.
+
+**Español:**
+```python
+from nltk.stem import SnowballStemmer
+
+stemmer_es = SnowballStemmer("spanish")
+
+palabras_es = [
+    "corriendo",   # → corr
+    "corredor",    # → corr
+    "felizmente",  # → feliz
+    "cantando",    # → cant
+]
+
+for palabra in palabras_es:
+    print(f"{palabra:15} → {stemmer_es.stem(palabra)}")
+```
+
+**Idiomas soportados:**
+```python
+from nltk.stem import SnowballStemmer
+
+print(SnowballStemmer.languages)
+# ('arabic', 'danish', 'dutch', 'english', 'finnish', 'french', 
+#  'german', 'hungarian', 'italian', 'norwegian', 'porter', 
+#  'portuguese', 'romanian', 'russian', 'spanish', 'swedish')
+```
+
+#### Problemas del Stemming
+
+**1. Over-stemming (reduce demasiado):**
+
+Conflates palabras no relacionadas.
+
+```python
+from nltk.stem import PorterStemmer
+
+stemmer = PorterStemmer()
+
+# Ejemplo 1: "universal" y "university"
+print(stemmer.stem("universal"))   # → univers
+print(stemmer.stem("university"))  # → univers
+# ⚠️ Palabras diferentes reducidas a lo mismo
+
+# Ejemplo 2: "organization" y "organ"
+print(stemmer.stem("organization")) # → organ
+print(stemmer.stem("organ"))        # → organ
+# ⚠️ Significados muy diferentes
+```
+
+**2. Under-stemming (no reduce suficiente):**
+
+Deja variaciones separadas.
+
+```python
+print(stemmer.stem("data"))        # → data
+print(stemmer.stem("datum"))       # → datum
+# ⚠️ Misma palabra pero stems diferentes
+```
+
+**3. No Produce Palabras Reales:**
+
+```python
+palabras = ["happiness", "easily", "conditional"]
+
+for palabra in palabras:
+    stem = stemmer.stem(palabra)
+    print(f"{palabra:15} → {stem:10}")
+
+# happiness       → happi      ❌ No es palabra real
+# easily          → easili     ❌ No es palabra real  
+# conditional     → condit     ❌ No es palabra real
+```
+
+---
 
 ### Lemmatization
 
+**Concepto:**
+
+Lemmatization reduce palabras a su forma base (lema) usando análisis morfológico y diccionarios.
+
+```python
+running → run
+better → good
+am/is/are/was/were → be
+mice → mouse
+```
+
+**Características:**
+- 🐢 Más lento (usa diccionarios y reglas)
+- ✅ Siempre produce palabras reales
+- 🎯 Objetivo: precisión sobre velocidad
+
+#### WordNet Lemmatizer (NLTK)
+
 ```python
 from nltk.stem import WordNetLemmatizer
-import nltk
-nltk.download('wordnet')
 
 lemmatizer = WordNetLemmatizer()
 
-# Con POS tag
-print(lemmatizer.lemmatize("running", pos='v'))  # run
-print(lemmatizer.lemmatize("better", pos='a'))   # good
+palabras = ["running", "ran", "better", "mice", "geese", "cacti"]
+
+for palabra in palabras:
+    lemma = lemmatizer.lemmatize(palabra)
+    print(f"{palabra:15} → {lemma}")
 ```
 
-### Comparación
+**Resultados:**
+```
+running         → running  # ⚠️ Necesita POS tag
+ran             → ran      # ⚠️ Necesita POS tag
+better          → better   # ⚠️ Necesita POS tag
+mice            → mouse    ✅
+geese           → goose    ✅
+cacti           → cactus   ✅
+```
+
+#### Part-of-Speech (POS) Tags
+
+**Problema:**
+```python
+lemmatizer.lemmatize("running")  # → running (sin cambio)
+```
+
+**Solución:** Especificar la categoría gramatical
+
+```python
+from nltk.stem import WordNetLemmatizer
+
+lemmatizer = WordNetLemmatizer()
+
+# Sin POS tag (asume sustantivo por defecto)
+print(lemmatizer.lemmatize("running"))  # → running
+
+# Con POS tag: verbo
+print(lemmatizer.lemmatize("running", pos='v'))  # → run
+
+# Con POS tag: adjetivo
+print(lemmatizer.lemmatize("better", pos='a'))  # → good
+
+# Con POS tag: verbo
+print(lemmatizer.lemmatize("was", pos='v'))  # → be
+```
+
+**POS Tags en WordNet:**
+```python
+# 'n' = noun (sustantivo)
+# 'v' = verb (verbo)
+# 'a' = adjective (adjetivo)
+# 'r' = adverb (adverbio)
+```
+
+#### Lemmatization con POS Tagging Automático
+
+```python
+import nltk
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
+
+def get_wordnet_pos(treebank_tag):
+    """Convierte Penn Treebank tags a WordNet POS tags"""
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN  # Default
+
+def lemmatize_sentence(sentence):
+    lemmatizer = WordNetLemmatizer()
+    
+    # Tokenizar y POS tag
+    tokens = nltk.word_tokenize(sentence)
+    pos_tags = nltk.pos_tag(tokens)
+    
+    # Lemmatizar con POS correcto
+    lemmas = []
+    for word, tag in pos_tags:
+        wn_pos = get_wordnet_pos(tag)
+        lemma = lemmatizer.lemmatize(word, pos=wn_pos)
+        lemmas.append(lemma)
+    
+    return lemmas
+
+# Ejemplo
+sentence = "The striped bats are hanging on their feet for best"
+print(lemmatize_sentence(sentence))
+# ['The', 'strip', 'bat', 'be', 'hang', 'on', 'their', 'foot', 'for', 'good']
+```
+
+#### spaCy Lemmatization
+
+spaCy hace lemmatization automáticamente con POS tagging integrado.
+
+```python
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+
+doc = nlp("The striped bats are hanging on their feet for best")
+
+for token in doc:
+    print(f"{token.text:15} → {token.lemma_:15} ({token.pos_})")
+```
+
+**Resultado:**
+```
+The             → the             (DET)
+striped         → strip           (VERB)
+bats            → bat             (NOUN)
+are             → be              (AUX)
+hanging         → hang            (VERB)
+on              → on              (ADP)
+their           → their           (PRON)
+feet            → foot            (NOUN)
+for             → for             (ADP)
+best            → good            (ADJ)
+```
+
+---
+
+### Comparación Stemming vs Lemmatization
+
+#### Comparativa Directa
+
+```python
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+import spacy
+
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+nlp = spacy.load("en_core_web_sm")
+
+palabras = [
+    ("running", "v"),
+    ("better", "a"),
+    ("studies", "n"),
+    ("feet", "n"),
+    ("geese", "n"),
+    ("easily", "r"),
+]
+
+print(f"{'Word':<15} {'Stem':<15} {'NLTK Lemma':<15} {'spaCy Lemma':<15}")
+print("-" * 60)
+
+for word, pos in palabras:
+    stem = stemmer.stem(word)
+    lemma_nltk = lemmatizer.lemmatize(word, pos=pos)
+    lemma_spacy = nlp(word)[0].lemma_
+    
+    print(f"{word:<15} {stem:<15} {lemma_nltk:<15} {lemma_spacy:<15}")
+```
+
+#### Tabla Comparativa
 
 | Aspecto | Stemming | Lemmatization |
 |---------|----------|---------------|
-| **Velocidad** | ⚡⚡⚡ Rápido | ⚡ Lento |
-| **Precisión** | ⚠️ Baja | ✅ Alta |
-| **Diccionario** | ❌ No | ✅ Sí |
-| **Uso** | Search, IR | NLU, QA |
+| **Velocidad** | ⚡⚡⚡ Muy rápido | 🐢 Más lento |
+| **Precisión** | ⚠️ Aproximada | ✅ Alta |
+| **Resultado** | Raíz (puede no ser palabra real) | Lema (palabra válida) |
+| **Método** | Reglas heurísticas | Análisis morfológico + diccionario |
+| **Requiere POS** | ❌ No | ✅ Sí (para mejor resultado) |
+| **Ejemplos** | running → run<br>easily → easili | running → run<br>easily → easy |
+| **Uso Típico** | Búsqueda de texto<br>IR simple | NLP avanzado<br>Análisis semántico |
+
+#### Cuándo Usar Cada Uno
+
+**Usar Stemming cuando:**
+- ⚡ Velocidad es crítica
+- 📊 Trabajas con grandes volúmenes
+- 🔍 Búsqueda y recuperación de información
+- 📈 Features para ML donde precisión no es crítica
+
+**Usar Lemmatization cuando:**
+- 🎯 Precisión es importante
+- 📖 Análisis semántico
+- 🗣️ Sistemas de diálogo
+- 🔬 Investigación lingüística
+- 🎓 Aplicaciones educativas
+
+---
+
+### Casos de Uso
+
+#### 1. Búsqueda de Información
+
+```python
+from nltk.stem import PorterStemmer
+
+stemmer = PorterStemmer()
+
+# Query del usuario
+query = "running shoes"
+query_stems = [stemmer.stem(word) for word in query.split()]
+# ["run", "shoe"]
+
+# Documentos
+docs = [
+    "Best shoes for runners",
+    "Running shoe reviews",
+    "Marathon running tips"
+]
+
+# Buscar matches
+for doc in docs:
+    doc_stems = [stemmer.stem(word) for word in doc.lower().split()]
+    if any(stem in doc_stems for stem in query_stems):
+        print(f"✅ Match: {doc}")
+```
+
+#### 2. Reducción de Features para ML
+
+```python
+from collections import Counter
+from nltk.stem import PorterStemmer
+
+stemmer = PorterStemmer()
+
+corpus = [
+    "machine learning is great",
+    "learning machines are smart",
+    "I love machine learning"
+]
+
+# Sin stemming
+words_no_stem = []
+for doc in corpus:
+    words_no_stem.extend(doc.lower().split())
+
+vocab_no_stem = Counter(words_no_stem)
+print(f"Vocabulario sin stemming: {len(vocab_no_stem)} palabras")
+# Vocabulario sin stemming: 9 palabras
+
+# Con stemming
+words_stem = []
+for doc in corpus:
+    tokens = doc.lower().split()
+    words_stem.extend([stemmer.stem(t) for t in tokens])
+
+vocab_stem = Counter(words_stem)
+print(f"\nVocabulario con stemming: {len(vocab_stem)} palabras")
+# Vocabulario con stemming: 7 palabras
+```
+
+---
+
+### Comparativa de Herramientas
+
+| Herramienta | Velocidad | Precisión | Facilidad |
+|-------------|-----------|-----------|-----------|
+| **Porter (NLTK)** | ⚡⚡⚡⚡ | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **Lancaster (NLTK)** | ⚡⚡⚡⚡ | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| **NLTK Lemmatizer** | ⚡⚡ | ⭐⭐⭐ | ⭐⭐⭐ |
+| **spaCy** | ⚡⚡⚡⚡ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+
+---
+
+### Resumen
+
+**Conceptos Clave:**
+- **Stemming**: Reducción a raíz mediante reglas (rápido, aproximado)
+- **Lemmatization**: Reducción a lema mediante análisis (preciso, lento)
+- Stemming para velocidad, lemmatization para precisión
+- spaCy es la mejor opción para producción
+
+**Algoritmos Principales:**
+- **Porter**: Balance, más usado
+- **Lancaster**: Más agresivo
+- **Snowball**: Porter mejorado, multilingüe
+- **WordNet**: Lemmatization con diccionario
+
+**Decisiones Importantes:**
+1. ¿Velocidad o precisión?
+2. ¿Palabras reales importan?
+3. ¿Multilingüe?
+4. ¿Integrar con POS tagging?
 
 ---
 
 ## 3️⃣ POS Tagging
 
-### Part-of-Speech Tagging
+### Introducción al Part-of-Speech Tagging
 
-Asignar categoría gramatical a cada palabra.
+**¿Qué es POS Tagging?**
+
+Part-of-Speech (POS) Tagging es el proceso de asignar categorías gramaticales (sustantivo, verbo, adjetivo, etc.) a cada palabra en un texto.
 
 ```python
-"I love Python"
-I    → PRP (pronoun)
-love → VBP (verb)
-Python → NNP (proper noun)
+"I love Python programming"
+
+I           → PRON   (pronombre)
+love        → VERB   (verbo)
+Python      → PROPN  (nombre propio)
+programming → NOUN   (sustantivo)
 ```
 
-### Tagsets
+**¿Por qué es importante?**
 
-**Penn Treebank (45 tags):**
-```
-NN:   Noun singular
-NNS:  Noun plural
-VB:   Verb base form
-VBD:  Verb past tense
-JJ:   Adjective
-...
+1. **Disambiguación semántica:**
+```python
+# "book" puede ser sustantivo o verbo
+"I read a book"     → book: NOUN
+"I will book a room" → book: VERB
 ```
 
-**Universal Dependencies (17 tags):**
-```
-NOUN, VERB, ADJ, ADV, PRON, DET, ADP, NUM, CONJ, ...
+2. **Mejora procesamiento posterior:**
+- Lemmatización requiere POS (vimos en Koan 2)
+- Named Entity Recognition
+- Parsing sintáctico
+- Machine Translation
+
+3. **Análisis lingüístico:**
+```python
+# Detectar estructura gramatical
+"The quick brown fox jumps"
+DET  ADJ   ADJ   NOUN VERB
 ```
 
-### Herramientas
+---
+
+### Tagsets: Sistemas de Etiquetas
+
+#### Penn Treebank Tagset (PTB) - 45 etiquetas
+
+El estándar en inglés, usado por NLTK.
+
+**Sustantivos:**
+```
+NN    → Noun singular (cat, city)
+NNS   → Noun plural (cats, cities)
+NNP   → Proper noun singular (John, Paris)
+NNPS  → Proper noun plural (Johns, Americas)
+```
+
+**Verbos:**
+```
+VB    → Verb base form (run, eat)
+VBD   → Verb past tense (ran, ate)
+VBG   → Verb gerund/present participle (running, eating)
+VBN   → Verb past participle (run, eaten)
+VBP   → Verb non-3rd person singular present (run, eat)
+VBZ   → Verb 3rd person singular present (runs, eats)
+```
+
+**Adjetivos y Adverbios:**
+```
+JJ    → Adjective (big, blue)
+JJR   → Adjective comparative (bigger, bluer)
+JJS   → Adjective superlative (biggest, bluest)
+RB    → Adverb (quickly, very)
+RBR   → Adverb comparative (faster)
+RBS   → Adverb superlative (fastest)
+```
+
+**Pronombres:**
+```
+PRP   → Personal pronoun (I, you, he)
+PRP$  → Possessive pronoun (my, your, his)
+WP    → Wh-pronoun (who, what)
+WP$   → Possessive wh-pronoun (whose)
+```
+
+**Otros:**
+```
+DT    → Determiner (the, a, an)
+IN    → Preposition/subordinating conjunction (in, of, like)
+CC    → Coordinating conjunction (and, but, or)
+TO    → "to" (to go, to see)
+MD    → Modal (can, will, should)
+```
+
+**Tabla Completa Penn Treebank (45 tags):**
+
+| Tag | Descripción | Ejemplos |
+|-----|-------------|----------|
+| CC | Coordinating conjunction | and, but, or |
+| CD | Cardinal number | 1, two, 100 |
+| DT | Determiner | the, a, this |
+| EX | Existential there | there |
+| FW | Foreign word | bon voyage |
+| IN | Preposition/subordinating conjunction | in, of, at |
+| JJ | Adjective | big, blue |
+| JJR | Adjective, comparative | bigger |
+| JJS | Adjective, superlative | biggest |
+| LS | List item marker | 1), a) |
+| MD | Modal | can, will |
+| NN | Noun, singular | cat, city |
+| NNS | Noun, plural | cats |
+| NNP | Proper noun, singular | John |
+| NNPS | Proper noun, plural | Americas |
+| PDT | Predeterminer | all, both |
+| POS | Possessive ending | 's |
+| PRP | Personal pronoun | I, you |
+| PRP$ | Possessive pronoun | my, your |
+| RB | Adverb | quickly |
+| RBR | Adverb, comparative | faster |
+| RBS | Adverb, superlative | fastest |
+| RP | Particle | up, off |
+| SYM | Symbol | %, & |
+| TO | to | to |
+| UH | Interjection | uh, wow |
+| VB | Verb, base form | run |
+| VBD | Verb, past tense | ran |
+| VBG | Verb, gerund/present participle | running |
+| VBN | Verb, past participle | run |
+| VBP | Verb, non-3rd person singular | run |
+| VBZ | Verb, 3rd person singular | runs |
+| WDT | Wh-determiner | which, that |
+| WP | Wh-pronoun | who, what |
+| WP$ | Possessive wh-pronoun | whose |
+| WRB | Wh-adverb | where, when |
+
+#### Universal Dependencies (UD) - 17 etiquetas
+
+Estándar multilingüe, usado por spaCy.
+
+```
+NOUN    → Sustantivo
+VERB    → Verbo
+ADJ     → Adjetivo
+ADV     → Adverbio
+PRON    → Pronombre
+DET     → Determinante
+ADP     → Adposición (preposición/postposición)
+NUM     → Número
+CONJ    → Conjunción
+PRT     → Partícula
+PUNCT   → Puntuación
+X       → Otro
+SYM     → Símbolo
+PROPN   → Nombre propio
+AUX     → Verbo auxiliar
+INTJ    → Interjección
+SCONJ   → Conjunción subordinante
+```
+
+---
+
+### Implementación con NLTK
+
+```python
+import nltk
+from nltk import word_tokenize, pos_tag
+
+# Descargar recursos
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+
+sentence = "The quick brown fox jumps over the lazy dog"
+
+# Tokenizar
+tokens = word_tokenize(sentence)
+
+# POS Tagging
+pos_tags = pos_tag(tokens)
+
+for word, tag in pos_tags:
+    print(f"{word:10} → {tag}")
+```
+
+**Resultado:**
+```
+The        → DT
+quick      → JJ
+brown      → JJ
+fox        → NN
+jumps      → VBZ
+over       → IN
+the        → DT
+lazy       → JJ
+dog        → NN
+```
+
+**Ejemplo con Verbos:**
+```python
+sentences = [
+    "I run every day",
+    "I ran yesterday",
+    "I am running now",
+    "I have run 5 miles",
+]
+
+for sent in sentences:
+    tokens = word_tokenize(sent)
+    tags = pos_tag(tokens)
+    print(f"{sent:25} → {[tag for word, tag in tags if 'run' in word.lower()]}")
+```
+
+**Resultado:**
+```
+I run every day           → ['VBP']  (verb present non-3rd person)
+I ran yesterday           → ['VBD']  (verb past tense)
+I am running now          → ['VBG']  (verb gerund)
+I have run 5 miles        → ['VBN']  (verb past participle)
+```
+
+---
+
+### Implementación con spaCy
+
+spaCy usa el Universal Dependencies tagset.
 
 ```python
 import spacy
 
 nlp = spacy.load("en_core_web_sm")
-doc = nlp("I love Python")
+
+doc = nlp("The quick brown fox jumps over the lazy dog")
+
+print(f"{'Text':<10} {'POS':<10} {'Tag':<10} {'Dep':<10} {'Description'}")
+print("-" * 60)
 
 for token in doc:
-    print(f"{token.text:10} → {token.pos_:5} ({token.tag_})")
-# I          → PRON  (PRP)
-# love       → VERB  (VBP)
-# Python     → PROPN (NNP)
+    print(f"{token.text:<10} {token.pos_:<10} {token.tag_:<10} {token.dep_:<10} {spacy.explain(token.tag_)}")
 ```
 
-### Algoritmos
+**Resultado:**
+```
+Text       POS        Tag        Dep        Description
+------------------------------------------------------------
+The        DET        DT         det        determiner
+quick      ADJ        JJ         amod       adjective (English)
+brown      ADJ        JJ         amod       adjective (English)
+fox        NOUN       NN         nsubj      noun, singular or mass
+jumps      VERB       VBZ        ROOT       verb, 3rd person singular present
+over       ADP        IN         prep       conjunction, subordinating or preposition
+the        DET        DT         det        determiner
+lazy       ADJ        JJ         amod       adjective (English)
+dog        NOUN       NN         pobj       noun, singular or mass
+```
 
-1. **Hidden Markov Models (HMM)**
-2. **Maximum Entropy (MaxEnt)**
-3. **Conditional Random Fields (CRF)**
-4. **Deep Learning (BiLSTM, Transformers)**
+**Acceso a Atributos:**
+```python
+doc = nlp("Apple is looking at buying U.K. startup for $1 billion")
+
+for token in doc:
+    print(f"{token.text:12} POS={token.pos_:6} Tag={token.tag_:4} Lemma={token.lemma_:12}")
+```
+
+---
+
+### Español con spaCy
+
+```python
+import spacy
+
+nlp = spacy.load("es_core_news_sm")
+
+doc = nlp("El rápido zorro marrón salta sobre el perro perezoso")
+
+for token in doc:
+    print(f"{token.text:10} → {token.pos_:6} ({token.tag_})")
+```
+
+**Resultado:**
+```
+El         → DET    (DA0MS0)
+rápido     → ADJ    (AQ0MS0)
+zorro      → NOUN   (NCMS000)
+marrón     → ADJ    (AQ0CS0)
+salta      → VERB   (VMIP3S0)
+sobre      → ADP    (SP)
+el         → DET    (DA0MS0)
+perro      → NOUN   (NCMS000)
+perezoso   → ADJ    (AQ0MS0)
+```
+
+---
+
+### Algoritmos de POS Tagging
+
+#### 1. Hidden Markov Models (HMM)
+
+**Concepto:**
+- Modela secuencias de tags como cadena de Markov
+- Usa probabilidades de transición y emisión
+
+```python
+# Probabilidades
+P(tag_i | tag_i-1)  # Transición: probabilidad de tag dado el anterior
+P(word | tag)        # Emisión: probabilidad de palabra dado tag
+```
+
+**Ejemplo:**
+```
+Frase: "I love Python"
+
+P(PRON) * P("I"|PRON) *
+P(VERB|PRON) * P("love"|VERB) *
+P(NOUN|VERB) * P("Python"|NOUN)
+```
+
+**Ventajas:**
+- Simple y eficiente
+- Buena precisión con corpus grande
+
+**Desventajas:**
+- Asume independencia (simplificación)
+- No captura contexto complejo
+
+#### 2. Maximum Entropy (MaxEnt)
+
+**Concepto:**
+- Clasificador discriminativo
+- Usa features contextuales
+
+```python
+features = [
+    word_itself,
+    previous_word,
+    next_word,
+    word_suffix,
+    word_prefix,
+    is_capitalized,
+    is_number,
+]
+```
+
+**Ventajas:**
+- Captura más contexto
+- Flexible con features
+
+#### 3. Conditional Random Fields (CRF)
+
+**Concepto:**
+- Modela toda la secuencia a la vez
+- Evita el "label bias" de HMM
+
+**Ventajas:**
+- Estado del arte (antes de Deep Learning)
+- Captura dependencias largas
+
+#### 4. Deep Learning (BiLSTM, Transformers)
+
+**Arquitectura:**
+```
+Input: "I love Python"
+  ↓
+Word Embeddings
+  ↓
+BiLSTM (captura contexto bidireccional)
+  ↓
+Softmax (clasificación por palabra)
+  ↓
+Output: [PRON, VERB, NOUN]
+```
+
+**Ventajas:**
+- Precisión más alta
+- Aprende representaciones automáticas
+
+**Desventajas:**
+- Requiere GPU
+- Más lento
+
+---
+
+### Comparativa de Herramientas
+
+```python
+import time
+import nltk
+import spacy
+from nltk import word_tokenize, pos_tag
+
+# Preparar
+nltk.download('averaged_perceptron_tagger', quiet=True)
+nlp = spacy.load("en_core_web_sm")
+
+text = "The quick brown fox jumps over the lazy dog" * 100
+
+# NLTK
+start = time.time()
+tokens_nltk = word_tokenize(text)
+tags_nltk = pos_tag(tokens_nltk)
+time_nltk = time.time() - start
+
+# spaCy
+start = time.time()
+doc_spacy = nlp(text)
+tags_spacy = [(token.text, token.tag_) for token in doc_spacy]
+time_spacy = time.time() - start
+
+print(f"NLTK:  {time_nltk:.4f}s")
+print(f"spaCy: {time_spacy:.4f}s")
+```
+
+**Tabla Comparativa:**
+
+| Herramienta | Velocidad | Precisión | Idiomas | Facilidad |
+|-------------|-----------|-----------|---------|-----------|
+| **NLTK** | ⚡⚡ | ⭐⭐⭐ | 🌍 Limitado | ⭐⭐⭐⭐⭐ |
+| **spaCy** | ⚡⚡⚡⚡ | ⭐⭐⭐⭐ | 🌍🌍🌍 | ⭐⭐⭐⭐⭐ |
+| **Stanford CoreNLP** | ⚡⚡ | ⭐⭐⭐⭐ | 🌍🌍🌍 | ⭐⭐⭐ |
+| **Transformers (BERT)** | ⚡ | ⭐⭐⭐⭐⭐ | 🌍🌍🌍🌍 | ⭐⭐⭐ |
+
+---
+
+### Aplicaciones de POS Tagging
+
+#### 1. Mejora de Lemmatization
+
+```python
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
+
+def get_wordnet_pos(treebank_tag):
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN
+
+lemmatizer = WordNetLemmatizer()
+sentence = "The striped bats are hanging on their feet"
+tokens = word_tokenize(sentence)
+pos_tags = pos_tag(tokens)
+
+for word, tag in pos_tags:
+    wn_pos = get_wordnet_pos(tag)
+    lemma = lemmatizer.lemmatize(word, pos=wn_pos)
+    print(f"{word:10} ({tag:4}) → {lemma}")
+```
+
+#### 2. Named Entity Recognition
+
+POS tags ayudan a identificar candidatos a entidades:
+```python
+# Sustantivos propios (NNP, NNPS) son candidatos a nombres/lugares
+# Números (CD) + sustantivos → fechas, cantidades
+```
+
+#### 3. Text-to-Speech
+
+```python
+# "read" tiene dos pronunciaciones
+"I read /red/ a book"     → VBP (presente)
+"I read /red/ yesterday"  → VBD (pasado)
+```
+
+#### 4. Information Extraction
+
+```python
+# Extraer relaciones: NOUN + VERB + NOUN
+"Apple acquired Shazam"
+NNP    VBD      NNP
+→ Relación: (Apple, acquired, Shazam)
+```
+
+---
+
+### Desafíos del POS Tagging
+
+#### 1. Ambigüedad
+
+```python
+# "book" puede ser NN o VB
+"I read a book"        → book: NN
+"I will book a ticket" → book: VB
+```
+
+#### 2. Palabras Fuera de Vocabulario (OOV)
+
+```python
+# Palabras nuevas/slang
+"I'm gonna pwn this"
+# "gonna" → MD (modal)? VBG (gerund)?
+# "pwn" → VB? NN?
+```
+
+#### 3. Dominios Específicos
+
+```python
+# Terminología médica/legal
+"The patient presents with acute myocardial infarction"
+# "presents" → VBZ (verbo) o NN (sustantivo)?
+```
+
+---
+
+### Resumen
+
+**Conceptos Clave:**
+- **POS Tagging**: Asignar categorías gramaticales a palabras
+- **Penn Treebank**: 45 tags detallados (inglés)
+- **Universal Dependencies**: 17 tags multilingües
+- POS tags mejoran lemmatization, NER, parsing
+
+**Algoritmos:**
+- **HMM**: Rápido, baseline
+- **CRF**: Estado del arte clásico
+- **BiLSTM/Transformers**: Mejor precisión actual
+
+**Herramientas:**
+- **NLTK**: Simple, educativo, Penn Treebank
+- **spaCy**: Rápido, producción, Universal Dependencies
+
+**Decisiones:**
+1. ¿Inglés o multilingüe? → NLTK vs spaCy
+2. ¿Velocidad o precisión? → spaCy vs Transformers
+3. ¿Integración con pipeline? → spaCy (todo en uno)
 
 ---
 
 ## 4️⃣ Named Entity Recognition
 
-### ¿Qué es NER?
+### Introducción a NER
 
-Identificar y clasificar entidades nombradas en texto.
+**¿Qué es Named Entity Recognition?**
+
+Named Entity Recognition (NER) es el proceso de identificar y clasificar entidades nombradas en texto: nombres de personas, organizaciones, lugares, fechas, cantidades, etc.
 
 ```python
-"Apple CEO Tim Cook visited Paris"
+"Apple CEO Tim Cook visited Paris on June 5th, 2023"
 
-Apple  → ORGANIZATION
-Tim Cook → PERSON
-Paris   → LOCATION
+Apple      → ORGANIZATION
+Tim Cook   → PERSON
+Paris      → LOCATION
+June 5th, 2023 → DATE
 ```
+
+**¿Por qué es importante?**
+
+1. **Extracción de información:**
+```python
+# De texto no estructurado a datos estructurados
+"Microsoft acquired LinkedIn for $26.2 billion"
+→ {
+    "acquirer": "Microsoft",
+    "acquired": "LinkedIn",
+    "amount": "$26.2 billion"
+}
+```
+
+2. **Question Answering:**
+```python
+Q: "Who is the CEO of Apple?"
+Text: "Apple CEO Tim Cook visited..."
+→ Identifica "Tim Cook" como PERSON relacionado con "Apple" (ORG)
+```
+
+3. **Análisis de noticias, redes sociales, documentos legales/médicos**
+
+---
 
 ### Tipos de Entidades
 
-**OntoNotes 5.0:**
-```
-PERSON, ORGANIZATION, GPE (Geo-Political Entity),
-DATE, TIME, MONEY, PERCENT, QUANTITY, ...
+#### OntoNotes 5.0 (18 tipos) - Usado por spaCy
+
+```python
+PERSON         → Personas (Tim Cook, Albert Einstein)
+ORG            → Organizaciones (Apple, UN, FBI)
+GPE            → Geo-Political Entities (Paris, USA, California)
+LOC            → Ubicaciones no-GPE (Mount Everest, Pacific Ocean)
+DATE           → Fechas (June 5th, 2023, yesterday)
+TIME           → Horas (3:00 PM, morning)
+MONEY          → Cantidades monetarias ($100, 50 euros)
+PERCENT        → Porcentajes (50%, 10.5 percent)
+QUANTITY       → Medidas (5 miles, 3 kg)
+ORDINAL        → Números ordinales (first, 3rd)
+CARDINAL       → Números cardinales (one, 5, twenty)
+FAC            → Facilities (airports, buildings)
+PRODUCT        → Productos (iPhone, Windows)
+EVENT          → Eventos (Olympics, World War II)
+WORK_OF_ART    → Obras artísticas (Mona Lisa, "1984")
+LAW            → Documentos legales (Constitution)
+LANGUAGE       → Idiomas (English, Spanish)
+NORP           → Nacionalidades/grupos religiosos (American, Buddhist)
 ```
 
-**CoNLL 2003:**
-```
-PER (Person), ORG (Organization), LOC (Location), MISC
+#### CoNLL 2003 (4 tipos) - Dataset benchmark clásico
+
+```python
+PER  → Person (personas)
+ORG  → Organization (organizaciones)
+LOC  → Location (lugares)
+MISC → Miscellaneous (otros)
 ```
 
-### BIO Tagging
+---
+
+### BIO Tagging Scheme
+
+**¿Qué es BIO?**
+
+Sistema para etiquetar tokens que forman entidades multi-palabra.
 
 ```
-Apple  → B-ORG  (Begin Organization)
-CEO    → O      (Outside)
-Tim    → B-PER  (Begin Person)
-Cook   → I-PER  (Inside Person)
+B- → Begin (inicio de entidad)
+I- → Inside (continuación de entidad)
+O  → Outside (no es entidad)
 ```
 
-### Implementación
+**Ejemplo:**
+```python
+"Apple CEO Tim Cook visited Paris"
+
+Apple  → B-ORG   (Begin Organization)
+CEO    → O       (Outside - no es entidad)
+Tim    → B-PER   (Begin Person)
+Cook   → I-PER   (Inside Person - continúa "Tim")
+visited → O      (Outside)
+Paris  → B-LOC   (Begin Location)
+```
+
+**¿Por qué BIO?**
+
+Permite distinguir entidades adyacentes:
+```python
+"John works at Apple and Microsoft"
+
+John      → B-PER
+works     → O
+at        → O
+Apple     → B-ORG  (nueva entidad)
+and       → O
+Microsoft → B-ORG  (otra entidad distinta)
+```
+
+Sin BIO sería confuso:
+```python
+Apple     → ORG
+Microsoft → ORG
+# ¿Son la misma entidad o dos diferentes?
+```
+
+**Variantes:**
+
+**BILOU:**
+```
+B- → Begin
+I- → Inside
+L- → Last (último token)
+O  → Outside
+U- → Unit (entidad de un solo token)
+```
+
+Ejemplo:
+```python
+"Tim Cook"
+Tim  → B-PER
+Cook → L-PER
+
+"Paris"
+Paris → U-LOC
+```
+
+---
+
+### Implementación con spaCy
+
+#### Ejemplo Básico
 
 ```python
 import spacy
 
 nlp = spacy.load("en_core_web_sm")
-doc = nlp("Apple CEO Tim Cook visited Paris on June 5th")
+
+doc = nlp("Apple CEO Tim Cook visited Paris on June 5th, 2023")
+
+print(f"{'Text':<20} {'Label':<15} {'Start':<7} {'End':<7}")
+print("-" * 55)
 
 for ent in doc.ents:
-    print(f"{ent.text:15} → {ent.label_}")
-
-# Apple          → ORG
-# Tim Cook       → PERSON
-# Paris          → GPE
-# June 5th       → DATE
+    print(f"{ent.text:<20} {ent.label_:<15} {ent.start_char:<7} {ent.end_char:<7}")
 ```
 
-### Herramientas
+**Resultado:**
+```
+Text                 Label           Start   End    
+-------------------------------------------------------
+Apple                ORG             0       5      
+Tim Cook             PERSON          10      18     
+Paris                GPE             27      32     
+June 5th, 2023       DATE            36      50
+```
 
-| Herramienta | Precisión | Velocidad | Multilingüe |
-|-------------|-----------|-----------|-------------|
-| **spaCy** | ⭐⭐⭐⭐ | ⚡⚡⚡ | ✅ |
-| **Stanford NER** | ⭐⭐⭐⭐ | ⚡⚡ | ✅ |
-| **Transformers** | ⭐⭐⭐⭐⭐ | ⚡ | ✅ |
+#### Acceso a Atributos
+
+```python
+doc = nlp("Microsoft acquired GitHub for $7.5 billion")
+
+for ent in doc.ents:
+    print(f"""
+Entity: {ent.text}
+Label:  {ent.label_}
+Desc:   {spacy.explain(ent.label_)}
+Start:  {ent.start_char}
+End:    {ent.end_char}
+    """)
+```
+
+**Resultado:**
+```
+Entity: Microsoft
+Label:  ORG
+Desc:   Companies, agencies, institutions, etc.
+Start:  0
+End:    9
+
+Entity: GitHub
+Label:  ORG
+Desc:   Companies, agencies, institutions, etc.
+Start:  19
+End:    25
+
+Entity: $7.5 billion
+Label:  MONEY
+Desc:   Monetary values, including unit
+Start:  30
+End:    43
+```
+
+#### Visualización
+
+```python
+from spacy import displacy
+
+doc = nlp("Apple CEO Tim Cook announced the new iPhone in California")
+
+# Visualizar en notebook
+displacy.render(doc, style="ent", jupyter=True)
+
+# Guardar como HTML
+html = displacy.render(doc, style="ent")
+with open("entities.html", "w", encoding="utf-8") as f:
+    f.write(html)
+```
+
+---
+
+### Español con spaCy
+
+```python
+import spacy
+
+nlp = spacy.load("es_core_news_sm")
+
+doc = nlp("El presidente de España, Pedro Sánchez, visitó Madrid el 15 de junio")
+
+for ent in doc.ents:
+    print(f"{ent.text:<25} → {ent.label_}")
+```
+
+**Resultado:**
+```
+España                    → LOC
+Pedro Sánchez             → PER
+Madrid                    → LOC
+el 15 de junio            → DATE
+```
+
+---
+
+### Métodos de NER
+
+#### 1. Rule-Based (Basado en Reglas)
+
+**Características:**
+- Usa patrones, diccionarios, expresiones regulares
+- No requiere entrenamiento
+- Alta precisión en dominios específicos
+
+**Ejemplo con spaCy EntityRuler:**
+```python
+import spacy
+from spacy.pipeline import EntityRuler
+
+nlp = spacy.blank("en")
+ruler = nlp.add_pipe("entity_ruler")
+
+# Definir patrones
+patterns = [
+    {"label": "ORG", "pattern": "OpenAI"},
+    {"label": "ORG", "pattern": "Anthropic"},
+    {"label": "PRODUCT", "pattern": [{"LOWER": "gpt"}, {"IS_DIGIT": True}]},
+    {"label": "PRODUCT", "pattern": "Claude"},
+]
+
+ruler.add_patterns(patterns)
+
+doc = nlp("OpenAI released GPT-4 and Anthropic released Claude")
+
+for ent in doc.ents:
+    print(f"{ent.text:<15} → {ent.label_}")
+```
+
+**Resultado:**
+```
+OpenAI          → ORG
+GPT-4           → PRODUCT
+Anthropic       → ORG
+Claude          → PRODUCT
+```
+
+**Ventajas:**
+- ✅ Fácil de implementar
+- ✅ No requiere datos etiquetados
+- ✅ 100% explicable
+
+**Desventajas:**
+- ⚠️ Requiere mantenimiento manual
+- ⚠️ No generaliza bien
+- ⚠️ Frágil ante variaciones
+
+#### 2. Machine Learning (CRF, HMM)
+
+**Características:**
+- Aprende de datos etiquetados
+- Usa features: palabras, POS tags, capitalización, prefijos/sufijos
+
+**Features típicas:**
+```python
+features = {
+    'word': word,
+    'is_capitalized': word[0].isupper(),
+    'is_all_caps': word.isupper(),
+    'is_number': word.isdigit(),
+    'prefix_2': word[:2],
+    'suffix_3': word[-3:],
+    'prev_word': prev_word,
+    'next_word': next_word,
+    'pos_tag': pos_tag,
+}
+```
+
+**Ventajas:**
+- ✅ Generaliza mejor que reglas
+- ✅ Funciona sin GPU
+
+**Desventajas:**
+- ⚠️ Feature engineering manual
+- ⚠️ Menor precisión que Deep Learning
+
+#### 3. Deep Learning (BiLSTM-CRF, Transformers)
+
+**Arquitectura BiLSTM-CRF:**
+```
+Input: ["Apple", "CEO", "Tim", "Cook"]
+  ↓
+Word Embeddings
+  ↓
+BiLSTM (captura contexto bidireccional)
+  ↓
+CRF (predice secuencia óptima de tags)
+  ↓
+Output: [B-ORG, O, B-PER, I-PER]
+```
+
+**Transformers (BERT-based):**
+```python
+from transformers import pipeline
+
+ner = pipeline("ner", model="dslim/bert-base-NER")
+
+text = "Apple CEO Tim Cook visited Paris"
+results = ner(text)
+
+for entity in results:
+    print(f"{entity['word']:<15} {entity['entity']:<10} (score: {entity['score']:.3f})")
+```
+
+**Resultado:**
+```
+Apple           B-ORG      (score: 0.999)
+CEO             O          (score: 0.998)
+Tim             B-PER      (score: 0.999)
+Cook            I-PER      (score: 0.998)
+Paris           B-LOC      (score: 0.999)
+```
+
+**Ventajas:**
+- ✅ Mejor precisión
+- ✅ Aprende representaciones automáticas
+- ✅ Transfer learning
+
+**Desventajas:**
+- ⚠️ Requiere GPU
+- ⚠️ Más lento
+- ⚠️ Menos explicable
+
+---
+
+### Comparativa de Herramientas
+
+| Herramienta | Método | Precisión | Velocidad | Idiomas | Facilidad |
+|-------------|--------|-----------|-----------|---------|-----------|
+| **spaCy** | Statistical/DL | ⭐⭐⭐⭐ | ⚡⚡⚡⚡ | 🌍🌍🌍 | ⭐⭐⭐⭐⭐ |
+| **Stanford NER** | CRF | ⭐⭐⭐⭐ | ⚡⚡ | 🌍🌍 | ⭐⭐⭐ |
+| **Flair** | Character-level | ⭐⭐⭐⭐⭐ | ⚡⚡ | 🌍🌍🌍 | ⭐⭐⭐⭐ |
+| **Transformers (BERT)** | Transformer | ⭐⭐⭐⭐⭐ | ⚡ | 🌍🌍🌍🌍 | ⭐⭐⭐ |
+| **NLTK** | Rule-based | ⭐⭐ | ⚡⚡⚡⚡ | 🌍 | ⭐⭐⭐⭐⭐ |
+
+---
+
+### Training Custom NER Models
+
+#### Con spaCy
+
+```python
+import spacy
+from spacy.training import Example
+
+# 1. Crear modelo en blanco o cargar existente
+nlp = spacy.blank("en")
+# O: nlp = spacy.load("en_core_web_sm")
+
+# 2. Crear componente NER
+if "ner" not in nlp.pipe_names:
+    ner = nlp.add_pipe("ner")
+else:
+    ner = nlp.get_pipe("ner")
+
+# 3. Añadir labels
+ner.add_label("TECH_COMPANY")
+ner.add_label("AI_MODEL")
+
+# 4. Preparar datos de entrenamiento
+TRAIN_DATA = [
+    ("OpenAI released GPT-4", {
+        "entities": [(0, 6, "TECH_COMPANY"), (16, 21, "AI_MODEL")]
+    }),
+    ("Google developed BERT", {
+        "entities": [(0, 6, "TECH_COMPANY"), (17, 21, "AI_MODEL")]
+    }),
+]
+
+# 5. Entrenar
+import random
+from spacy.util import minibatch
+
+optimizer = nlp.begin_training()
+
+for epoch in range(30):
+    random.shuffle(TRAIN_DATA)
+    losses = {}
+    
+    for batch in minibatch(TRAIN_DATA, size=2):
+        for text, annotations in batch:
+            doc = nlp.make_doc(text)
+            example = Example.from_dict(doc, annotations)
+            nlp.update([example], drop=0.5, losses=losses)
+    
+    print(f"Epoch {epoch}: Loss = {losses['ner']:.2f}")
+
+# 6. Guardar modelo
+nlp.to_disk("./custom_ner_model")
+```
+
+#### Con Transformers (Fine-tuning)
+
+```python
+from transformers import AutoTokenizer, AutoModelForTokenClassification, Trainer, TrainingArguments
+
+# 1. Cargar modelo pre-entrenado
+model_name = "bert-base-cased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForTokenClassification.from_pretrained(
+    model_name, 
+    num_labels=len(label_list)
+)
+
+# 2. Preparar dataset
+# (tokenizar, alinear labels con tokens, etc.)
+
+# 3. Training arguments
+training_args = TrainingArguments(
+    output_dir="./results",
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=64,
+    warmup_steps=500,
+    weight_decay=0.01,
+    logging_dir="./logs",
+)
+
+# 4. Entrenar
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,
+)
+
+trainer.train()
+```
+
+---
+
+### Desafíos del NER
+
+#### 1. Entidades Ambiguas
+
+```python
+"Washington" puede ser:
+- PERSON (George Washington)
+- GPE (Washington D.C.)
+- LOC (Washington State)
+```
+
+#### 2. Nested Entities (Entidades Anidadas)
+
+```python
+"Bank of America"
+→ [Bank of America]ORG  # Toda la frase
+→ [America]GPE          # Anidada dentro
+
+spaCy por defecto NO detecta nested entities
+```
+
+#### 3. Entidades Multi-palabra
+
+```python
+"New York" → GPE
+"New" → ❌ (solo con contexto)
+```
+
+#### 4. Variaciones Lingüísticas
+
+```python
+"Dr. Smith" → PERSON
+"Smith" → PERSON (misma persona)
+"Mr. Smith" → PERSON (misma persona)
+
+# Requiere entity linking/coreference resolution
+```
+
+---
+
+### Aplicaciones de NER
+
+#### 1. Extracción de Información
+
+```python
+# Extraer relaciones de texto
+"Microsoft acquired GitHub for $7.5 billion"
+→ {
+    "acquirer": "Microsoft" (ORG),
+    "target": "GitHub" (ORG),
+    "amount": "$7.5 billion" (MONEY)
+}
+```
+
+#### 2. Question Answering
+
+```python
+Q: "Where was Tim Cook born?"
+Context: "Apple CEO Tim Cook was born in Mobile, Alabama..."
+
+# NER identifica:
+# - "Tim Cook" → PERSON
+# - "Mobile, Alabama" → GPE
+```
+
+#### 3. Content Classification
+
+```python
+# Categorizar artículos por entidades mencionadas
+If contains > 5 ORG entities → Business article
+If contains > 5 GPE entities → Politics/Geography
+```
+
+#### 4. Anonymization
+
+```python
+doc = nlp("Patient John Doe, SSN 123-45-6789...")
+
+anonymized = doc.text
+for ent in doc.ents:
+    if ent.label_ == "PERSON":
+        anonymized = anonymized.replace(ent.text, "[REDACTED]")
+
+# "Patient [REDACTED], SSN 123-45-6789..."
+```
+
+---
+
+### Resumen
+
+**Conceptos Clave:**
+- **NER**: Identificar y clasificar entidades nombradas
+- **BIO Tagging**: B- (begin), I- (inside), O (outside)
+- Tipos comunes: PERSON, ORG, GPE, DATE, MONEY
+- 3 enfoques: Rule-based, ML, Deep Learning
+
+**Métodos:**
+- **Rule-based**: Rápido, preciso en dominios específicos
+- **CRF/HMM**: Balance entre precisión y velocidad
+- **Transformers**: Mejor precisión, más lento
+
+**Herramientas:**
+- **spaCy**: Producción, rápido, fácil
+- **Transformers**: Máxima precisión, requiere GPU
+- **Stanford NER**: Clásico, robusto
+
+**Decisiones:**
+1. ¿Dominio general o específico? → Pre-trained vs custom
+2. ¿Velocidad o precisión? → spaCy vs Transformers
+3. ¿Recursos limitados? → Rule-based vs ML
 
 ---
 
@@ -481,165 +2561,1118 @@ for ent in doc.ents:
 
 ## 5️⃣ Text Classification
 
-### Clasificación de Documentos
+### Introducción a Text Classification
 
-Asignar categoría(s) a un documento.
+**¿Qué es Text Classification?**
+
+Text Classification (clasificación de texto) es el proceso de asignar categorías o etiquetas predefinidas a documentos de texto.
 
 ```python
 "This product is amazing!" → POSITIVE
 "Spam: Win money now!"     → SPAM
 "Python tutorial"          → TECHNOLOGY
+"Breaking: Market crashes" → NEWS/FINANCE
 ```
+
+**Tipos de Clasificación:**
+
+**1. Binary Classification (2 clases):**
+```python
+Spam vs No-Spam
+Positive vs Negative
+Relevant vs Irrelevant
+```
+
+**2. Multi-class Classification (múltiples clases exclusivas):**
+```python
+Topics: SPORTS, POLITICS, TECHNOLOGY, ENTERTAINMENT
+Sentiment: POSITIVE, NEGATIVE, NEUTRAL
+```
+
+**3. Multi-label Classification (múltiples etiquetas no exclusivas):**
+```python
+"Python machine learning tutorial"
+→ [PROGRAMMING, AI, EDUCATION]  # Múltiples labels
+```
+
+---
+
+### Pipeline de Text Classification
+
+```
+1. Texto crudo
+   ↓
+2. Preprocessing (limpieza, tokenización)
+   ↓
+3. Feature Extraction (BoW, TF-IDF, embeddings)
+   ↓
+4. Modelo (Naive Bayes, SVM, Deep Learning)
+   ↓
+5. Predicción (clase + probabilidad)
+```
+
+---
 
 ### Feature Engineering
 
-**1. Bag of Words (BoW):**
+#### 1. Bag of Words (BoW)
+
+**Concepto:**
+
+Representa texto como vector de frecuencias de palabras, ignorando orden.
+
 ```python
 from sklearn.feature_extraction.text import CountVectorizer
 
-texts = ["I love Python", "I love Java"]
+texts = [
+    "I love Python",
+    "I love Java",
+    "Python is great"
+]
+
 vectorizer = CountVectorizer()
 X = vectorizer.fit_transform(texts)
 
-# [[1, 1, 0, 1],   # "I love Python"
-#  [1, 0, 1, 1]]   # "I love Java"
-#  I  Java love Python
+print(vectorizer.get_feature_names_out())
+# ['great' 'is' 'java' 'love' 'python']
+
+print(X.toarray())
+# [[0 0 0 1 1]   # "I love Python"
+#  [0 0 1 1 0]   # "I love Java"
+#  [1 1 0 0 1]]  # "Python is great"
 ```
 
-**2. TF-IDF:**
+**Ventajas:**
+- ✅ Simple
+- ✅ Rápido
+- ✅ Funciona bien con Naive Bayes
+
+**Desventajas:**
+- ⚠️ Ignora orden (no captura "not good" vs "good")
+- ⚠️ Vocabulario grande (dimensiones altas)
+- ⚠️ No captura semántica
+
+#### 2. N-grams
+
+Captura secuencias de N palabras consecutivas.
+
+```python
+from sklearn.feature_extraction.text import CountVectorizer
+
+# Unigrams + Bigrams
+vectorizer = CountVectorizer(ngram_range=(1, 2))
+
+texts = ["not good", "very good"]
+X = vectorizer.fit_transform(texts)
+
+print(vectorizer.get_feature_names_out())
+# ['good', 'not', 'not good', 'very', 'very good']
+
+print(X.toarray())
+# [[1 1 1 0 0]   # "not good"
+#  [1 0 0 1 1]]  # "very good"
+```
+
+**Ventajas:**
+- ✅ Captura contexto local
+- ✅ Distingue "not good" de "very good"
+
+**Desventajas:**
+- ⚠️ Vocabulario explota exponencialmente
+- ⚠️ Sparse matrices
+
+#### 3. TF-IDF (Term Frequency - Inverse Document Frequency)
+
+**Concepto:**
+
+Pondera términos por importancia: frecuentes en documento pero raros en corpus.
+
+```
+TF(t, d) = (count of t in d) / (total words in d)
+
+IDF(t) = log(total documents / documents containing t)
+
+TF-IDF(t, d) = TF(t, d) * IDF(t)
+```
+
+**Ejemplo:**
 ```python
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(texts)
+corpus = [
+    "the cat sat on the mat",
+    "the dog sat on the log",
+    "cats and dogs"
+]
 
-# Da más peso a palabras raras
-# "Python" tiene mayor peso que "I"
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(corpus)
+
+# "the" aparece en todos → IDF bajo → peso bajo
+# "cats" aparece en 1 → IDF alto → peso alto
+
+import pandas as pd
+df = pd.DataFrame(
+    X.toarray(),
+    columns=vectorizer.get_feature_names_out()
+)
+print(df)
 ```
+
+**Resultado:**
+```
+       and       cat      cats       dog      dogs       log       mat  \
+0  0.000000  0.469791  0.000000  0.000000  0.000000  0.000000  0.469791   
+1  0.000000  0.000000  0.000000  0.469791  0.000000  0.469791  0.000000   
+2  0.579739  0.000000  0.579739  0.000000  0.579739  0.000000  0.000000   
+
+        on       sat       the  
+0  0.352279  0.352279  0.559678  
+1  0.352279  0.352279  0.559678  
+2  0.000000  0.000000  0.000000
+```
+
+**Ventajas:**
+- ✅ Reduce peso de palabras comunes ("the", "is")
+- ✅ Resalta palabras importantes
+- ✅ Funciona muy bien en práctica
+
+**Desventajas:**
+- ⚠️ No captura semántica
+- ⚠️ Vocabulario aún grande
+
+#### Parámetros Importantes
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+vectorizer = TfidfVectorizer(
+    max_features=5000,      # Top 5000 palabras más frecuentes
+    min_df=2,               # Mínimo 2 documentos
+    max_df=0.8,             # Máximo 80% de documentos
+    ngram_range=(1, 2),     # Unigrams + Bigrams
+    stop_words='english',   # Remover stop words
+    lowercase=True,         # Convertir a minúsculas
+    strip_accents='unicode' # Remover acentos
+)
+```
+
+---
 
 ### Modelos Clásicos
 
-**Naive Bayes:**
-```python
-from sklearn.naive_bayes import MultinomialNB
+#### 1. Naive Bayes
 
-model = MultinomialNB()
-model.fit(X_train, y_train)
-predictions = model.predict(X_test)
+**Concepto:**
+
+Aplica teorema de Bayes asumiendo independencia entre features.
+
+```
+P(clase | documento) ∝ P(clase) * P(documento | clase)
+P(documento | clase) = P(w1|clase) * P(w2|clase) * ... * P(wn|clase)
 ```
 
-**Logistic Regression:**
+**Implementación:**
 ```python
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
+
+# Datos
+texts = ["I love this", "I hate this", "Great product", "Terrible experience"]
+labels = [1, 0, 1, 0]  # 1=Positive, 0=Negative
+
+# Split
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, labels, test_size=0.25, random_state=42
+)
+
+# Vectorización
+vectorizer = CountVectorizer()
+X_train_vec = vectorizer.fit_transform(X_train)
+X_test_vec = vectorizer.transform(X_test)
+
+# Modelo
+model = MultinomialNB()
+model.fit(X_train_vec, y_train)
+
+# Predicción
+predictions = model.predict(X_test_vec)
+probabilities = model.predict_proba(X_test_vec)
+
+print(f"Predictions: {predictions}")
+print(f"Probabilities: {probabilities}")
+```
+
+**Ventajas:**
+- ✅ Muy rápido
+- ✅ Funciona bien con pocos datos
+- ✅ Simple e interpretable
+- ✅ Baseline excelente
+
+**Desventajas:**
+- ⚠️ Asume independencia (ingenuo)
+- ⚠️ No captura interacciones entre palabras
+
+#### 2. Logistic Regression
+
+**Concepto:**
+
+Clasificador lineal que predice probabilidades mediante función sigmoide.
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train, y_train)
+# Vectorización
+vectorizer = TfidfVectorizer(max_features=5000)
+X_train_vec = vectorizer.fit_transform(X_train)
+X_test_vec = vectorizer.transform(X_test)
+
+# Modelo
+model = LogisticRegression(
+    max_iter=1000,
+    C=1.0,           # Regularization strength (más bajo = más regularización)
+    solver='lbfgs'
+)
+
+model.fit(X_train_vec, y_train)
+predictions = model.predict(X_test_vec)
 ```
 
-**SVM:**
+**Ventajas:**
+- ✅ Rápido y eficiente
+- ✅ Probabilidades calibradas
+- ✅ Regularización integrada
+- ✅ Funciona muy bien en práctica
+
+**Desventajas:**
+- ⚠️ Lineal (puede no capturar relaciones complejas)
+
+#### 3. Support Vector Machines (SVM)
+
+**Concepto:**
+
+Encuentra hiperplano óptimo que separa clases con máximo margen.
+
 ```python
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 
-model = SVC(kernel='linear')
-model.fit(X_train, y_train)
+# LinearSVC (más rápido para texto)
+model = LinearSVC(
+    C=1.0,
+    max_iter=1000
+)
+
+model.fit(X_train_vec, y_train)
+predictions = model.predict(X_test_vec)
 ```
 
-### Pipeline Completo
+**Ventajas:**
+- ✅ Muy efectivo con datos de alta dimensión
+- ✅ Robusto
+- ✅ Estado del arte (antes de Deep Learning)
+
+**Desventajas:**
+- ⚠️ Lento con datasets grandes
+- ⚠️ No da probabilidades directamente
+
+#### 4. Random Forest
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+model = RandomForestClassifier(
+    n_estimators=100,  # Número de árboles
+    max_depth=None,
+    random_state=42
+)
+
+model.fit(X_train_vec, y_train)
+predictions = model.predict(X_test_vec)
+```
+
+**Ventajas:**
+- ✅ Robusto
+- ✅ Menos overfitting que un solo árbol
+- ✅ Feature importances
+
+**Desventajas:**
+- ⚠️ Más lento
+- ⚠️ Modelos grandes
+
+---
+
+### Pipeline Completo con scikit-learn
 
 ```python
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split, cross_val_score
 
+# Datos (ejemplo con 20newsgroups)
+from sklearn.datasets import fetch_20newsgroups
+
+categories = ['alt.atheism', 'soc.religion.christian', 'comp.graphics', 'sci.med']
+train_data = fetch_20newsgroups(subset='train', categories=categories, shuffle=True)
+test_data = fetch_20newsgroups(subset='test', categories=categories, shuffle=True)
+
+# Pipeline
 pipeline = Pipeline([
-    ('tfidf', TfidfVectorizer()),
-    ('clf', LogisticRegression())
+    ('tfidf', TfidfVectorizer(max_features=5000, ngram_range=(1, 2))),
+    ('clf', LogisticRegression(max_iter=1000))
 ])
 
-pipeline.fit(X_train, y_train)
-predictions = pipeline.predict(X_test)
+# Entrenar
+pipeline.fit(train_data.data, train_data.target)
+
+# Evaluar
+predictions = pipeline.predict(test_data.data)
+
+# Cross-validation
+scores = cross_val_score(pipeline, train_data.data, train_data.target, cv=5)
+print(f"Cross-validation scores: {scores}")
+print(f"Mean: {scores.mean():.3f} (+/- {scores.std() * 2:.3f})")
 ```
+
+---
 
 ### Evaluación
 
+#### Métricas Principales
+
 ```python
-from sklearn.metrics import classification_report
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report,
+    confusion_matrix
+)
 
-print(classification_report(y_test, predictions))
+# Accuracy
+accuracy = accuracy_score(y_test, predictions)
+print(f"Accuracy: {accuracy:.3f}")
 
-#              precision    recall  f1-score   support
-#     POSITIVE       0.88      0.92      0.90       100
-#     NEGATIVE       0.91      0.87      0.89       100
+# Precision, Recall, F1
+precision = precision_score(y_test, predictions, average='weighted')
+recall = recall_score(y_test, predictions, average='weighted')
+f1 = f1_score(y_test, predictions, average='weighted')
+
+print(f"Precision: {precision:.3f}")
+print(f"Recall: {recall:.3f}")
+print(f"F1-Score: {f1:.3f}")
+
+# Classification Report
+print(classification_report(y_test, predictions, target_names=['NEGATIVE', 'POSITIVE']))
 ```
+
+**Resultado:**
+```
+              precision    recall  f1-score   support
+
+    NEGATIVE       0.88      0.92      0.90       100
+    POSITIVE       0.91      0.87      0.89       100
+
+    accuracy                           0.90       200
+   macro avg       0.90      0.90      0.90       200
+weighted avg       0.90      0.90      0.90       200
+```
+
+#### Confusion Matrix
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+cm = confusion_matrix(y_test, predictions)
+
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+```
+
+---
+
+### Comparativa de Modelos
+
+```python
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.ensemble import RandomForestClassifier
+import time
+
+models = {
+    'Naive Bayes': MultinomialNB(),
+    'Logistic Regression': LogisticRegression(max_iter=1000),
+    'SVM': LinearSVC(max_iter=1000),
+    'Random Forest': RandomForestClassifier(n_estimators=100)
+}
+
+for name, model in models.items():
+    start = time.time()
+    model.fit(X_train_vec, y_train)
+    train_time = time.time() - start
+    
+    accuracy = model.score(X_test_vec, y_test)
+    
+    print(f"{name:20} | Accuracy: {accuracy:.3f} | Time: {train_time:.2f}s")
+```
+
+**Tabla Comparativa:**
+
+| Modelo | Velocidad | Precisión | Memoria | Interpretabilidad |
+|--------|-----------|-----------|---------|-------------------|
+| **Naive Bayes** | ⚡⚡⚡⚡⚡ | ⭐⭐⭐ | 💾 | ⭐⭐⭐⭐⭐ |
+| **Logistic Regression** | ⚡⚡⚡⚡ | ⭐⭐⭐⭐ | 💾 | ⭐⭐⭐⭐ |
+| **SVM** | ⚡⚡⚡ | ⭐⭐⭐⭐⭐ | 💾💾 | ⭐⭐ |
+| **Random Forest** | ⚡⚡ | ⭐⭐⭐⭐ | 💾💾💾 | ⭐⭐⭐ |
+| **Deep Learning** | ⚡ | ⭐⭐⭐⭐⭐ | 💾💾💾💾 | ⭐ |
+
+---
+
+### Hyperparameter Tuning
+
+```python
+from sklearn.model_selection import GridSearchCV
+
+# Definir parámetros a probar
+param_grid = {
+    'tfidf__max_features': [1000, 5000, 10000],
+    'tfidf__ngram_range': [(1, 1), (1, 2)],
+    'clf__C': [0.1, 1, 10],
+    'clf__solver': ['lbfgs', 'liblinear']
+}
+
+# Pipeline
+pipeline = Pipeline([
+    ('tfidf', TfidfVectorizer()),
+    ('clf', LogisticRegression(max_iter=1000))
+])
+
+# Grid Search
+grid_search = GridSearchCV(
+    pipeline,
+    param_grid,
+    cv=5,
+    scoring='f1_weighted',
+    n_jobs=-1,
+    verbose=1
+)
+
+grid_search.fit(X_train, y_train)
+
+print(f"Best parameters: {grid_search.best_params_}")
+print(f"Best score: {grid_search.best_score_:.3f}")
+```
+
+---
+
+### Casos de Uso
+
+#### 1. Spam Detection
+
+```python
+# Binary classification: SPAM vs HAM
+emails = [
+    "Win money now! Click here!",  # SPAM
+    "Meeting at 3pm tomorrow",      # HAM
+]
+```
+
+#### 2. Sentiment Analysis
+
+```python
+# Multi-class: POSITIVE, NEGATIVE, NEUTRAL
+reviews = [
+    "Amazing product!",        # POSITIVE
+    "Terrible experience",     # NEGATIVE
+    "It's okay",               # NEUTRAL
+]
+```
+
+#### 3. Topic Classification
+
+```python
+# Multi-class: SPORTS, POLITICS, TECH, ENTERTAINMENT
+articles = [
+    "Team wins championship",        # SPORTS
+    "New Python framework released", # TECH
+    "President announces policy",    # POLITICS
+]
+```
+
+#### 4. Intent Classification (Chatbots)
+
+```python
+# User intent detection
+queries = [
+    "What's the weather today?",     # WEATHER
+    "Book a flight to Paris",        # BOOKING
+    "Cancel my subscription",        # CANCEL
+]
+```
+
+---
+
+### Resumen
+
+**Conceptos Clave:**
+- **Text Classification**: Asignar categorías a documentos
+- **BoW**: Bolsa de palabras, simple pero efectivo
+- **TF-IDF**: Pondera por importancia, mejor que BoW
+- **N-grams**: Captura contexto local
+
+**Modelos:**
+- **Naive Bayes**: Rápido, baseline
+- **Logistic Regression**: Balance perfecto
+- **SVM**: Alta precisión, más lento
+- **Random Forest**: Robusto, ensemble
+
+**Pipeline:**
+1. Preprocessing
+2. Feature extraction (TF-IDF)
+3. Model training
+4. Evaluation (precision, recall, F1)
+
+**Decisiones:**
+1. ¿Datos pequeños? → Naive Bayes
+2. ¿Balance velocidad/precisión? → Logistic Regression
+3. ¿Máxima precisión? → SVM o Deep Learning
+4. ¿Interpretabilidad? → Naive Bayes o Logistic Regression
 
 ---
 
 ## 6️⃣ Sentiment Analysis
 
-### Análisis de Sentimiento
+### Introducción al Sentiment Analysis
 
-Determinar emoción/polaridad en texto.
+**¿Qué es Sentiment Analysis?**
+
+Sentiment Analysis (análisis de sentimientos) es el proceso de determinar la emoción, opinión o polaridad expresada en un texto.
 
 ```python
-"I love this product!" → POSITIVE (0.95)
-"Terrible experience"  → NEGATIVE (0.88)
-"It's okay"            → NEUTRAL  (0.60)
+"I love this product!" → POSITIVE (score: 0.95)
+"Terrible experience"  → NEGATIVE (score: -0.88)
+"It's okay, I guess"   → NEUTRAL  (score: 0.15)
 ```
 
-### Enfoques
+**Niveles de Granularidad:**
 
-**1. Lexicon-based (VADER):**
+**1. Binary (2 clases):**
+```python
+POSITIVE vs NEGATIVE
+```
+
+**2. Multi-class (3+ clases):**
+```python
+POSITIVE, NEUTRAL, NEGATIVE
+VERY_POSITIVE, POSITIVE, NEUTRAL, NEGATIVE, VERY_NEGATIVE
+```
+
+**3. Regression (score continuo):**
+```python
+-1.0 (muy negativo) a +1.0 (muy positivo)
+1-5 estrellas
+```
+
+---
+
+### Enfoques para Sentiment Analysis
+
+#### 1. Lexicon-Based (Basado en Diccionarios)
+
+**Concepto:**
+
+Usa diccionarios pre-construidos de palabras con scores de sentimiento.
+
+**VADER (Valence Aware Dictionary and sEntiment Reasoner):**
+
+Especializado en texto de redes sociales, considera:
+- Puntuación, capitalización, emojis
+- Intensificadores ("very", "extremely")
+- Negaciones ("not good")
+- Contraste ("but")
+
 ```python
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 analyzer = SentimentIntensityAnalyzer()
-scores = analyzer.polarity_scores("I love this!")
 
-print(scores)
-# {'neg': 0.0, 'neu': 0.323, 'pos': 0.677, 'compound': 0.6369}
+texts = [
+    "I love this!",
+    "I LOVE this!!!",           # Capitalización + puntuación
+    "This is not good",         # Negación
+    "This is very good",        # Intensificador
+    "Good but expensive",       # Contraste
+]
+
+for text in texts:
+    scores = analyzer.polarity_scores(text)
+    print(f"{text:25} → {scores}")
 ```
 
-**2. Machine Learning:**
+**Resultado:**
+```
+I love this!              → {'neg': 0.0, 'neu': 0.323, 'pos': 0.677, 'compound': 0.6369}
+I LOVE this!!!            → {'neg': 0.0, 'neu': 0.233, 'pos': 0.767, 'compound': 0.8633}
+This is not good          → {'neg': 0.461, 'neu': 0.539, 'pos': 0.0, 'compound': -0.3412}
+This is very good         → {'neg': 0.0, 'neu': 0.508, 'pos': 0.492, 'compound': 0.5622}
+Good but expensive        → {'neg': 0.0, 'neu': 0.417, 'pos': 0.583, 'compound': 0.5719}
+```
+
+**Compound Score:**
+- ≥ 0.05 → POSITIVE
+- -0.05 a 0.05 → NEUTRAL
+- ≤ -0.05 → NEGATIVE
+
+**TextBlob:**
+
+Otra biblioteca popular.
+
 ```python
-from sklearn.linear_model import LogisticRegression
+from textblob import TextBlob
 
-# Features: TF-IDF
-# Labels: positive/negative
-model = LogisticRegression()
-model.fit(X_train, y_train)
+text = "The movie was great but the ending was disappointing"
+blob = TextBlob(text)
+
+print(f"Polarity: {blob.sentiment.polarity}")      # -1 a 1
+print(f"Subjectivity: {blob.sentiment.subjectivity}") # 0 a 1
 ```
 
-**3. Deep Learning (Transformers):**
+**Ventajas:**
+- ✅ No requiere entrenamiento
+- ✅ Rápido
+- ✅ Interpretable
+- ✅ Funciona bien en dominios generales
+
+**Desventajas:**
+- ⚠️ No aprende de datos
+- ⚠️ No captura contexto complejo
+- ⚠️ No maneja sarcasmo bien
+- ⚠️ Limitado a palabras en diccionario
+
+#### 2. Machine Learning
+
+**Concepto:**
+
+Aprende patrones de datos etiquetados usando features (TF-IDF, n-grams).
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+# Datos (ejemplo simplificado)
+texts = [
+    "I love this product",      # POSITIVE
+    "Great quality",            # POSITIVE
+    "Terrible experience",      # NEGATIVE
+    "Waste of money",           # NEGATIVE
+    "It's okay",                # NEUTRAL
+    "Nothing special",          # NEUTRAL
+]
+labels = [1, 1, 0, 0, 2, 2]  # 0=NEG, 1=POS, 2=NEUTRAL
+
+# Split
+X_train, X_test, y_train, y_test = train_test_split(
+    texts, labels, test_size=0.25, random_state=42
+)
+
+# Vectorización
+vectorizer = TfidfVectorizer(ngram_range=(1, 2), max_features=5000)
+X_train_vec = vectorizer.fit_transform(X_train)
+X_test_vec = vectorizer.transform(X_test)
+
+# Modelo
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train_vec, y_train)
+
+# Predicción
+new_text = ["This product is amazing"]
+new_vec = vectorizer.transform(new_text)
+prediction = model.predict(new_vec)
+probability = model.predict_proba(new_vec)
+
+print(f"Prediction: {prediction[0]}")  # 1 (POSITIVE)
+print(f"Probabilities: {probability}")  # [0.05, 0.90, 0.05]
+```
+
+**Ventajas:**
+- ✅ Aprende de datos específicos del dominio
+- ✅ Captura patrones complejos
+- ✅ Flexible
+
+**Desventajas:**
+- ⚠️ Requiere datos etiquetados
+- ⚠️ Features engineering manual
+- ⚠️ No captura contexto largo
+
+#### 3. Deep Learning (Transformers)
+
+**Concepto:**
+
+Modelos pre-entrenados (BERT, RoBERTa, DistilBERT) que capturan contexto bidireccional profundo.
+
+**Usando Transformers (Hugging Face):**
+
+```python
+from transformers import pipeline
+
+# Cargar modelo pre-entrenado
+classifier = pipeline(
+    "sentiment-analysis",
+    model="distilbert-base-uncased-finetuned-sst-2-english"
+)
+
+texts = [
+    "I love this product!",
+    "This is terrible",
+    "It's okay, not great but not bad",
+    "The movie was great but the ending sucked"
+]
+
+results = classifier(texts)
+
+for text, result in zip(texts, results):
+    print(f"{text:50} → {result['label']} ({result['score']:.3f})")
+```
+
+**Resultado:**
+```
+I love this product!                               → POSITIVE (0.999)
+This is terrible                                   → NEGATIVE (0.999)
+It's okay, not great but not bad                   → POSITIVE (0.876)
+The movie was great but the ending sucked          → NEGATIVE (0.994)
+```
+
+**Modelos Multilingües:**
+
+```python
+# Español
+classifier_es = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
+
+texts_es = [
+    "Me encanta este producto",
+    "Pésima experiencia",
+]
+
+results = classifier_es(texts_es)
+for text, result in zip(texts_es, results):
+    print(f"{text:30} → {result['label']} ({result['score']:.3f})")
+```
+
+**Ventajas:**
+- ✅ Mejor precisión
+- ✅ Captura contexto complejo
+- ✅ Transfer learning (menos datos necesarios)
+- ✅ Maneja mejor negaciones y sarcasmo
+
+**Desventajas:**
+- ⚠️ Requiere GPU para velocidad
+- ⚠️ Modelos grandes
+- ⚠️ Menos interpretable
+
+---
+
+### Niveles de Análisis
+
+#### 1. Document-Level Sentiment
+
+Asigna sentimiento al documento completo.
+
+```python
+review = "The hotel was amazing! Great location, friendly staff, and clean rooms."
+
+# Resultado: POSITIVE (todo el documento)
+```
+
+#### 2. Sentence-Level Sentiment
+
+Analiza cada oración por separado.
+
 ```python
 from transformers import pipeline
 
 classifier = pipeline("sentiment-analysis")
-result = classifier("I love this product!")
 
-print(result)
-# [{'label': 'POSITIVE', 'score': 0.9998}]
+review = "The food was great. But the service was terrible. Overall, okay experience."
+sentences = ["The food was great.", "But the service was terrible.", "Overall, okay experience."]
+
+for sent in sentences:
+    result = classifier(sent)[0]
+    print(f"{sent:40} → {result['label']} ({result['score']:.3f})")
 ```
 
-### Niveles de Análisis
+**Resultado:**
+```
+The food was great.                      → POSITIVE (0.999)
+But the service was terrible.            → NEGATIVE (0.999)
+Overall, okay experience.                → POSITIVE (0.876)
+```
 
-**1. Document-level:**
+#### 3. Aspect-Based Sentiment Analysis (ABSA)
+
+Identifica aspectos específicos y su sentimiento.
+
 ```python
-"I love this product!" → POSITIVE
+review = "The food was great but the service was terrible and the price too high"
+
+# Aspectos:
+# - food: POSITIVE
+# - service: NEGATIVE
+# - price: NEGATIVE
 ```
 
-**2. Sentence-level:**
+**Implementación Simplificada:**
+
 ```python
-"The movie was great. But the ending sucked."
-→ Sentence 1: POSITIVE
-→ Sentence 2: NEGATIVE
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+
+aspects = {
+    "food": ["food", "meal", "dish", "cuisine"],
+    "service": ["service", "staff", "waiter"],
+    "price": ["price", "cost", "expensive", "cheap"]
+}
+
+def aspect_sentiment(text):
+    doc = nlp(text)
+    
+    results = {}
+    for aspect, keywords in aspects.items():
+        for token in doc:
+            if token.text.lower() in keywords:
+                # Análisis simple: mirar adjetivos cercanos
+                for child in token.children:
+                    if child.pos_ == "ADJ":
+                        results[aspect] = child.text
+    
+    return results
+
+text = "The food was great but the service was terrible"
+print(aspect_sentiment(text))
+# {'food': 'great', 'service': 'terrible'}
 ```
 
-**3. Aspect-based:**
+---
+
+### Casos de Uso
+
+#### 1. Análisis de Reviews de Productos
+
 ```python
-"The food was great but service was terrible"
-→ food: POSITIVE
-→ service: NEGATIVE
+# E-commerce: Amazon, Yelp, TripAdvisor
+"5-star product! Highly recommend" → POSITIVE
+→ Acción: Destacar en recomendaciones
 ```
+
+#### 2. Monitoreo de Redes Sociales
+
+```python
+# Brand sentiment tracking
+tweets = get_tweets(hashtag="#MyBrand")
+sentiments = analyze_sentiment(tweets)
+
+positive_ratio = sum(s == "POSITIVE" for s in sentiments) / len(sentiments)
+# positive_ratio < 0.5 → Alerta de PR
+```
+
+#### 3. Análisis de Feedback de Clientes
+
+```python
+# Customer support
+ticket = "Your service is awful and slow!"
+sentiment = analyze(ticket)
+
+if sentiment == "NEGATIVE":
+    priority = "HIGH"  # Escalate
+```
+
+#### 4. Análisis Financiero
+
+```python
+# Stock market sentiment from news
+headline = "Company reports record profits"
+sentiment = analyze(headline)
+
+if sentiment == "POSITIVE":
+    signal = "BUY"
+```
+
+---
+
+### Desafíos del Sentiment Analysis
+
+#### 1. Sarcasmo e Ironía
+
+```python
+"Oh great, another delay. Just perfect!"
+# Literalmente POSITIVE, pero sarcásticamente NEGATIVE
+```
+
+#### 2. Contexto y Dominio
+
+```python
+# "Sick" en diferentes contextos
+"This game is sick!"        → POSITIVE (slang)
+"I feel sick"               → NEGATIVE (salud)
+```
+
+#### 3. Negaciones
+
+```python
+"not good"     → NEGATIVE (pero contiene "good")
+"not bad"      → POSITIVE
+"not terrible" → ???
+```
+
+#### 4. Aspectos Múltiples
+
+```python
+"Great product but terrible customer service"
+# ¿POSITIVE o NEGATIVE? Depende del aspecto
+```
+
+#### 5. Emojis y Lenguaje Informal
+
+```python
+"Best day ever 😍😍😍"  # Emojis refuerzan sentimiento
+"idk lol smh"           # Abreviaciones, slang
+```
+
+---
+
+### Fine-tuning de Modelos Transformers
+
+#### Ejemplo con Hugging Face
+
+```python
+from transformers import (
+    AutoTokenizer,
+    AutoModelForSequenceClassification,
+    Trainer,
+    TrainingArguments
+)
+from datasets import load_dataset
+
+# 1. Cargar dataset
+dataset = load_dataset("imdb")
+
+# 2. Cargar modelo y tokenizer
+model_name = "distilbert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(
+    model_name,
+    num_labels=2  # POSITIVE, NEGATIVE
+)
+
+# 3. Tokenizar
+def tokenize_function(examples):
+    return tokenizer(examples["text"], padding="max_length", truncation=True)
+
+tokenized_datasets = dataset.map(tokenize_function, batched=True)
+
+# 4. Training arguments
+training_args = TrainingArguments(
+    output_dir="./results",
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=64,
+    warmup_steps=500,
+    weight_decay=0.01,
+    logging_dir="./logs",
+    evaluation_strategy="epoch"
+)
+
+# 5. Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_datasets["train"],
+    eval_dataset=tokenized_datasets["test"]
+)
+
+# 6. Entrenar
+trainer.train()
+
+# 7. Evaluar
+trainer.evaluate()
+```
+
+---
+
+### Comparativa de Enfoques
+
+| Enfoque | Velocidad | Precisión | Datos Requeridos | Interpretabilidad | Dominio Específico |
+|---------|-----------|-----------|------------------|-------------------|-------------------|
+| **Lexicon (VADER)** | ⚡⚡⚡⚡⚡ | ⭐⭐⭐ | 0 | ⭐⭐⭐⭐⭐ | General |
+| **ML (LogReg/SVM)** | ⚡⚡⚡⚡ | ⭐⭐⭐⭐ | 1K-10K | ⭐⭐⭐⭐ | Adaptable |
+| **DL (LSTM)** | ⚡⚡⚡ | ⭐⭐⭐⭐ | 10K+ | ⭐⭐ | Adaptable |
+| **Transformers** | ⚡⚡ | ⭐⭐⭐⭐⭐ | 100+ (fine-tune) | ⭐ | Muy adaptable |
+
+---
+
+### Evaluación
+
+```python
+from sklearn.metrics import classification_report, confusion_matrix
+
+y_true = [1, 0, 1, 0, 1]  # 1=POS, 0=NEG
+y_pred = [1, 0, 1, 1, 1]
+
+print(classification_report(y_true, y_pred, target_names=['NEGATIVE', 'POSITIVE']))
+```
+
+**Resultado:**
+```
+              precision    recall  f1-score   support
+
+    NEGATIVE       1.00      0.50      0.67         2
+    POSITIVE       0.75      1.00      0.86         3
+
+    accuracy                           0.80         5
+   macro avg       0.88      0.75      0.76         5
+weighted avg       0.85      0.80      0.78         5
+```
+
+---
+
+### Resumen
+
+**Conceptos Clave:**
+- **Sentiment Analysis**: Determinar polaridad/emoción en texto
+- **Niveles**: Document, Sentence, Aspect
+- 3 enfoques: Lexicon, ML, Deep Learning
+
+**Métodos:**
+- **VADER**: Rápido, sin entrenamiento, redes sociales
+- **ML**: Balance, requiere datos
+- **Transformers**: Mejor precisión, contexto profundo
+
+**Aplicaciones:**
+- Reviews de productos
+- Monitoreo de marca (social media)
+- Customer support (priorización)
+- Análisis financiero (noticias)
+
+**Desafíos:**
+- Sarcasmo, ironía
+- Negaciones
+- Contexto y dominio
+- Aspectos múltiples
+
+**Decisiones:**
+1. ¿Velocidad crítica + dominio general? → VADER
+2. ¿Dominio específico + datos disponibles? → ML (LogReg)
+3. ¿Máxima precisión? → Transformers
+4. ¿Aspectos específicos? → ABSA
 
 ---
 
@@ -647,171 +3680,549 @@ print(result)
 
 ## 7️⃣ Word Embeddings
 
-### Dense Vector Representations
+### Introducción a Word Embeddings
 
-Los **embeddings** son representaciones numéricas densas de palabras que capturan su significado semántico. Son una de las innovaciones más importantes en NLP moderno.
+**¿Qué son los Word Embeddings?**
 
-**El problema con one-hot encoding:**
+Word Embeddings son representaciones numéricas densas de palabras que capturan su significado semántico en un espacio vectorial de baja dimensionalidad.
+
+**El problema: One-Hot Encoding**
 
 ```python
-# Vocabulario: ["cat", "dog", "king", "queen"]
+# Vocabulario: ["cat", "dog", "king", "queen", ...]  # 50,000 palabras
 
-# One-hot (sparse - vectores de 10,000+ dimensiones)
-"cat"   → [1, 0, 0, 0]
-"dog"   → [0, 1, 0, 0]
-"king"  → [0, 0, 1, 0]
-"queen" → [0, 0, 0, 1]
+# One-hot encoding (sparse)
+"cat"   → [1, 0, 0, 0, ..., 0]  # 50,000 dimensiones
+"dog"   → [0, 1, 0, 0, ..., 0]  # 50,000 dimensiones
+"king"  → [0, 0, 1, 0, ..., 0]  # 50,000 dimensiones
+"queen" → [0, 0, 0, 1, ..., 0]  # 50,000 dimensiones
 
 # Problemas:
-# 1. Dimensionalidad enorme (tamaño del vocabulario)
-# 2. No captura relaciones: distancia("cat", "dog") = distancia("cat", "king")
-# 3. Sparse: 99.99% son ceros → ineficiente
+# 1. Dimensionalidad = tamaño del vocabulario (10K-100K+)
+# 2. Sparsity: 99.99% son ceros
+# 3. No captura similitud: dist("cat", "dog") = dist("cat", "king") = √2
+# 4. No captura relaciones semánticas
 ```
 
-**La solución: Embeddings densos**
+**La solución: Embeddings Densos**
 
 ```python
-# Embedding (dense - 300 dimensiones típicamente)
-"cat"   → [0.2, -0.4, 0.1, 0.8, ..., 0.3]  # 300 dims
-"dog"   → [0.3, -0.3, 0.2, 0.7, ..., 0.4]  # 300 dims
-"king"  → [0.5, 0.6, -0.2, 0.1, ..., -0.1] # 300 dims
-"queen" → [0.4, 0.5, -0.3, 0.2, ..., -0.2] # 300 dims
+# Dense embeddings (típicamente 100-300 dimensiones)
+"cat"   → [0.2, -0.4, 0.1, 0.8, ..., 0.3]   # 300 dims
+"dog"   → [0.3, -0.3, 0.2, 0.7, ..., 0.4]   # 300 dims
+"king"  → [0.5, 0.6, -0.2, 0.1, ..., -0.1]  # 300 dims
+"queen" → [0.4, 0.5, -0.3, 0.2, ..., -0.2]  # 300 dims
 
 # Ventajas:
-# 1. Dimensionalidad fija y pequeña (100-300 dims)
-# 2. Captura similitud semántica: distancia("cat", "dog") < distancia("cat", "king")
-# 3. Aritmética semántica: king - man + woman ≈ queen
+# 1. Dimensionalidad fija y pequeña (100-300)
+# 2. Dense: todos los valores significativos
+# 3. Captura similitud semántica
+# 4. Aritmética vectorial con significado
 ```
 
-**Propiedades mágicas de los embeddings:**
+---
 
-Los embeddings aprenden relaciones geométricas sorprendentes:
+### Propiedades Mágicas de los Embeddings
+
+#### 1. Similitud Semántica
+
+Palabras similares tienen vectores cercanos en el espacio.
 
 ```python
-# Analogías
+from scipy.spatial.distance import cosine
+
+# Similitud = 1 - distancia_coseno
+similitud("dog", "puppy")    → 0.85  # ✅ Alta (animales similares)
+similitud("cat", "dog")      → 0.76  # ✅ Alta (ambos animales)
+similitud("dog", "car")      → 0.12  # ⚠️ Baja (no relacionados)
+similitud("good", "great")   → 0.78  # ✅ Alta (sinónimos)
+```
+
+#### 2. Analogías (Aritmética Semántica)
+
+```python
+# Relación: king - man + woman ≈ queen
 vector("king") - vector("man") + vector("woman") ≈ vector("queen")
-vector("Paris") - vector("France") + vector("Italy") ≈ vector("Rome")
 
-# Similitud semántica
-similitud("dog", "puppy")     → 0.85  # Alta
-similitud("dog", "car")       → 0.12  # Baja
-similitud("good", "great")    → 0.78  # Alta
+# Relación: Paris - France + Spain ≈ Madrid
+vector("Paris") - vector("France") + vector("Spain") ≈ vector("Madrid")
 
-# Clustering
-# Palabras similares se agrupan en el espacio vectorial:
-# ["cat", "dog", "puppy"] → cluster de animales
-# ["king", "queen", "prince"] → cluster de realeza
+# Relación: walking - walk + swim ≈ swimming
+vector("walking") - vector("walk") + vector("swim") ≈ vector("swimming")
 ```
-
-### Word2Vec
-
-**Word2Vec** (2013) fue revolucionario: aprendizaje no supervisado de embeddings desde texto crudo.
-
-**Dos arquitecturas:**
-
-**1. CBOW (Continuous Bag of Words):**
-
-Predice palabra central dado el contexto.
-
-```
-Input: Context words → Output: Target word
-"I ___ Python programming" → "love"
-
-Ejemplo:
-Context: ["I", "Python", "programming"]
-Target: "love"
-
-# Rápido, mejor para corpus pequeños
-```
-
-**2. Skip-gram:**
-
-Predice contexto dada una palabra central.
-
-```
-Input: Target word → Output: Context words
-"love" → ["I", "Python", "programming"]
-
-# Más lento, mejor para corpus grandes
-# Funciona mejor con palabras raras
-```
-
-**¿Cómo aprende Word2Vec?**
-
-1. **Ventana deslizante**: Recorre el texto con una ventana (ej: 5 palabras)
-2. **Pares de entrenamiento**: Crea pares (palabra, contexto)
-3. **Red neuronal shallow**: 1 capa oculta que aprende embeddings
-4. **Objetivo**: Maximizar la probabilidad de que palabras cercanas tengan embeddings similares
 
 **Implementación:**
 ```python
-from gensim.models import Word2Vec
+from gensim.models import KeyedVectors
 
-sentences = [["I", "love", "Python"], ["Python", "is", "great"]]
-model = Word2Vec(
-    sentences, 
-    vector_size=100,    # Dimensión de embeddings
-    window=5,           # Tamaño de ventana de contexto
-    min_count=1,        # Ignora palabras con frecuencia < min_count
-    sg=0                # 0=CBOW, 1=Skip-gram
-)
+model = KeyedVectors.load_word2vec_format("GoogleNews-vectors.bin", binary=True)
 
-# Similitud
-similarity = model.wv.similarity("Python", "programming")
+# Analogía: king - man + woman = ?
+result = model.most_similar(positive=['king', 'woman'], negative=['man'], topn=1)
+print(result)  # [('queen', 0.7118)]
 
-# Analogía
-result = model.wv.most_similar(positive=['king', 'woman'], negative=['man'])
-# queen
+# Analogía: Paris - France + Italy = ?
+result = model.most_similar(positive=['Paris', 'Italy'], negative=['France'], topn=1)
+print(result)  # [('Rome', 0.7090)]
 ```
 
-### GloVe
+#### 3. Clustering Semántico
 
-Global Vectors - basado en co-ocurrencias.
+Palabras similares se agrupan naturalmente en el espacio vectorial.
+
+```python
+# Cluster 1: Animales domésticos
+["cat", "dog", "puppy", "kitten", "pet"] → Región A
+
+# Cluster 2: Realeza
+["king", "queen", "prince", "princess", "royal"] → Región B
+
+# Cluster 3: Vehículos
+["car", "truck", "vehicle", "automobile"] → Región C
+```
+
+---
+
+### Word2Vec (2013)
+
+**Concepto:**
+
+Word2Vec revolucionó NLP: aprende embeddings de forma no supervisada desde texto crudo usando una red neuronal shallow.
+
+#### Dos Arquitecturas
+
+**1. CBOW (Continuous Bag of Words)**
+
+Predice la palabra central dado su contexto.
+
+```
+Contexto: ["I", "love", "______", "programming"]
+Predicción: "Python"
+
+Input:  context words
+Output: target word
+```
+
+**Ejemplo:**
+```python
+# Frase: "I love Python programming"
+# Ventana = 2
+
+# Par de entrenamiento CBOW:
+Context: ["I", "love", "programming", "."]
+Target:  "Python"
+
+# La red aprende: ¿Qué palabra aparece entre "love" y "programming"?
+```
+
+**Características:**
+- ⚡ Más rápido que Skip-gram
+- 🎯 Mejor para corpus pequeños
+- ⚡ Promedia los vectores de contexto
+
+**2. Skip-gram**
+
+Predice las palabras de contexto dada una palabra central.
+
+```
+Palabra: "Python"
+Predicción: ["I", "love", "programming", "."]
+
+Input:  target word
+Output: context words
+```
+
+**Ejemplo:**
+```python
+# Frase: "I love Python programming"
+# Ventana = 2
+
+# Pares de entrenamiento Skip-gram:
+Target: "Python"
+Context: ["I", "love", "programming", "."]
+
+# La red aprende: ¿Qué palabras aparecen cerca de "Python"?
+```
+
+**Características:**
+- 🐢 Más lento que CBOW
+- 🎯 Mejor para corpus grandes
+- 🔥 Funciona mejor con palabras raras (más ejemplos de entrenamiento por palabra)
+
+#### Arquitectura Word2Vec
+
+```
+Input Layer (One-hot)
+        ↓
+Hidden Layer (Embeddings)  ← Esto es lo que queremos
+        ↓
+Output Layer (Softmax)
+
+Ejemplo Skip-gram:
+Input: "Python" (one-hot: [0,0,0,1,0,...])
+   ↓
+Hidden: embedding de "Python" [0.2, -0.4, ..., 0.3]  # 300 dims
+   ↓
+Output: probabilidades de palabras de contexto
+```
+
+#### Implementación con Gensim
+
+```python
+from gensim.models import Word2Vec
+import nltk
+
+# 1. Preparar corpus
+sentences = [
+    ["I", "love", "Python", "programming"],
+    ["Python", "is", "great", "for", "machine", "learning"],
+    ["machine", "learning", "uses", "Python"],
+    ["I", "enjoy", "programming", "in", "Python"]
+]
+
+# 2. Entrenar modelo
+model = Word2Vec(
+    sentences,
+    vector_size=100,     # Dimensión de embeddings
+    window=5,            # Ventana de contexto (5 palabras antes/después)
+    min_count=1,         # Ignora palabras con frecuencia < min_count
+    sg=0,                # 0=CBOW, 1=Skip-gram
+    epochs=100,          # Número de iteraciones
+    workers=4            # Paralelización
+)
+
+# 3. Uso del modelo
+
+# Obtener vector de una palabra
+vector = model.wv['Python']
+print(f"Vector shape: {vector.shape}")  # (100,)
+
+# Similitud entre palabras
+similarity = model.wv.similarity('Python', 'programming')
+print(f"Similitud Python-programming: {similarity:.3f}")
+
+# Palabras más similares
+similar = model.wv.most_similar('Python', topn=5)
+print(f"Palabras similares a Python: {similar}")
+
+# Analogías
+result = model.wv.most_similar(positive=['Python', 'learning'], negative=['programming'])
+print(f"Python - programming + learning = {result}")
+
+# Palabra que no encaja
+odd_one = model.wv.doesnt_match(['Python', 'Java', 'banana', 'C++'])
+print(f"Palabra que no encaja: {odd_one}")
+```
+
+#### Parámetros Importantes
+
+```python
+model = Word2Vec(
+    sentences,
+    vector_size=300,      # 50-300 típico (más = más expresivo pero más lento)
+    window=5,             # 2-10 típico (más grande = más contexto pero más general)
+    min_count=5,          # Ignora palabras raras (5-10 para corpus grandes)
+    sg=1,                 # 0=CBOW (rápido), 1=Skip-gram (mejor calidad)
+    negative=5,           # Negative sampling: 5-20 (eficiencia)
+    epochs=5,             # 5-20 típico
+    alpha=0.025,          # Learning rate inicial
+    min_alpha=0.0001,     # Learning rate final
+)
+```
+
+---
+
+### GloVe (Global Vectors for Word Representation)
+
+**Concepto:**
+
+GloVe (2014) aprende embeddings basándose en estadísticas globales de co-ocurrencia de palabras en el corpus.
+
+**Diferencia con Word2Vec:**
+- Word2Vec: local context (ventana deslizante)
+- GloVe: global co-occurrence matrix
+
+**Matriz de Co-ocurrencia:**
+
+```python
+# Corpus: "I love Python. I love programming."
+
+Matriz de co-ocurrencia (ventana=1):
+        I    love  Python  programming  .
+I       0    2     0       0            0
+love    2    0     1       1            0
+Python  0    1     0       0            1
+programming 0 1    0       0            1
+.       0    0     1       1            0
+```
+
+**Objetivo de GloVe:**
+
+```
+Minimizar: (wᵢ · wⱼ - log(Xᵢⱼ))²
+
+Donde:
+wᵢ, wⱼ = embeddings de palabras i, j
+Xᵢⱼ = co-ocurrencia de palabras i, j
+```
+
+**Uso de GloVe Pre-entrenado:**
 
 ```python
 from gensim.scripts.glove2word2vec import glove2word2vec
 from gensim.models import KeyedVectors
 
-# Convertir GloVe a Word2Vec format
-glove2word2vec("glove.6B.100d.txt", "word2vec.txt")
+# 1. Descargar GloVe (ej: glove.6B.100d.txt de Stanford)
+# https://nlp.stanford.edu/projects/glove/
 
-# Cargar
-model = KeyedVectors.load_word2vec_format("word2vec.txt")
+# 2. Convertir formato GloVe a Word2Vec
+glove_file = "glove.6B.100d.txt"
+word2vec_file = "glove.6B.100d.word2vec.txt"
+glove2word2vec(glove_file, word2vec_file)
+
+# 3. Cargar modelo
+model = KeyedVectors.load_word2vec_format(word2vec_file, binary=False)
+
+# 4. Uso
+print(model.most_similar('python', topn=5))
+print(model.similarity('king', 'queen'))
+
+# Analogía
+result = model.most_similar(positive=['woman', 'king'], negative=['man'])
+print(result)  # [('queen', 0.77)]
 ```
 
-### FastText
+**Tamaños de GloVe Pre-entrenados:**
 
-Word2Vec + información de subpalabras.
+```
+glove.6B.50d.txt    - 50 dimensions (más rápido)
+glove.6B.100d.txt   - 100 dimensions
+glove.6B.200d.txt   - 200 dimensions
+glove.6B.300d.txt   - 300 dimensions (mejor calidad)
+
+glove.42B.300d.txt  - Entrenado en 42 billion tokens
+glove.840B.300d.txt - Entrenado en 840 billion tokens (mejor)
+```
+
+---
+
+### FastText (Facebook, 2016)
+
+**Concepto:**
+
+FastText mejora Word2Vec considerando **información de subpalabras** (character n-grams).
+
+**Ventaja Principal:** Maneja palabras OOV (Out-of-Vocabulary) y morfología.
+
+**Ejemplo:**
+```python
+# Word2Vec:
+"programming" → embedding aprendido
+"programmer"  → embedding aprendido
+"programmed"  → embedding aprendido
+# ⚠️ No comparte información entre ellas
+
+# FastText:
+"programming" → embedding de palabra + embeddings de n-grams
+                ["<pr", "pro", "rog", "ogr", "gra", "ram", "amm", ..., "ing>"]
+"programmer"  → comparte n-grams con "programming"
+"programmed"  → comparte n-grams con "programming"
+# ✅ Comparte información morfológica
+```
+
+**Out-of-Vocabulary:**
+```python
+# Word2Vec:
+model.wv["supercalifragilisticexpialidocious"]  # ❌ KeyError
+
+# FastText:
+model.wv["supercalifragilisticexpialidocious"]  # ✅ Vector generado desde n-grams
+```
+
+**Implementación:**
 
 ```python
 from gensim.models import FastText
 
-model = FastText(sentences, vector_size=100, window=5)
+sentences = [
+    ["running", "runner", "run"],
+    ["programming", "programmer", "program"],
+]
 
-# Puede manejar OOV (Out-of-Vocabulary)
-vector = model.wv["unfindableword"]  # ✓ Funciona
+# Entrenar
+model = FastText(
+    sentences,
+    vector_size=100,
+    window=5,
+    min_count=1,
+    min_n=3,           # Min n-gram length
+    max_n=6,           # Max n-gram length
+    sg=1               # Skip-gram
+)
+
+# Uso
+vector_run = model.wv["run"]
+vector_runner = model.wv["runner"]
+
+# ✅ Puede generar embeddings para palabras no vistas
+vector_unseen = model.wv["runnnning"]  # Typo, pero FastText puede manejarlo
 ```
 
-### Propiedades Mágicas
+**Ventajas sobre Word2Vec:**
+- ✅ Maneja palabras OOV
+- ✅ Captura morfología (prefijos, sufijos, raíces)
+- ✅ Funciona mejor en idiomas morfológicamente ricos (alemán, turco, finlandés)
+- ✅ Robusto ante typos
 
-**1. Similitud Semántica:**
+**Desventajas:**
+- ⚠️ Más lento (más parámetros)
+- ⚠️ Modelos más grandes
+
+---
+
+### Comparativa: Word2Vec vs GloVe vs FastText
+
+| Aspecto | Word2Vec | GloVe | FastText |
+|---------|----------|-------|----------|
+| **Método** | Ventana local | Co-ocurrencia global | Ventana local + subpalabras |
+| **OOV** | ❌ No maneja | ❌ No maneja | ✅ Maneja |
+| **Morfología** | ❌ No | ❌ No | ✅ Sí |
+| **Velocidad** | ⚡⚡⚡ | ⚡⚡⚡⚡ | ⚡⚡ |
+| **Memoria** | 💾💾 | 💾💾 | 💾💾💾 |
+| **Analogías** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
+| **Palabras raras** | ⚠️ Skip-gram mejor | ⚠️ Requiere min count | ✅ Muy bueno |
+| **Multilingüe** | ✅ | ✅ | ✅✅ (mejor) |
+
+---
+
+### Uso en Downstream Tasks
+
+#### Clasificación de Texto
+
 ```python
-similarity("cat", "dog") = 0.8  # Alta
-similarity("cat", "car") = 0.2  # Baja
+from gensim.models import Word2Vec
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+# 1. Entrenar/cargar embeddings
+model = Word2Vec.load("word2vec.model")
+
+# 2. Función para documentos → vectores
+def document_vector(doc, model):
+    # Promedia los vectores de las palabras
+    vectors = [model.wv[word] for word in doc if word in model.wv]
+    if len(vectors) == 0:
+        return np.zeros(model.vector_size)
+    return np.mean(vectors, axis=0)
+
+# 3. Preparar datos
+docs = [["I", "love", "Python"], ["I", "hate", "bugs"]]
+labels = [1, 0]  # Positive, Negative
+
+X = np.array([document_vector(doc, model) for doc in docs])
+y = np.array(labels)
+
+# 4. Entrenar clasificador
+clf = LogisticRegression()
+clf.fit(X, y)
+
+# 5. Predecir
+new_doc = ["Python", "is", "great"]
+new_vec = document_vector(new_doc, model)
+prediction = clf.predict([new_vec])
+print(f"Prediction: {prediction}")
 ```
 
-**2. Analogías:**
+---
+
+### Visualización de Embeddings
+
+#### t-SNE (2D projection)
+
 ```python
-king - man + woman ≈ queen
-Paris - France + Spain ≈ Madrid
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+
+# 1. Obtener embeddings
+words = ["king", "queen", "man", "woman", "prince", "princess"]
+vectors = [model.wv[word] for word in words]
+
+# 2. Reducir dimensionalidad 300D → 2D
+tsne = TSNE(n_components=2, random_state=42)
+vectors_2d = tsne.fit_transform(vectors)
+
+# 3. Plot
+plt.figure(figsize=(10, 8))
+for i, word in enumerate(words):
+    x, y = vectors_2d[i]
+    plt.scatter(x, y, marker='o', s=100)
+    plt.text(x+0.1, y+0.1, word, fontsize=12)
+
+plt.title("Word Embeddings Visualization (t-SNE)")
+plt.show()
 ```
 
-**3. Clustering:**
+---
+
+### Limitaciones de Word Embeddings
+
+#### 1. Polisemia (Múltiples Significados)
+
 ```python
-# Palabras similares se agrupan
-cluster_1: [cat, dog, animal, pet]
-cluster_2: [car, vehicle, truck]
+# "bank" tiene un solo embedding
+"I went to the bank to deposit money"  → bank: [0.2, -0.4, ..., 0.3]
+"I sat by the river bank"              → bank: [0.2, -0.4, ..., 0.3]
+# ⚠️ Mismo vector para significados diferentes
 ```
+
+**Solución:** Contextualized embeddings (BERT, ELMo) → Koan 8
+
+#### 2. Sesgos Sociales
+
+```python
+# Embeddings aprenden sesgos del corpus de entrenamiento
+model.most_similar(positive=['doctor'], negative=['man'])
+# → Puede incluir sesgos de género
+
+model.most_similar(positive=['programmer'])
+# → Puede tener sesgos de género/raza
+```
+
+#### 3. Falta de Contexto
+
+```python
+# Mismo embedding sin importar el contexto
+"Python is a programming language"  → Python: [vector]
+"I saw a python in the zoo"         → Python: [vector]
+# ⚠️ Mismo vector, significados diferentes
+```
+
+---
+
+### Resumen
+
+**Conceptos Clave:**
+- **Embeddings**: Representaciones densas que capturan significado semántico
+- **Propiedades**: Similitud, analogías, clustering
+- Word2Vec: CBOW (rápido) vs Skip-gram (mejor calidad)
+- GloVe: Co-ocurrencia global
+- FastText: Subpalabras, maneja OOV
+
+**Algoritmos:**
+- **Word2Vec**: Estándar, rápido, buena calidad
+- **GloVe**: Mejores analogías, pre-entrenados disponibles
+- **FastText**: Mejor para morfología y palabras raras
+
+**Limitaciones:**
+- Polisemia (un vector por palabra)
+- Sesgos aprendidos del corpus
+- Sin contexto dinámico
+
+**Decisiones:**
+1. ¿Corpus propio? → Entrenar Word2Vec/FastText
+2. ¿Usar pre-entrenado? → GloVe (Stanford)
+3. ¿Palabras raras/typos? → FastText
+4. ¿Necesitas contexto? → Transformers (Koan 8)
 
 ---
 
