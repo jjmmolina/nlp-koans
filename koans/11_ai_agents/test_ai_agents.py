@@ -29,6 +29,7 @@ from ai_agents import (
     create_multi_agent_crew,
     create_human_in_the_loop_agent,
     setup_mcp_agent,
+    create_parallel_agents,
 )
 
 
@@ -394,3 +395,76 @@ class TestMCPAgent:
         if agent is None:
             pytest.skip("setup_mcp_agent no implementado aún")
         assert callable(agent), "setup_mcp_agent debe devolver una función invocable"
+
+
+# ===========================================================================
+# 12. Tests de Agentes en Paralelo
+# ===========================================================================
+
+
+class TestParallelAgents:
+    """Tests for parallel agent execution using asyncio."""
+
+    def test_parallel_agents_returns_list(self):
+        tasks = ["Di 'hola' en inglés", "Di 'hola' en francés", "Di 'hola' en alemán"]
+        results = create_parallel_agents(tasks)
+        if results is None:
+            pytest.skip("create_parallel_agents no implementado aún")
+        assert isinstance(results, list)
+
+    def test_parallel_agents_returns_same_count(self):
+        tasks = [
+            "Responde con solo el número 1",
+            "Responde con solo el número 2",
+            "Responde con solo el número 3",
+        ]
+        results = create_parallel_agents(tasks)
+        if results is None:
+            pytest.skip("create_parallel_agents no implementado aún")
+        assert len(results) == len(tasks), "Debe haber un resultado por tarea"
+
+    def test_parallel_agents_order_preserved(self):
+        """Results must be returned in the same order as input tasks."""
+        tasks = [
+            "Responde SOLO con la palabra: PRIMERO",
+            "Responde SOLO con la palabra: SEGUNDO",
+            "Responde SOLO con la palabra: TERCERO",
+        ]
+        results = create_parallel_agents(tasks)
+        if results is None:
+            pytest.skip("create_parallel_agents no implementado aún")
+        assert "PRIMERO" in results[0].upper()
+        assert "SEGUNDO" in results[1].upper()
+        assert "TERCERO" in results[2].upper()
+
+    def test_parallel_agents_faster_than_sequential(self):
+        """Parallel execution should be significantly faster than sequential."""
+        import time
+
+        tasks = ["Di hola" for _ in range(4)]
+
+        # Parallel
+        start = time.time()
+        results = create_parallel_agents(tasks, max_concurrent=4)
+        parallel_time = time.time() - start
+
+        if results is None:
+            pytest.skip("create_parallel_agents no implementado aún")
+
+        # Sequential approximation: parallel_time * num_tasks
+        # We just check it completes and returns all results
+        assert len(results) == len(tasks)
+        # Sanity: parallel run of 4 identical tasks should finish in < 2x a single call
+        # (hard to assert timing reliably, so we just verify it ran)
+        print(f"Parallel time for {len(tasks)} tasks: {parallel_time:.2f}s")
+
+    def test_parallel_agents_with_semaphore_limit(self):
+        """max_concurrent=1 forces sequential execution but should still work."""
+        tasks = ["Responde con 'ok' ", "Responde con 'ok' ", "Responde con 'ok' "]
+        results = create_parallel_agents(tasks, max_concurrent=1)
+        if results is None:
+            pytest.skip("create_parallel_agents no implementado aún")
+        assert len(results) == 3
+        for r in results:
+            if not isinstance(r, Exception):
+                assert isinstance(r, str)

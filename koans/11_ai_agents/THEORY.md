@@ -12,8 +12,9 @@
 9. [Sistemas Multi-Agente](#multi-agente)
 10. [Model Context Protocol (MCP)](#mcp)
 11. [Human-in-the-Loop](#hitl)
-12. [Callbacks y Monitoring](#callbacks)
-13. [Mejores Prácticas](#mejores-prácticas)
+12. [Agentes en Paralelo](#paralelo)
+13. [Callbacks y Monitoring](#callbacks)
+14. [Mejores Prácticas](#mejores-prácticas)
 
 ---
 
@@ -1227,6 +1228,180 @@ user_proxy.initiate_chat(
     assistant,
     message="Help me write a Python script"
 )
+```
+
+---
+
+## ⚡ Agentes en Paralelo {#paralelo}
+
+### ¿Por qué ejecutar agentes en paralelo?
+
+En pipelines complejos, varios sub-agentes pueden trabajar de forma **completamente
+independiente**. Ejecutarlos en secuencia desperdicia tiempo; ejecutarlos en
+paralelo con `asyncio` reduce la latencia total al tiempo del agente más lento.
+
+```
+Secuencial (lento):
+  [Agente A: 3s] → [Agente B: 4s] → [Agente C: 2s]  =  9 segundos
+
+Paralelo (rápido):
+  [Agente A: 3s] ↘
+  [Agente B: 4s] → reduce → [Síntesis final]          =  4 segundos
+  [Agente C: 2s] ↗
+```
+
+### Fan-out / Fan-in con LangGraph
+
+LangGraph soporta nativamente la ejecución paralela de nodos mediante el
+**patrón fan-out/fan-in**: un nodo distribuye el trabajo entre varios nodos
+hijos que se ejecutan en paralelo, y luego un nodo de síntesis recoge todos
+los resultados.
+
+```python
+from typing import TypedDict, Annotated
+from langgraph.graph import StateGraph, END
+from langgraph.graph.message import add_messages
+import operator
+
+class ParallelState(TypedDict):
+    task: str
+    results: Annotated[list, operator.add]  # Los nodos hijos añaden aquí
+    final_answer: str
+
+# Tres agentes especializados que trabajan en paralelo
+def agent_research(state):
+    result = research_llm.invoke(state["task"])
+    return {"results": [f"Research: {result.content}"]}
+
+def agent_analysis(state):
+    result = analysis_llm.invoke(state["task"])
+    return {"results": [f"Analysis: {result.content}"]}
+
+def agent_creativity(state):
+    result = creative_llm.invoke(state["task"])
+    return {"results": [f"Creative: {result.content}"]}
+
+def synthesize(state):
+    combined = "\n".join(state["results"])
+    final = synthesis_llm.invoke(f"Combina: {combined}")
+    return {"final_answer": final.content}
+
+# Construir el grafo con ramas paralelas
+workflow = StateGraph(ParallelState)
+workflow.add_node("research",   agent_research)
+workflow.add_node("analysis",   agent_analysis)
+workflow.add_node("creativity", agent_creativity)
+workflow.add_node("synthesize", synthesize)
+
+# Fan-out: el punto de entrada dispara los 3 nodos a la vez
+workflow.set_entry_point("research")   # solo simbólico; LangGraph los ejecuta
+workflow.set_entry_point("analysis")   # en paralelo si tienen el mismo origen
+workflow.set_entry_point("creativity")
+
+# Fan-in: todos convergen en síntesis
+workflow.add_edge("research",   "synthesize")
+workflow.add_edge("analysis",   "synthesize")
+workflow.add_edge("creativity", "synthesize")
+workflow.add_edge("synthesize", END)
+
+app = workflow.compile()
+result = app.invoke({"task": "Analiza el impacto de GPT-5", "results": [], "final_answer": ""})
+print(result["final_answer"])
+```
+
+### Forma correcta con `Send` API (LangGraph avanzado)
+
+Para bifurcaciones dinámicas (no conocidas en tiempo de compilación), usa la
+**Send API** de LangGraph:
+
+```python
+from langgraph.types import Send
+
+class MapReduceState(TypedDict):
+    documents: list[str]
+    summaries: Annotated[list, operator.add]
+    final_summary: str
+
+def split_documents(state):
+    # Fan-out dinámico: un Send por cada documento
+    return [Send("summarize_doc", {"doc": doc}) for doc in state["documents"]]
+
+def summarize_doc(state):
+    summary = llm.invoke(f"Resume: {state['doc']}")
+    return {"summaries": [summary.content]}
+
+def merge_summaries(state):
+    combined = llm.invoke("Combina estos resúmenes: " + str(state["summaries"]))
+    return {"final_summary": combined.content}
+
+workflow = StateGraph(MapReduceState)
+workflow.add_node("summarize_doc", summarize_doc)
+workflow.add_node("merge", merge_summaries)
+workflow.set_conditional_entry_point(split_documents)
+workflow.add_edge("summarize_doc", "merge")
+workflow.add_edge("merge", END)
+```
+
+### asyncio.gather para pipelines sin LangGraph
+
+Cuando no usas LangGraph, puedes paralelizar con `asyncio.gather`:
+
+```python
+import asyncio
+from langchain_openai import ChatOpenAI
+
+async def run_agents_parallel(tasks: list[str], model="gpt-4.1-mini"):
+    """Ejecuta múltiples agentes/LLMs en paralelo y devuelve todos los resultados."""
+    llm = ChatOpenAI(model=model)
+    
+    async def call_llm(task):
+        response = await llm.ainvoke(task)
+        return response.content
+    
+    # Lanzar todas las llamadas a la vez
+    results = await asyncio.gather(*[call_llm(t) for t in tasks])
+    return list(results)
+
+# Uso
+tasks = [
+    "Analiza los riesgos del proyecto X",
+    "Analiza las oportunidades del proyecto X",
+    "Analiza la competencia del proyecto X",
+]
+results = asyncio.run(run_agents_parallel(tasks))
+```
+
+### Comparativa de patrones de paralelismo
+
+| Patrón | Cuando usarlo | Framework |
+|--------|---------------|-----------|
+| **Fan-out/Fan-in fijo** | Siempre los mismos N agentes | LangGraph nodos |
+| **Send API (Map-Reduce)** | N dinámico según datos | LangGraph Send |
+| **asyncio.gather** | Fuera de LangGraph, pipelines simples | asyncio |
+| **CrewAI async** | Multi-agente con roles, ejecución async | CrewAI |
+| **ThreadPoolExecutor** | Tools síncronas que bloquean | concurrent.futures |
+
+### Consideraciones al paralelizar
+
+- **Rate limits**: Las APIs tienen límites de requests por minuto. Con paralelismo
+  agresivo puedes alcanzarlos. Usa un semáforo para controlar la concurrencia.
+- **Costos**: Paralelizar no reduce costos de tokens, solo reduce latencia.
+- **Estado compartido**: Con LangGraph, usa el reducer `operator.add` para
+  acumular resultados de nodos paralelos de forma segura.
+- **Errores**: Un fallo en un nodo paralelo puede cancelar los demás.
+  Usa `asyncio.gather(return_exceptions=True)` para aislar fallos.
+
+```python
+# Semáforo para controlar concurrencia máxima
+async def run_with_limit(tasks, max_concurrent=5):
+    semaphore = asyncio.Semaphore(max_concurrent)
+    
+    async def limited_call(task):
+        async with semaphore:
+            return await call_llm(task)
+    
+    return await asyncio.gather(*[limited_call(t) for t in tasks],
+                                 return_exceptions=True)
 ```
 
 ---

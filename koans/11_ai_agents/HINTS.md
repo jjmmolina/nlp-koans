@@ -840,11 +840,96 @@ Final Answer: [respuesta]
 - `create_multi_agent_crew()` — CrewAI roles (función 11)
 - `create_human_in_the_loop_agent()` — LangGraph interrupt() (función 12)
 - `setup_mcp_agent()` — Model Context Protocol (función 13)
+- `create_parallel_agents()` — asyncio.gather + Semaphore (función 14)
+
+---
+
+## Pista 14: create_parallel_agents()
+
+<details>
+<summary>Ver Pista Nivel 1</summary>
+
+El truco es usar el método **async** de los LLMs — todos los clientes de
+LangChain exponen `ainvoke()` además de `invoke()`.
+
+- `asyncio.gather(*coroutines)` lanza todas las corrutinas a la vez y espera
+  a que terminen todas.
+- Para no superar el rate-limit de la API, usa `asyncio.Semaphore(n)` como
+  gestor de contexto antes de cada llamada.
+
+</details>
+
+<details>
+<summary>Ver Pista Nivel 2</summary>
+
+```python
+import asyncio
+from langchain_openai import ChatOpenAI
+
+async def _run_all(tasks, model, max_concurrent):
+    llm = ChatOpenAI(model=model)
+    sem = asyncio.Semaphore(max_concurrent)
+
+    async def call_one(task):
+        async with sem:
+            response = await llm.ainvoke(task)
+            return response.content
+
+    return await asyncio.gather(*[call_one(t) for t in tasks],
+                                 return_exceptions=True)
+
+# Lanzar desde código síncrono
+results = asyncio.run(_run_all(tasks, model, max_concurrent))
+```
+
+</details>
+
+<details>
+<summary>Ver Pista Nivel 3 (Solución)</summary>
+
+```python
+import asyncio
+from langchain_openai import ChatOpenAI
+from langchain.agents import AgentExecutor, create_react_agent
+from langchain import hub
+
+def create_parallel_agents(tasks, tools=None, model="gpt-4.1-mini", max_concurrent=5):
+    llm = ChatOpenAI(model=model, temperature=0)
+    tools = tools or []
+
+    async def _run_all():
+        sem = asyncio.Semaphore(max_concurrent)
+
+        if tools:
+            prompt = hub.pull("hwchase17/react")
+            agent = create_react_agent(llm, tools, prompt)
+            executor = AgentExecutor(agent=agent, tools=tools, max_iterations=5)
+
+            async def call_one(task):
+                async with sem:
+                    result = await executor.ainvoke({"input": task})
+                    return result["output"]
+        else:
+            async def call_one(task):
+                async with sem:
+                    response = await llm.ainvoke(task)
+                    return response.content
+
+        return await asyncio.gather(
+            *[call_one(t) for t in tasks],
+            return_exceptions=True
+        )
+
+    return asyncio.run(_run_all())
+```
+
+</details>
 
 ## Recursos
 - [LangChain Agents](https://python.langchain.com/docs/modules/agents/)
 - [LangGraph Docs](https://langchain-ai.github.io/langgraph/)
 - [LangGraph Quickstart](https://langchain-ai.github.io/langgraph/tutorials/introduction/)
+- [LangGraph Send API / Map-Reduce](https://langchain-ai.github.io/langgraph/how-tos/map-reduce/)
 - [CrewAI Docs](https://docs.crewai.com/)
 - [MCP Specification](https://modelcontextprotocol.io/)
 - [ReAct Paper](https://arxiv.org/abs/2210.03629)

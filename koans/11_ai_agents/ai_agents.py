@@ -707,3 +707,62 @@ def setup_mcp_agent(
     # Pista: Usa langchain-mcp-adapters o mcp-use para conectar con servidores MCP
     # La librería MultiServerMCPClient facilita conectarse a múltiples servidores
     pass
+
+
+def create_parallel_agents(
+    tasks: List[str],
+    tools: Optional[List[Tool]] = None,
+    model: str = "gpt-4.1-mini",
+    max_concurrent: int = 5,
+) -> List[str]:
+    """
+    Ejecuta múltiples agentes/consultas LLM en paralelo y devuelve todos sus resultados.
+
+    En pipelines agénticos complejos, es habitual tener sub-tareas independientes
+    que se pueden ejecutar al mismo tiempo en lugar de esperar una tras otra.
+    Este patrón se llama **fan-out / fan-in**:
+
+    - **Fan-out**: Una tarea se divide en N sub-tareas independientes que se
+      lanzan en paralelo.
+    - **Fan-in**: Los N resultados se recogen y combinan en una respuesta final.
+
+    Comparativa de latencia:
+    ```
+    Secuencial (3 tareas × 3s): 9 segundos
+    Paralelo   (3 tareas × 3s): 3 segundos  ← esta función
+    ```
+
+    Implementación: usa `asyncio.gather` internamente para lanzar todas las
+    llamadas al LLM al mismo tiempo. Un `asyncio.Semaphore` limita la
+    concurrencia máxima para respetar los rate-limits de la API.
+
+    Ejemplo:
+        >>> tasks = [
+        ...     "Resume los riesgos del proyecto X",
+        ...     "Resume las oportunidades del proyecto X",
+        ...     "Resume la competencia del proyecto X",
+        ... ]
+        >>> results = create_parallel_agents(tasks)
+        >>> for r in results:
+        ...     print(r)
+
+    Args:
+        tasks: Lista de consultas/tareas independientes a ejecutar en paralelo
+        tools: Herramientas disponibles para cada agente (opcional)
+        model: Modelo LLM a usar para todos los agentes
+        max_concurrent: Número máximo de llamadas simultáneas (evita rate-limit)
+
+    Returns:
+        Lista de resultados en el mismo orden que las tareas de entrada
+
+    Nota:
+        Para paralelismo dentro de LangGraph, usa el patrón fan-out con
+        `operator.add` como reducer del estado, o la `Send` API para
+        bifurcaciones dinámicas. Ver THEORY.md para ejemplos completos.
+    """
+    # TODO: Implementa ejecución paralela de agentes
+    # Pista 1: Define una función async interna que llame al LLM con ainvoke()
+    # Pista 2: Usa asyncio.Semaphore(max_concurrent) para limitar concurrencia
+    # Pista 3: Lanza todas las corrutinas con asyncio.gather()
+    # Pista 4: Si estás en un contexto ya async, usa await; si no, asyncio.run()
+    pass
