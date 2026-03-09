@@ -2,11 +2,14 @@
 Koan 10: Modern LLMs & APIs - Usando Modelos de Lenguaje Avanzados
 
 Este koan explora los LLMs más modernos y sus APIs:
-- OpenAI (GPT-4, GPT-4o, o1)
-- Anthropic (Claude)
-- Google (Gemini)
-- Function calling
+- OpenAI (GPT-4.1, GPT-4o, o3, o4-mini)
+- Anthropic (Claude 3.7 Sonnet, extended thinking)
+- Google (Gemini 2.5 Pro/Flash)
+- Meta / Open Source (Llama 4, DeepSeek)
+- Function calling y Structured Outputs
 - Streaming
+- Reasoning Models
+- OpenAI Responses API
 - Mejores prácticas
 
 Librerías:
@@ -15,13 +18,13 @@ Librerías:
 - google-generativeai
 """
 
-from typing import List, Dict, Any, Generator, Optional
+from typing import List, Dict, Any, Generator, Optional, Type
 import os
 
 
 def call_openai_chat(
     messages: List[Dict[str, str]],
-    model: str = "gpt-4o-mini",
+    model: str = "gpt-4.1-mini",
     temperature: float = 0.7,
     max_tokens: int = 1000,
 ) -> str:
@@ -43,7 +46,7 @@ def call_openai_chat(
 
     Args:
         messages: Lista de mensajes con rol y contenido
-        model: Modelo a usar (gpt-4o-mini, gpt-4o, gpt-4, o1-mini, o1-preview)
+        model: Modelo a usar (gpt-4.1-mini, gpt-4.1, gpt-4o, o3-mini, o4-mini)
         temperature: Creatividad (0.0-2.0). Valores altos = más creativo/aleatorio
         max_tokens: Máximo de tokens en la respuesta
 
@@ -61,7 +64,7 @@ def call_openai_chat(
 
 
 def call_openai_streaming(
-    messages: List[Dict[str, str]], model: str = "gpt-4o-mini"
+    messages: List[Dict[str, str]], model: str = "gpt-4.1-mini"
 ) -> Generator[str, None, None]:
     """
     Llama a OpenAI con streaming (respuesta en tiempo real).
@@ -96,7 +99,7 @@ def call_openai_streaming(
 
 def call_anthropic_claude(
     messages: List[Dict[str, str]],
-    model: str = "claude-3-5-sonnet-20241022",
+    model: str = "claude-3-7-sonnet-20250219",
     max_tokens: int = 1000,
 ) -> str:
     """
@@ -106,13 +109,13 @@ def call_anthropic_claude(
     complejas y mantener contextos largos. La API es similar a OpenAI pero
     con algunas diferencias en los parámetros y estructura de respuesta.
 
-    Ejemplo:
+    Example:
         >>> messages = [{"role": "user", "content": "Explica qué es NLP"}]
         >>> response = call_anthropic_claude(messages)
 
     Args:
         messages: Lista de mensajes (mismo formato que OpenAI)
-        model: claude-3-5-sonnet-20241022, claude-3-opus-20240229, etc.
+        model: claude-3-7-sonnet-20250219, claude-opus-4-20250514, claude-3-5-haiku-20241022
         max_tokens: Máximo de tokens (requerido por la API de Anthropic)
 
     Returns:
@@ -122,6 +125,7 @@ def call_anthropic_claude(
         A diferencia de OpenAI, Anthropic requiere que especifiques max_tokens
         obligatoriamente. La estructura de la respuesta también es diferente.
         Consulta THEORY.md para comparar las APIs.
+        Claude 3.7 Sonnet soporta "extended thinking" para razonamiento profundo.
     """
     # TODO: Implementa llamada a Claude
     # Pista: La librería anthropic tiene un patrón diferente a OpenAI
@@ -129,7 +133,7 @@ def call_anthropic_claude(
     pass
 
 
-def call_google_gemini(prompt: str, model: str = "gemini-1.5-flash") -> str:
+def call_google_gemini(prompt: str, model: str = "gemini-2.0-flash") -> str:
     """
     Llama a la API de Google Gemini.
 
@@ -142,7 +146,7 @@ def call_google_gemini(prompt: str, model: str = "gemini-1.5-flash") -> str:
 
     Args:
         prompt: Texto del prompt (interfaz más simple que formato de mensajes)
-        model: gemini-1.5-pro, gemini-1.5-flash, gemini-2.0-flash-exp
+        model: gemini-2.5-pro, gemini-2.5-flash, gemini-2.0-flash, gemini-2.0-flash-thinking
 
     Returns:
         Respuesta del modelo
@@ -151,6 +155,7 @@ def call_google_gemini(prompt: str, model: str = "gemini-1.5-flash") -> str:
         A diferencia de OpenAI y Anthropic, Gemini puede recibir un prompt
         simple en lugar de una lista de mensajes (aunque también soporta
         conversaciones). Ver THEORY.md para más detalles sobre las diferencias.
+        Gemini 2.5 Pro tiene ventanas de contexto masivas (hasta 2M tokens).
     """
     # TODO: Implementa llamada a Gemini
     # Pista: google.generativeai tiene un patrón diferente
@@ -161,7 +166,7 @@ def call_google_gemini(prompt: str, model: str = "gemini-1.5-flash") -> str:
 def openai_function_calling(
     messages: List[Dict[str, str]],
     functions: List[Dict[str, Any]],
-    model: str = "gpt-4o-mini",
+    model: str = "gpt-4.1-mini",
 ) -> Dict[str, Any]:
     """
     Usa function calling de OpenAI para que el modelo llame funciones.
@@ -219,15 +224,21 @@ def calculate_token_cost(
     el costo de generar tokens (output) es más caro que leer tokens (input).
     Entender los costos es crucial para optimizar aplicaciones en producción.
 
-    Precios aproximados (Nov 2024) por 1M de tokens:
+    Precios aproximados (2026) por 1M de tokens:
+    - gpt-4.1: $2.00 input, $8.00 output
+    - gpt-4.1-mini: $0.40 input, $1.60 output
     - gpt-4o: $2.50 input, $10.00 output
     - gpt-4o-mini: $0.15 input, $0.60 output
-    - claude-3-5-sonnet: $3.00 input, $15.00 output
-    - gemini-1.5-flash: $0.075 input, $0.30 output
+    - o3: $10.00 input, $40.00 output
+    - o4-mini: $1.10 input, $4.40 output
+    - claude-3-7-sonnet: $3.00 input, $15.00 output
+    - claude-3-5-haiku: $0.80 input, $4.00 output
+    - gemini-2.5-pro: $1.25 input, $10.00 output
+    - gemini-2.0-flash: $0.10 input, $0.40 output
 
     Ejemplo:
-        >>> cost = calculate_token_cost(1000, 500, "gpt-4o-mini")
-        >>> print(f"${cost:.4f}")  # Aprox $0.0004
+        >>> cost = calculate_token_cost(1000, 500, "gpt-4.1-mini")
+        >>> print(f"${cost:.4f}")  # Aprox $0.0012
 
     Args:
         prompt_tokens: Número de tokens en el input/prompt
@@ -250,9 +261,9 @@ def calculate_token_cost(
 def compare_llm_outputs(
     prompt: str,
     models: List[str] = [
-        "gpt-4o-mini",
-        "claude-3-5-sonnet-20241022",
-        "gemini-1.5-flash",
+        "gpt-4.1-mini",
+        "claude-3-7-sonnet-20250219",
+        "gemini-2.0-flash",
     ],
 ) -> Dict[str, str]:
     """
@@ -323,4 +334,256 @@ def safe_llm_call(
     """
     # TODO: Implementa llamada con reintentos
     # Pista: Usa backoff exponencial con time.sleep(2 ** attempt)
+    pass
+
+
+def call_reasoning_model(
+    prompt: str,
+    model: str = "o4-mini",
+    effort: str = "medium",
+) -> Dict[str, Any]:
+    """
+    Llama a un modelo de razonamiento (OpenAI o3/o4, Claude extended thinking).
+
+    Los modelos de razonamiento "piensan antes de responder" usando una cadena
+    de razonamiento interna (Chain-of-Thought). Son especialmente útiles para:
+    - Matemáticas y lógica compleja
+    - Problemas de programación difíciles
+    - Razonamiento multi-paso
+    - Análisis de argumentos
+
+    **Modelos de razonamiento OpenAI:**
+    - o3: El más potente, costoso pero muy preciso
+    - o4-mini: Balance razonamiento/velocidad/costo
+    - o3-mini: Deprecated, usar o4-mini
+
+    **Esfuerzo de razonamiento (effort):**
+    - 'low': Razonamiento mínimo (más rápido/barato)
+    - 'medium': Balance calidad/costo
+    - 'high': Razonamiento profundo (más lento/caro)
+
+    Ejemplo:
+        >>> result = call_reasoning_model(
+        ...     "¿Cuántos ceros tiene 100! (factorial)?",
+        ...     model="o4-mini",
+        ...     effort="high"
+        ... )
+        >>> print(result["output"])  # "24 ceros"
+        >>> print(result["reasoning_tokens"])  # tokens de razonamiento usados
+
+    Args:
+        prompt: Problema o pregunta a resolver
+        model: Modelo de razonamiento ('o3', 'o4-mini', 'o3-mini')
+        effort: Nivel de esfuerzo ('low', 'medium', 'high')
+
+    Returns:
+        Dict con 'output' (respuesta final) y 'reasoning_tokens' (tokens usados en pensar)
+
+    Nota:
+        Los modelos de razonamiento no soportan 'temperature' (siempre usan 1).
+        El 'system' message se incluye diferente. Consulta HINTS.md para detalles.
+    """
+    # TODO: Implementa llamada a modelo de razonamiento
+    # Pista: Usa reasoning_effort en place de temperature
+    # Los modelos 'o' no aceptan parámetro temperature
+    pass
+
+
+def call_with_structured_output(
+    messages: List[Dict[str, str]],
+    schema: Dict[str, Any],
+    model: str = "gpt-4.1-mini",
+) -> Dict[str, Any]:
+    """
+    Obtiene respuesta estructurada (JSON) garantizada del LLM.
+
+    Structured Outputs garantizan que el modelo devuelva exactamente el
+    formato JSON Schema especificado — sin necesidad de parsear texto libre.
+    Esto es crucial para aplicaciones que procesan datos estructurados.
+
+    **Diferencia con JSON mode:**
+    - JSON mode: Garantiza JSON válido, pero no el schema
+    - Structured Outputs: Garantiza que cumple el schema exactamente
+
+    Ejemplo:
+        >>> schema = {
+        ...     "type": "object",
+        ...     "properties": {
+        ...         "sentiment": {"type": "string", "enum": ["positive", "negative", "neutral"]},
+        ...         "score": {"type": "number"},
+        ...         "explanation": {"type": "string"}
+        ...     },
+        ...     "required": ["sentiment", "score", "explanation"]
+        ... }
+        >>> messages = [{"role": "user", "content": "Analiza: 'Me encanta Python'"}]
+        >>> result = call_with_structured_output(messages, schema)
+        >>> print(result["sentiment"])  # "positive"
+        >>> print(result["score"])      # 0.95
+
+    Args:
+        messages: Lista de mensajes de la conversación
+        schema: JSON Schema que define la estructura esperada
+        model: Modelo a usar (gpt-4.1 o gpt-4o recomendados)
+
+    Returns:
+        Diccionario que cumple exactamente el schema especificado
+
+    Nota:
+        Solo disponible para modelos OpenAI que soporten Structured Outputs.
+        La librería `instructor` facilita aún más esto con tipos Pydantic.
+        Ver HINTS.md para implementación con Pydantic y instructor.
+    """
+    # TODO: Implementa structured outputs
+    # Pista: Usa response_format con json_schema
+    # Recuerda hacer json.loads() del content para obtener el dict
+    pass
+
+
+def call_openai_responses_api(
+    input_text: str,
+    tools: Optional[List[Dict[str, Any]]] = None,
+    model: str = "gpt-4.1",
+    store: bool = True,
+) -> Dict[str, Any]:
+    """
+    Usa la nueva OpenAI Responses API (lanzada en 2025).
+
+    La Responses API es el reemplazo de la API de Chat Completions para
+    aplicaciones agénticas. Características principales:
+    - Estado persistente del servidor (no necesitas reenviar historial)
+    - Herramientas built-in: web_search_preview, file_search, code_interpreter
+    - Diseñada para workflows multi-paso
+    - Computer use (control de navegador/computadora)
+
+    **Herramientas built-in disponibles:**
+    - web_search_preview: Búsqueda web en tiempo real
+    - file_search: Búsqueda en vectorstores
+    - code_interpreter: Ejecuta código Python
+
+    Ejemplo:
+        >>> result = call_openai_responses_api(
+        ...     "¿Cuál es la noticia más reciente sobre IA?",
+        ...     tools=[{"type": "web_search_preview"}]
+        ... )
+        >>> print(result["output_text"])
+        >>> print(result["response_id"])  # Para continuar la conversación
+
+    Args:
+        input_text: Texto de entrada del usuario
+        tools: Lista de herramientas (web_search_preview, file_search, etc.)
+        model: Modelo a usar (gpt-4.1, gpt-4o)
+        store: Si almacenar el estado en el servidor (para conversación multi-turno)
+
+    Returns:
+        Dict con 'output_text' (respuesta) y 'response_id' (para continuar)
+
+    Nota:
+        La Responses API reemplaza gradualmente a Chat Completions para uso agéntico.
+        El 'response_id' permite continuar conversaciones sin reenviar historial.
+        Ver THEORY.md para comparar ambas APIs.
+    """
+    # TODO: Implementa la Responses API de OpenAI
+    # Pista: Usa client.responses.create() en lugar de client.chat.completions.create()
+    pass
+
+
+def call_claude_extended_thinking(
+    prompt: str,
+    budget_tokens: int = 5000,
+    model: str = "claude-3-7-sonnet-20250219",
+) -> Dict[str, Any]:
+    """
+    Usa el modo "Extended Thinking" de Claude 3.7 Sonnet.
+
+    Extended Thinking permite a Claude razonar de forma más profunda antes
+    de responder, similar a los modelos de razonamiento de OpenAI pero con
+    la ventaja de que puedes ver el proceso de pensamiento completo.
+
+    **Extended Thinking vs respuesta normal:**
+    - Normal: Claude responde directamente
+    - Extended Thinking: Claude "piensa en voz alta" antes de responder
+    - El 'thinking' está disponible en la respuesta para auditoría
+
+    **Cuándo usar Extended Thinking:**
+    - Problemas matemáticos o lógicos complejos
+    - Análisis de código difícil
+    - Decisiones con múltiples factores
+    - Cualquier tarea donde la precisión es crítica
+
+    Ejemplo:
+        >>> result = call_claude_extended_thinking(
+        ...     "Demuestra por qué sqrt(2) es irracional",
+        ...     budget_tokens=8000
+        ... )
+        >>> print(result["thinking"])   # El razonamiento interno
+        >>> print(result["response"])   # La respuesta final
+
+    Args:
+        prompt: Problema o pregunta compleja
+        budget_tokens: Tokens máximos para el proceso de pensamiento (1024-100000)
+        model: Modelo Claude que soporte extended thinking
+
+    Returns:
+        Dict con 'thinking' (proceso de razonamiento) y 'response' (respuesta final)
+
+    Nota:
+        El thinking NO se envía al usuario por defecto — es para debugging.
+        Cuantos más budget_tokens, más profundo el razonamiento (y mayor costo).
+        Ver HINTS.md para la estructura exacta de la respuesta.
+    """
+    # TODO: Implementa extended thinking de Claude
+    # Pista: Activa betas y usa thinking={"type": "enabled", "budget_tokens": ...}
+    pass
+
+
+def call_local_llm(
+    messages: List[Dict[str, str]],
+    model: str = "llama3.2",
+    base_url: str = "http://localhost:11434",
+) -> str:
+    """
+    Llama a un LLM local usando Ollama (alternativa gratuita sin API key).
+
+    Ollama permite ejecutar modelos de código abierto localmente:
+    - Llama 4 (Meta) - último modelo de Meta, multimodal
+    - Llama 3.3 70B - excelente calidad de razonamiento
+    - DeepSeek-R1 - modelo de razonamiento open source
+    - Qwen 2.5 - modelos eficientes de Alibaba
+    - Mistral - modelos eficientes y rápidos
+    - Phi-4 - modelo compacto de Microsoft
+
+    **Ventajas de modelos locales:**
+    ✅ Gratuito (solo coste de hardware)
+    ✅ Privacidad total (datos no salen)
+    ✅ Sin rate limits
+    ✅ Funciona sin internet
+
+    **Instalación:**
+    ```bash
+    # Windows/Mac: Descarga de https://ollama.ai
+    ollama pull llama3.2
+    ollama serve  # Inicia el servidor en localhost:11434
+    ```
+
+    Ejemplo:
+        >>> messages = [{"role": "user", "content": "¿Qué es NLP?"}]
+        >>> response = call_local_llm(messages, model="llama3.2")
+        >>> print(response)
+
+    Args:
+        messages: Lista de mensajes (mismo formato API)
+        model: Nombre del modelo en Ollama (llama3.2, llama3.3, deepseek-r1, etc.)
+        base_url: URL del servidor Ollama local
+
+    Returns:
+        Respuesta del modelo local
+
+    Nota:
+        Requiere tener Ollama instalado y el modelo descargado.
+        La API es compatible con OpenAI (usa openai client con base_url).
+        Ver HINTS.md para la configuración completa.
+    """
+    # TODO: Implementa llamada a Ollama local
+    # Pista: Usa cliente OpenAI con base_url apuntando a Ollama
+    # Ollama expone una API compatible con OpenAI en /v1
     pass

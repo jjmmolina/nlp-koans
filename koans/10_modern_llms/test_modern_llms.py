@@ -26,6 +26,11 @@ from modern_llms import (
     calculate_token_cost,
     compare_llm_outputs,
     safe_llm_call,
+    call_reasoning_model,
+    call_with_structured_output,
+    call_openai_responses_api,
+    call_claude_extended_thinking,
+    call_local_llm,
 )
 
 
@@ -45,7 +50,7 @@ class TestOpenAIBasics:
             {"role": "system", "content": "Eres un asistente conciso."},
             {"role": "user", "content": "Di 'hola' y nada más."},
         ]
-        response = call_openai_chat(messages, model="gpt-4o-mini", max_tokens=10)
+        response = call_openai_chat(messages, model="gpt-4.1-mini", max_tokens=10)
 
         assert isinstance(response, str)
         assert len(response) > 0
@@ -298,3 +303,181 @@ def sample_function_definition():
             "required": ["operation", "a", "b"],
         },
     }
+
+
+class TestTokenCostUpdated:
+    """Tests de cálculo de costos con modelos 2026"""
+
+    def test_calculate_token_cost_gpt41_mini(self):
+        """Test: Costo de GPT-4.1-mini"""
+        cost = calculate_token_cost(1000, 500, "gpt-4.1-mini")
+        assert isinstance(cost, float)
+        assert cost > 0
+
+    def test_reasoning_model_more_expensive(self):
+        """Test: Modelos de razonamiento son más caros que modelos estándar"""
+        cost_standard = calculate_token_cost(1000, 500, "gpt-4.1-mini")
+        cost_reasoning = calculate_token_cost(1000, 500, "o4-mini")
+        assert cost_reasoning > cost_standard
+
+
+class TestReasoningModels:
+    """Tests de modelos de razonamiento"""
+
+    @pytest.mark.expensive
+    def test_call_reasoning_model_basic(self):
+        """Test: Llamada básica a modelo de razonamiento"""
+        result = call_reasoning_model(
+            "¿Cuánto es 15 * 17?", model="o4-mini", effort="low"
+        )
+
+        assert isinstance(result, dict)
+        assert "output" in result
+        assert "reasoning_tokens" in result
+        assert isinstance(result["output"], str)
+        assert "255" in result["output"]
+        assert isinstance(result["reasoning_tokens"], int)
+
+    @pytest.mark.expensive
+    def test_reasoning_model_effort_levels(self):
+        """Test: Diferentes niveles de esfuerzo funcionan"""
+        for effort in ["low", "medium", "high"]:
+            result = call_reasoning_model(
+                "¿Cuánto es 2 + 2?", model="o4-mini", effort=effort
+            )
+            assert "output" in result
+            assert isinstance(result["output"], str)
+
+
+class TestStructuredOutputs:
+    """Tests de Structured Outputs"""
+
+    @pytest.mark.expensive
+    def test_structured_output_basic(self):
+        """Test: Structured output devuelve schema correcto"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "sentiment": {
+                    "type": "string",
+                    "enum": ["positive", "negative", "neutral"],
+                },
+                "score": {"type": "number"},
+            },
+            "required": ["sentiment", "score"],
+            "additionalProperties": False,
+        }
+
+        messages = [
+            {"role": "user", "content": "Analiza el sentimiento: '¡Me encanta el NLP!'"}
+        ]
+
+        result = call_with_structured_output(messages, schema)
+
+        assert isinstance(result, dict)
+        assert "sentiment" in result
+        assert "score" in result
+        assert result["sentiment"] in ["positive", "negative", "neutral"]
+        assert isinstance(result["score"], (int, float))
+        assert result["sentiment"] == "positive"
+
+    @pytest.mark.expensive
+    def test_structured_output_enforces_schema(self):
+        """Test: El resultado siempre cumple el schema"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "answer": {"type": "string"},
+                "confidence": {"type": "number"},
+            },
+            "required": ["answer", "confidence"],
+            "additionalProperties": False,
+        }
+
+        messages = [{"role": "user", "content": "¿Cuál es la capital de España?"}]
+        result = call_with_structured_output(messages, schema)
+
+        assert "answer" in result
+        assert "confidence" in result
+        assert "madrid" in result["answer"].lower()
+        assert 0 <= result["confidence"] <= 1
+
+
+class TestResponsesAPI:
+    """Tests de la OpenAI Responses API"""
+
+    @pytest.mark.expensive
+    def test_responses_api_basic(self):
+        """Test: Llamada básica a la Responses API"""
+        result = call_openai_responses_api(
+            "Di solo la palabra 'hola'", model="gpt-4.1-mini", store=False
+        )
+
+        assert isinstance(result, dict)
+        assert "output_text" in result
+        assert "response_id" in result
+        assert "hola" in result["output_text"].lower()
+        assert isinstance(result["response_id"], str)
+
+    @pytest.mark.expensive
+    def test_responses_api_with_web_search(self):
+        """Test: Responses API con herramienta de búsqueda web"""
+        result = call_openai_responses_api(
+            "¿Cuál es la fecha de hoy?",
+            tools=[{"type": "web_search_preview"}],
+            model="gpt-4.1",
+            store=False,
+        )
+
+        assert isinstance(result, dict)
+        assert "output_text" in result
+        assert len(result["output_text"]) > 0
+
+
+class TestClaudeExtendedThinking:
+    """Tests de Extended Thinking de Claude"""
+
+    @pytest.mark.skipif(
+        not os.getenv("ANTHROPIC_API_KEY"), reason="Requiere ANTHROPIC_API_KEY"
+    )
+    @pytest.mark.expensive
+    def test_extended_thinking_basic(self):
+        """Test: Extended Thinking devuelve thinking y response"""
+        result = call_claude_extended_thinking(
+            "¿Cuánto es 12 * 12?", budget_tokens=2048
+        )
+
+        assert isinstance(result, dict)
+        assert "thinking" in result
+        assert "response" in result
+        assert "144" in result["response"]
+
+    @pytest.mark.skipif(
+        not os.getenv("ANTHROPIC_API_KEY"), reason="Requiere ANTHROPIC_API_KEY"
+    )
+    @pytest.mark.expensive
+    def test_extended_thinking_has_reasoning(self):
+        """Test: El campo thinking contiene razonamiento"""
+        result = call_claude_extended_thinking(
+            "Explica por qué 0.1 + 0.2 no es exactamente 0.3 en Python",
+            budget_tokens=3000,
+        )
+
+        assert len(result["thinking"]) > 0
+        assert len(result["response"]) > 0
+
+
+class TestLocalLLM:
+    """Tests de LLMs locales con Ollama"""
+
+    @pytest.mark.skipif(
+        True,  # Skipped by default ya que requiere Ollama corriendo
+        reason="Requiere Ollama corriendo en localhost:11434",
+    )
+    def test_call_local_llm(self):
+        """Test: Llamada a LLM local con Ollama"""
+        messages = [{"role": "user", "content": "Di solo 'hola'"}]
+        response = call_local_llm(messages, model="llama3.2")
+
+        assert isinstance(response, str)
+        assert len(response) > 0

@@ -1,4 +1,4 @@
-# Teoría: AI Agents - Agentes Autónomos con LLMs
+# Teoría: AI Agents - Agentes Autónomos con LLMs y Agentic Mode
 
 ## 📚 Tabla de Contenidos
 1. [Introducción a AI Agents](#introducción)
@@ -6,10 +6,14 @@
 3. [El Patrón ReAct](#react)
 4. [Herramientas (Tools)](#herramientas)
 5. [Memoria Conversacional](#memoria)
-6. [Frameworks: LangChain](#langchain)
-7. [Sistemas Multi-Agente](#multi-agente)
-8. [Callbacks y Monitoring](#callbacks)
-9. [Mejores Prácticas](#mejores-prácticas)
+6. [Frameworks: LangChain y LangGraph](#langchain)
+7. [Agentic Mode — El Paradigma Moderno](#agentic-mode)
+8. [LangGraph en Profundidad](#langgraph)
+9. [Sistemas Multi-Agente](#multi-agente)
+10. [Model Context Protocol (MCP)](#mcp)
+11. [Human-in-the-Loop](#hitl)
+12. [Callbacks y Monitoring](#callbacks)
+13. [Mejores Prácticas](#mejores-prácticas)
 
 ---
 
@@ -62,8 +66,16 @@ Agente:
       AutoGPT: Agentes completamente autónomos
   ↓
 2024: Agentes en producción
-      CrewAI, LangGraph, Autogen
-      Multi-agent systems mainstream
+      LangGraph (state machines para agentes)
+      CrewAI, AutoGen: Multi-agent systems mainstream
+      Model Context Protocol (Anthropic)
+  ↓
+2025-2026: Agentic Mode es el paradigma dominante
+      Plan-Execute workflows
+      Human-in-the-loop como estándar
+      MCP como protocolo universal
+      Computer Use (agentes que controlan el PC)
+      OpenAI Responses API para agentes nativos
 ```
 
 ### Tipos de Agentes
@@ -620,7 +632,7 @@ message_history = PostgresChatMessageHistory(
 
 ---
 
-## 🔗 Frameworks: LangChain {#langchain}
+## 🔗 Frameworks: LangChain y LangGraph {#langchain}
 
 ### ¿Qué es LangChain?
 
@@ -634,36 +646,13 @@ message_history = PostgresChatMessageHistory(
 - 🗄️ Integraciones con vector databases
 - 📊 Callbacks y monitoring
 
-### Arquitectura de LangChain
-
-```
-LangChain Framework
-│
-├── LangChain Core
-│   ├── LLMs & Chat Models
-│   ├── Prompts & Templates
-│   ├── Output Parsers
-│   └── Callbacks
-│
-├── LangChain Community
-│   ├── Integraciones de terceros
-│   ├── Herramientas adicionales
-│   └── Retrievers
-│
-└── LangChain Hub
-    └── Prompts pre-hechos y compartidos
-```
-
-### Crear un Agente en LangChain
+### Crear un Agente en LangChain (Forma Clásica)
 
 **Paso 1: Inicializar LLM**
 ```python
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(
-    model="gpt-4o-mini",
-    temperature=0
-)
+llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0)
 ```
 
 **Paso 2: Definir Herramientas**
@@ -671,46 +660,21 @@ llm = ChatOpenAI(
 from langchain.tools import Tool
 
 tools = [
-    Tool(
-        name="search",
-        description="Busca en internet",
-        func=search_function
-    ),
-    Tool(
-        name="calculator",
-        description="Calcula matemáticas",
-        func=calc_function
-    )
+    Tool(name="search", description="Busca en internet", func=search_function),
+    Tool(name="calculator", description="Calcula matemáticas", func=calc_function)
 ]
 ```
 
-**Paso 3: Crear Agente**
+**Paso 3: Crear y Ejecutar Agente**
 ```python
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain import hub
 
-# Obtener prompt pre-hecho
 prompt = hub.pull("hwchase17/openai-functions-agent")
-
-# Crear agente
 agent = create_tool_calling_agent(llm, tools, prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-# Envolver en executor
-agent_executor = AgentExecutor(
-    agent=agent,
-    tools=tools,
-    verbose=True
-)
-```
-
-**Paso 4: Ejecutar**
-```python
-result = agent_executor.invoke({
-    "input": "¿Cuál es la raíz cuadrada de 144 y busca información sobre Pythagor
-
-as?"
-})
-
+result = agent_executor.invoke({"input": "¿Cuál es la raíz cuadrada de 144?"})
 print(result["output"])
 ```
 
@@ -722,14 +686,404 @@ print(result["output"])
 | **ReAct** | Patrón ReAct explícito | Modelos sin function calling |
 | **Structured Chat** | Para tools con inputs complejos | Múltiples parámetros |
 | **Conversational ReAct** | ReAct + memoria | Chatbots |
-| **Self-Ask** | Descompone preguntas | Preguntas multi-paso |
 | **Plan-and-Execute** | Planifica → Ejecuta | Tareas muy complejas |
 
 ---
 
-## 👥 Sistemas Multi-Agente {#multi-agente}
+## � Agentic Mode — El Paradigma Moderno {#agentic-mode}
 
-### Concepto
+### ¿Qué es el Agentic Mode?
+
+**Agentic Mode** es el paradigma en el que los modelos de IA actúan de forma
+**autónoma y proactiva** para completar tareas complejas, yendo más allá de
+simples preguntas y respuestas.
+
+En lugar de responder una pregunta, el agente:
+1. Descompone la tarea en sub-tareas
+2. Selecciona las herramientas apropiadas
+3. Ejecuta múltiples pasos
+4. Maneja errores y se adapta
+5. Entrega un resultado final completo
+
+### Principios del Agentic Mode
+
+**1. Autonomía con Control**
+- El agente actúa sin supervisión paso a paso
+- Pero tiene límites claros (max_iterations, HITL para acciones críticas)
+
+**2. Tool-Augmented Intelligence**
+- Los LLMs son malos calculando pero excelentes orquestando
+- Las herramientas extienden capacidades (web, código, bases de datos)
+
+**3. State Management**
+- Los agentes mantienen estado entre pasos
+- LangGraph formaliza este estado como un grafo
+
+**4. Observabilidad**
+- Cada paso debe ser observable y trazable
+- LangSmith, Helicone, y Arize para monitoring
+
+### Comparación: Chatbot vs Agente vs Agentic Pipeline
+
+```
+Chatbot (Koan 10):
+  Usuario: "¿Cuánto cuesta el euro hoy?"
+  LLM: "No tengo datos en tiempo real"
+
+Agente Básico (este koan):
+  Usuario: "¿Cuánto cuesta el euro hoy?"
+  Agente → [búsqueda web] → "El euro está a 1.08 USD"
+
+Agentic Pipeline (avanzado):
+  Tarea: "Analiza la evolución del euro esta semana y envía un informe"
+  Pipeline:
+    1. [busca datos del euro lun-vie]
+    2. [genera análisis estadístico]
+    3. [crea gráfico con matplotlib]
+    4. [formatea como PDF]
+    5. [envía por email a lista]
+  Resultado: Informe completo entregado automáticamente
+```
+
+### Capacidades del Agentic Mode en 2026
+
+| Capacidad | Descripción | Frameworks |
+|-----------|-------------|------------|
+| **Tool Use** | Usar APIs, calcular, buscar | LangChain, OpenAI |
+| **Code Execution** | Escribir y ejecutar código | Code Interpreter, E2B |
+| **Web Browsing** | Navegar páginas web | Browser Use, Playwright |
+| **Computer Use** | Controlar ratón y teclado | Anthropic Computer Use |
+| **File Operations** | Leer/escribir archivos | MCP Filesystem |
+| **Multi-step Planning** | Plan-Execute | LangGraph, LangChain |
+| **Self-Reflection** | Revisar y corregir su trabajo | Reflexion, ReAct |
+| **Multi-Agent** | Coordinar equipos de agentes | CrewAI, LangGraph, AutoGen |
+
+### Patrones Fundamentales
+
+#### Patrón 1: ReAct (Reasoning + Acting)
+Clásico para tareas simples de herramientas.
+
+#### Patrón 2: Plan-Execute
+Mejor para tareas predecibles y largas:
+```
+[Planning LLM] → Plan estructurado
+     ↓
+[Step 1] → [Step 2] → [Step 3] → Final Answer
+```
+
+#### Patrón 3: Reflexion
+El agente revisa y critica su propio trabajo:
+```
+[Generate] → [Critique] → [Revise] → [Final]
+```
+
+#### Patrón 4: LATS (Language Agent Tree Search)
+Tree-of-thought con backtracking:
+```
+            [Start]
+           /       \
+      [Action A] [Action B]
+      /     \        ↓
+  [A1]    [A2]   [Final]
+```
+
+---
+
+## 📊 LangGraph en Profundidad {#langgraph}
+
+### ¿Por qué LangGraph?
+
+LangGraph es la evolución de LangChain para agentes. En lugar de un AgentExecutor
+lineal, modela el agente como un **grafo dirigido** donde:
+- Los **nodos** son funciones (LLM calls, tool calls, etc.)
+- Las **aristas** son transiciones (normales o condicionales)
+- El **estado** es un TypedDict compartido entre todos los nodos
+
+**Ventajas sobre AgentExecutor:**
+- ✅ Ciclos explícitos y controlados
+- ✅ Bifurcaciones condicionales
+- ✅ Estado persistente y checkpointing
+- ✅ Human-in-the-loop nativo con `interrupt()`
+- ✅ Streaming de eventos granular
+- ✅ La opción estándar para producción en 2026
+
+### Arquitectura de un Grafo LangGraph
+
+```python
+from typing import TypedDict, Annotated
+from langgraph.graph import StateGraph, END
+from langgraph.prebuilt import ToolNode
+from langgraph.graph.message import add_messages
+
+# 1. Definir el estado
+class AgentState(TypedDict):
+    messages: Annotated[list, add_messages]  # Se acumulan automáticamente
+
+# 2. Definir nodos
+def llm_node(state: AgentState):
+    """El LLM decide la siguiente acción"""
+    response = llm_with_tools.invoke(state["messages"])
+    return {"messages": [response]}
+
+def should_continue(state: AgentState):
+    """Decide si continuar o terminar"""
+    last_message = state["messages"][-1]
+    if last_message.tool_calls:
+        return "tools"  # Hay tool calls, ejecutar tools
+    return END          # No hay tool calls, terminar
+
+# 3. Construir el grafo
+workflow = StateGraph(AgentState)
+workflow.add_node("agent", llm_node)
+workflow.add_node("tools", ToolNode(tools))
+
+workflow.set_entry_point("agent")
+workflow.add_conditional_edges(
+    "agent", should_continue, {"tools": "tools", END: END}
+)
+workflow.add_edge("tools", "agent")  # Tools siempre vuelven al agente
+
+# 4. Compilar y usar
+app = workflow.compile()
+result = app.invoke({"messages": [("user", "¿Cuánto es raíz de 144?")]})
+```
+
+### Checkpointing (Memoria Persistente)
+
+```python
+from langgraph.checkpoint.memory import MemorySaver
+
+# Con memoria en RAM
+memory = MemorySaver()
+app = workflow.compile(checkpointer=memory)
+
+# Con thread_id, mantiene conversaciones separadas
+config = {"configurable": {"thread_id": "user_123"}}
+result = app.invoke({"messages": [("user", "Mi nombre es Ana")]}, config)
+result = app.invoke({"messages": [("user", "¿Cómo me llamo?")]}, config)
+# El agente recuerda "Ana" gracias al thread_id
+```
+
+### Streaming con LangGraph
+
+```python
+# Ver cada paso en tiempo real
+for event in app.stream({"messages": input_msgs}, config):
+    for key, value in event.items():
+        print(f"Nodo: {key}")
+        if "messages" in value:
+            print(f"  Mensaje: {value['messages'][-1]}")
+```
+
+---
+
+## 🔌 Model Context Protocol (MCP) {#mcp}
+
+### ¿Qué es MCP?
+
+El **Model Context Protocol** (MCP) es un estándar open source creado por
+Anthropic en 2024 para conectar modelos de IA con fuentes de datos y herramientas
+de forma estandarizada. Es como "USB para AI agents".
+
+```
+Sin MCP:
+  Agente OpenAI ←→ integración custom ←→ Base de datos
+  Agente Claude ←→ otra integración  ←→ Base de datos (duplicado!)
+
+Con MCP:
+  Agente OpenAI  ↘
+  Agente Claude  ←→ MCP Client ←→ MCP Server ←→ Base de datos
+  Agente Gemini  ↗
+```
+
+### Arquitectura MCP
+
+```
+┌─────────────┐    MCP Protocol    ┌─────────────────────┐
+│  AI Agent   │ ←══════════════════► │   MCP Server         │
+│  (LangChain │                     │  (Node.js/Python)   │
+│   LangGraph)│                     │                     │
+│             │  ← tools list       │  tools:             │
+│             │  → tool_call        │  - read_file()      │
+│             │  ← tool_result      │  - write_file()     │
+│             │  ← resources        │  - list_dir()       │
+└─────────────┘                     └─────────────────────┘
+```
+
+### Servidores MCP Populares
+
+| Servidor | Descripción | Instalación |
+|----------|-------------|-------------|
+| `@mcp/server-filesystem` | Leer/escribir archivos | npm install |
+| `@mcp/server-github` | API de GitHub | npm install |
+| `@mcp/server-sqlite` | Base de datos SQLite | npm install |
+| `mcp-server-fetch` | HTTP requests | pip install |
+| `@mcp/server-slack` | Slack messages | npm install |
+| `@mcp/server-postgres` | PostgreSQL | npm install |
+
+### Uso con LangChain
+
+```python
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+async def create_mcp_agent():
+    # Conectar con múltiples servidores MCP
+    async with MultiServerMCPClient({
+        "filesystem": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
+            "transport": "stdio"
+        },
+        "github": {
+            "url": "http://localhost:3001/sse",
+            "transport": "sse"
+        }
+    }) as client:
+        # Las tools de todos los servidores están disponibles
+        tools = client.get_tools()
+        
+        # Crear agente con LangGraph
+        agent = create_react_agent(llm, tools)
+        result = await agent.ainvoke({"messages": [("user", "Lista mis repos de GitHub")]})
+        return result
+```
+
+### Crear un Servidor MCP Propio (Python)
+
+```python
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp import types
+
+app = Server("my-custom-server")
+
+@app.list_tools()
+async def list_tools():
+    return [
+        types.Tool(
+            name="get_stock_price",
+            description="Obtiene el precio actual de una acción",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "symbol": {"type": "string", "description": "Símbolo de la acción (ej: AAPL)"}
+                },
+                "required": ["symbol"]
+            }
+        )
+    ]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict):
+    if name == "get_stock_price":
+        symbol = arguments["symbol"]
+        price = fetch_price(symbol)  # Tu lógica aquí
+        return [types.TextContent(type="text", text=f"{symbol}: ${price}")]
+
+# Ejecutar el servidor
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(stdio_server(app))
+```
+
+---
+
+## 🛑 Human-in-the-Loop (HITL) {#hitl}
+
+### ¿Por qué HITL?
+
+Los agentes autónomos pueden cometer errores costosos o irreversibles:
+- Enviar un email equivocado a 10,000 usuarios
+- Borrar archivos de producción
+- Hacer una compra no autorizada
+- Publicar contenido inapropiado
+
+**Human-in-the-Loop** permite que el agente **pause y espere aprobación** antes
+de ejecutar acciones críticas.
+
+### HITL con LangGraph
+
+LangGraph tiene soporte nativo para HITL mediante `interrupt()`:
+
+```python
+from langgraph.types import interrupt
+
+def action_node(state: AgentState):
+    """Nodo que requiere aprobación humana"""
+    proposed_action = state["proposed_action"]
+    
+    # PAUSA aquí y espera input humano
+    human_approval = interrupt({
+        "message": f"¿Aprobar acción: {proposed_action}?",
+        "action": proposed_action,
+        "risk": "high"
+    })
+    
+    if human_approval["approved"]:
+        result = execute_action(proposed_action)
+        return {"action_result": result}
+    else:
+        return {"action_result": "Acción cancelada por el usuario"}
+
+# Compilar con checkpointer (necesario para interrupt)
+memory = MemorySaver()
+app = workflow.compile(checkpointer=memory)
+
+# Ejecutar hasta el interrupt
+config = {"configurable": {"thread_id": "session_1"}}
+result = app.invoke(input_data, config)
+
+# El agente está pausado, esperando aprobación
+# Reanudar con aprobación
+final_result = app.invoke(
+    Command(resume={"approved": True}),
+    config
+)
+```
+
+### Patrones HITL
+
+#### 1. Aprobación de Acción Individual
+```
+[Agent Plans] → [Pause: ¿Aprobar?] → Human says Yes → [Execute]
+                                    → Human says No  → [Replan]
+```
+
+#### 2. Revisión de Output
+```
+[Agent Generates Draft] → [Human Reviews] → Edit → [Finalize]
+```
+
+#### 3. Supervisión Periódica
+```
+[Agent works autonomously]
+ ↓ (cada N pasos)
+[Human checkpoint: ¿Continuar?]
+ ↓ Yes
+[Agent continues]
+```
+
+#### 4. Escalación por Incertidumbre
+```
+[Agent works]
+ ↓ (confidence < threshold)
+[Ask human for clarification]
+ ↓
+[Continue with human input]
+```
+
+### Cuándo Usar HITL
+
+| Situación | HITL? | Nivel |
+|-----------|-------|-------|
+| Agente en desarrollo/testing | ✅ Siempre | Cada paso |
+| Acciones irreversibles (emails, pagos) | ✅ Sí | Antes de ejecutar |
+| Acciones costosas (API calls caros) | ✅ Sí | Antes de ejecutar |
+| Q&A informativo | ❌ No | N/A |
+| Análisis de texto | ❌ No | N/A |
+| Agente en producción maduro | ⚠️ Solo crítico | Solo acciones clave |
+
+---
 
 En lugar de un solo agente general, múltiples agentes especializados colaboran.
 
@@ -784,23 +1138,36 @@ Agentes se comunican libremente sin jerarquía.
 
 #### LangGraph
 
-Framework de Langchain para workflows complejos con grafos.
+Framework de LangChain para workflows multi-agente con grafos de estado. Ver
+[Sección LangGraph en Profundidad](#langgraph) para la API moderna completa.
 
 ```python
-from langgraph.graph import Graph
+from typing import TypedDict, Annotated
+from langgraph.graph import StateGraph, END
+from langgraph.graph.message import add_messages
 
-# Definir nodos (agentes)
-workflow = Graph()
-workflow.add_node("researcher", researcher_agent)
-workflow.add_node("writer", writer_agent)
+class PipelineState(TypedDict):
+    messages: Annotated[list, add_messages]
+    research_result: str
+    draft: str
 
-# Definir flujo
-workflow.add_edge("researcher", "writer")
+def researcher_node(state: PipelineState):
+    result = researcher_agent.invoke(state["messages"])
+    return {"research_result": result.content}
+
+def writer_node(state: PipelineState):
+    result = writer_agent.invoke({"research": state["research_result"]})
+    return {"draft": result.content}
+
+workflow = StateGraph(PipelineState)
+workflow.add_node("researcher", researcher_node)
+workflow.add_node("writer", writer_node)
 workflow.set_entry_point("researcher")
-workflow.set_finish_point("writer")
+workflow.add_edge("researcher", "writer")
+workflow.add_edge("writer", END)
 
-# Ejecutar
-result = workflow.invoke("Create article about AI")
+app = workflow.compile()
+result = app.invoke({"messages": [("user", "Create article about AI")]})
 ```
 
 #### CrewAI
@@ -1019,22 +1386,36 @@ def test_agent():
 
 ## 📚 Recursos Adicionales
 
-### Documentación
+### Documentación Oficial
 
 - [LangChain Agents](https://python.langchain.com/docs/modules/agents/)
-- [LangGraph](https://langchain-ai.github.io/langgraph/)
-- [CrewAI](https://docs.crewai.com/)
+- [LangGraph Docs](https://langchain-ai.github.io/langgraph/)
+- [LangGraph Tutorials](https://langchain-ai.github.io/langgraph/tutorials/)
+- [CrewAI Docs](https://docs.crewai.com/)
+- [MCP Specification](https://modelcontextprotocol.io/)
+- [MCP Servers (Anthropic)](https://github.com/modelcontextprotocol/servers)
+- [langchain-mcp-adapters](https://github.com/langchain-ai/langchain-mcp-adapters)
 
 ### Papers Importantes
 
-- [ReAct Paper](https://arxiv.org/abs/2210.03629)
-- [Toolformer](https://arxiv.org/abs/2302.04761)
-- [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT)
+- [ReAct: Synergizing Reasoning and Acting (2022)](https://arxiv.org/abs/2210.03629)
+- [Toolformer (2023)](https://arxiv.org/abs/2302.04761)
+- [Plan-and-Solve Prompting (2023)](https://arxiv.org/abs/2305.04091)
+- [Reflexion (2023)](https://arxiv.org/abs/2303.11366)
+- [LangGraph: Building Stateful Agents (2024)](https://blog.langchain.dev/langgraph/)
 
-### Tutoriales
+### Cursos y Tutoriales
 
-- [LangChain Agents Tutorial](https://python.langchain.com/docs/tutorials/agents/)
-- [Building Production-Ready Agents](https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/)
+- [AI Agents in LangGraph (DeepLearning.AI)](https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/)
+- [Multi AI Agent Systems (DeepLearning.AI)](https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/)
+- [LangGraph Quickstart](https://langchain-ai.github.io/langgraph/tutorials/introduction/)
+- [MCP Quickstart](https://modelcontextprotocol.io/quickstart/)
+
+### Herramientas de Observabilidad
+
+- [LangSmith](https://smith.langchain.com/) — Trazabilidad para LangChain/LangGraph
+- [Helicone](https://helicone.ai/) — Proxy de observabilidad LLM
+- [Arize Phoenix](https://phoenix.arize.com/) — Evaluación y monitoring
 
 ---
 
@@ -1042,8 +1423,9 @@ def test_agent():
 
 Después de dominar agentes:
 
-- **Koan 12: Semantic Search** - Para que tus agentes busquen en documentos
-- **Koan 13: RAG** - Combina agentes con retrieval
-- **LangGraph** - Para workflows multi-agente avanzados
+- **Koan 12: Semantic Search** — Para que tus agentes busquen en documentos
+- **Koan 13: RAG** — Combina agentes con retrieval aumentado
+- **LangGraph Platform** — Despliegue de agentes con APIs REST
+- **MCP** — Conecta tus agentes con cualquier servicio con el estándar abierto
 
 ¡Construye agentes increíbles! 🚀

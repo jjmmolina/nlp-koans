@@ -39,10 +39,12 @@ mem0ai>=0.1.0  # Memoria personalizada
 outlines>=0.0.30  # Constrained generation
 
 # LangChain & Agents (Koans 11, 13)
-langchain>=0.1.0
-langchain-openai>=0.0.5
-langchain-community>=0.0.20
-langgraph>=0.0.20  # Multi-agent workflows
+langchain>=0.3.0
+langchain-openai>=0.2.0
+langchain-community>=0.3.0
+langchain-mcp-adapters>=0.1.0  # MCP (Model Context Protocol) integration
+langgraph>=0.2.0  # State machine agent framework (moderno, recomendado)
+crewai>=0.1.0  # Multi-agent with roles (opcional)
 duckduckgo-search>=4.0.0
 
 # Observability & Testing

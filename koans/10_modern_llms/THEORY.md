@@ -6,9 +6,13 @@
 3. [Principales Proveedores y Modelos](#proveedores)
 4. [Anatomía de una Llamada a API](#llamadas-api)
 5. [Streaming de Respuestas](#streaming)
-6. [Function Calling](#function-calling)
-7. [Tokens y Costos](#tokens-costos)
-8. [Mejores Prácticas](#mejores-prácticas)
+6. [Function Calling y Structured Outputs](#function-calling)
+7. [Modelos de Razonamiento](#reasoning-models)
+8. [OpenAI Responses API](#responses-api)
+9. [Extended Thinking (Claude)](#extended-thinking)
+10. [LLMs Locales y Open Source](#open-source)
+11. [Tokens y Costos](#tokens-costos)
+12. [Mejores Prácticas](#mejores-prácticas)
 
 ---
 
@@ -34,13 +38,18 @@ Un **Large Language Model** (Modelo de Lenguaje Grande) es una red neuronal entr
   ↓
 2022: ChatGPT (basado en GPT-3.5)
   ↓
-2023: GPT-4 (rumores de 1.7T parámetros)
-      Claude 2 & 3
-      Gemini
-      Llama 2
+2023: GPT-4, Claude 2 & 3, Gemini, Llama 2
   ↓
-2024: GPT-4o, Claude 3.5, Gemini 1.5/2.0
-      Modelos más rápidos y multimodales
+2024: GPT-4o, o1, Claude 3.5, Gemini 1.5/2.0
+      Modelos multimodales, Function Calling avanzado
+  ↓
+2025: GPT-4.1, o3, o4-mini, Claude 3.7 (Extended Thinking)
+      Gemini 2.5 Pro, Llama 4, DeepSeek V3/R1
+      OpenAI Responses API, MCP Protocol
+  ↓
+2026: Modelos de razonamiento mainstream
+      Agentes autónomos en producción
+      Multimodalidad: texto, imagen, audio, video
 ```
 
 ### ¿Por qué usar APIs de LLMs?
@@ -119,25 +128,30 @@ Input Text → Tokenization → Embeddings → Transformer Layers → Output Log
 - Popularizó los LLMs con ChatGPT (Nov 2022)
 - Líder del mercado en LLMs comerciales
 
-**Modelos Actuales (Nov 2024):**
+**Modelos Actuales (2026):**
 
-| Modelo | Parámetros | Velocidad | Costo | Mejor Para |
-|--------|------------|-----------|-------|------------|
-| **GPT-4o** | ~1.7T | ⚡⚡⚡ | 💰💰 | Balance velocidad/calidad |
-| **GPT-4o-mini** | ~? | ⚡⚡⚡⚡ | 💰 | Tareas simples, bajo costo |
-| **o1-preview** | ? | ⚡ | 💰💰💰💰 | Razonamiento complejo |
-| **o1-mini** | ? | ⚡⚡ | 💰💰 | Razonamiento + velocidad |
+| Modelo | Velocidad | Costo | Mejor Para |
+|--------|-----------|-------|------------|
+| **GPT-4.1** | ⚡⚡⚡ | 💰💰 | General, instrucciones complejas |
+| **GPT-4.1-mini** | ⚡⚡⚡⚡ | 💰 | Tareas simples, bajo costo |
+| **GPT-4o** | ⚡⚡⚡ | 💰💰 | Multimodal (texto + imagen) |
+| **GPT-4o-mini** | ⚡⚡⚡⚡ | 💰 | Multimodal económico |
+| **o3** | ⚡ | 💰💰💰💰 | Razonamiento profundo, STEM |
+| **o4-mini** | ⚡⚡⚡ | 💰💰 | Razonamiento + velocidad |
+
+**Modelos de Razonamiento (serie 'o'):**
+- Razonan antes de responder (Chain-of-Thought interno)
+- Especialmente buenos en matemáticas, código, análisis lógico
+- Más lentos y caros, pero más precisos en tareas complejas
+- Usan `reasoning_effort` en lugar de `temperature`
 
 **Características Únicas:**
-- 🎯 Function calling avanzado
-- 🖼️ Visión (análisis de imágenes)
-- 🎙️ Audio (Whisper para transcripción)
-- 🎨 DALL-E para generación de imágenes
-- 📊 Análisis de datos con Code Interpreter
-
-**Límites:**
-- Contexto: 128K tokens (GPT-4o)
-- Rate limits: Varían por plan (RPM, RPD, TPM)
+- 🎯 Function calling + Structured Outputs
+- 🖼️ Visión nativa (análisis de imágenes)
+- 🌐 Responses API con herramientas built-in (web search, code interpreter)
+- 🎙️ Audio: Whisper (transcripción) y TTS
+- 🎨 DALL-E 3 para generación de imágenes
+- 📊 Batch API (50% descuento para procesamiento async)
 
 ### Anthropic
 
@@ -146,23 +160,35 @@ Input Text → Tokenization → Embeddings → Transformer Layers → Output Log
 - Enfocados en "AI segura y confiable"
 - Conocidos por Claude
 
-**Modelos Claude:**
+**Modelos Claude (2026):**
 
 | Modelo | Contexto | Velocidad | Costo | Mejor Para |
 |--------|----------|-----------|-------|------------|
-| **Claude 3.5 Sonnet** | 200K | ⚡⚡⚡ | 💰💰 | Balance óptimo |
-| **Claude 3 Opus** | 200K | ⚡⚡ | 💰💰💰 | Máxima calidad |
-| **Claude 3 Haiku** | 200K | ⚡⚡⚡⚡ | 💰 | Velocidad |
+| **Claude 3.7 Sonnet** | 200K | ⚡⚡⚡ | 💰💰 | Balance + Extended Thinking |
+| **Claude Opus 4** | 200K | ⚡⚡ | 💰💰💰 | Máxima calidad razonamiento |
+| **Claude 3.5 Haiku** | 200K | ⚡⚡⚡⚡ | 💰 | Velocidad y bajo costo |
+
+**Extended Thinking (Claude 3.7+):**
+Claude 3.7 Sonnet introdujo **Extended Thinking** — el modelo "piensa en voz alta"
+antes de responder. Similar a los modelos de razonamiento de OpenAI, con la ventaja
+de que el proceso de pensamiento es visible y auditable.
+
+```python
+# Activar Extended Thinking
+client.messages.create(
+    model="claude-3-7-sonnet-20250219",
+    max_tokens=16000,
+    thinking={"type": "enabled", "budget_tokens": 10000},
+    messages=[{"role": "user", "content": "Problema complejo..."}]
+)
+```
 
 **Características Únicas:**
 - 📖 Ventana de contexto masiva (200K tokens = ~150K palabras)
-- 🎯 Excelente siguiendo instrucciones complejas
-- 🔒 Énfasis en seguridad y honestidad
-- 📚 Mejor para análisis de documentos largos
-
-**Límites:**
-- Rate limits más estrictos que OpenAI
-- Menos integraciones de terceros
+- 🧠 Extended Thinking para razonamiento auditable
+- 🔒 Énfasis en seguridad (Constitutional AI)
+- 🛠️ Tool use paralelo (llama múltiples tools a la vez)
+- 📊 Análisis de documentos largos
 
 ### Google (Gemini)
 
@@ -171,33 +197,63 @@ Input Text → Tokenization → Embeddings → Transformer Layers → Output Log
 - Gemini lanzado en 2023 como respuesta a GPT-4
 - Integrado con todo el ecosistema Google
 
-**Modelos Gemini:**
+**Modelos Gemini (2026):**
 
 | Modelo | Contexto | Velocidad | Costo | Mejor Para |
 |--------|----------|-----------|-------|------------|
-| **Gemini 1.5 Pro** | 2M | ⚡⚡ | 💰💰 | Contexto masivo |
-| **Gemini 1.5 Flash** | 1M | ⚡⚡⚡⚡ | 💰 | Velocidad + contexto |
-| **Gemini 2.0 Flash** | 1M | ⚡⚡⚡⚡⚡ | 💰 | Última generación |
+| **Gemini 2.5 Pro** | 2M | ⚡⚡ | 💰💰 | Análisis de documentos masivos |
+| **Gemini 2.5 Flash** | 1M | ⚡⚡⚡⚡ | 💰 | Velocidad + contexto |
+| **Gemini 2.0 Flash** | 1M | ⚡⚡⚡⚡⚡ | 💰 | Ultra rápido y barato |
+| **Gemini 2.0 Flash Thinking** | 1M | ⚡⚡⚡ | 💰 | Razonamiento economico |
 
 **Características Únicas:**
 - 🚀 Ventanas de contexto MASIVAS (hasta 2M tokens)
-- 🎥 Multimodal nativo (texto, imagen, video, audio)
-- 🆓 Tier gratuito generoso
-- 🔗 Integración con Google Workspace
+- 🎥 Multimodal nativo completo (texto, imagen, video, audio, código)
+- 🆓 Tier gratuito muy generoso
+- 🔗 Integración nativa con Google Workspace y Search
+- 🤖 Gemini 2.0 Flash Thinking: razonamiento open source gratuito
 
-**Límites:**
-- API menos madura que OpenAI
-- Documentación a veces confusa
+### Open Source y Locales (2026)
 
-### Comparativa Rápida
+**Meta (Llama):**
 
-| Característica | OpenAI | Anthropic | Google |
-|----------------|--------|-----------|--------|
-| **Calidad General** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Velocidad** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Costo** | 💰💰 | 💰💰💰 | 💰 |
-| **Contexto** | 128K | 200K | 2M |
-| **Documentación** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ |
+| Modelo | Parámetros | Mejor Para |
+|--------|------------|------------|
+| **Llama 4 Scout** | MoE | Razonamiento + multimodal |
+| **Llama 4 Maverick** | MoE | Balance calidad/eficiencia |
+| **Llama 3.3 70B** | 70B | Calidad sin GPU masiva |
+| **Llama 3.2 3B/1B** | 1-3B | Edge devices, local |
+
+**Otros Modelos Open Source:**
+
+| Modelo | Organización | Puntos Fuertes |
+|--------|-------------|----------------|
+| **DeepSeek V3** | DeepSeek | Calidad comparable a GPT-4, gratis |
+| **DeepSeek R1** | DeepSeek | Razonamiento open source |
+| **Qwen 2.5 72B** | Alibaba | Multilingüe, código |
+| **Mistral Large 2** | Mistral | Eficiente, europeo |
+| **Phi-4** | Microsoft | Modelos pequeños/eficientes |
+| **Gemma 3** | Google | Open, optimizado para inferencia |
+
+**Uso Local con Ollama:**
+```bash
+ollama pull llama3.3      # Meta Llama 3.3 70B
+ollama pull deepseek-r1  # DeepSeek R1 (razonamiento)
+ollama pull qwen2.5      # Qwen 2.5
+ollama serve              # API compatible con OpenAI en localhost:11434
+```
+
+### Comparativa Rápida (2026)
+
+| Característica | OpenAI | Anthropic | Google | Open Source |
+|----------------|--------|-----------|--------|-------------|
+| **Calidad General** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Razonamiento** | ⭐⭐⭐⭐⭐ (o3) | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ (R1) |
+| **Velocidad** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
+| **Costo** | 💰💰 | 💰💰💰 | 💰 | 🆓 |
+| **Contexto** | 1M | 200K | 2M | 128K+ |
+| **Privacidad** | ❌ | ❌ | ❌ | ✅ (local) |
+| **Documentación** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | Variable |
 | **Ecosistema** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
 
 ---
@@ -464,7 +520,270 @@ if message.tool_calls:
 
 ---
 
-## 🪙 Tokens y Costos {#tokens-costos}
+## � Modelos de Razonamiento {#reasoning-models}
+
+### ¿Qué son los Modelos de Razonamiento?
+
+A partir de 2024-2025, surgió una nueva categoría de LLMs que "piensan antes de responder"
+usando una cadena de razonamiento interna:
+
+```
+Modelos Normales:
+  Input → [LLM] → Output (directo)
+
+Modelos de Razonamiento:
+  Input → [LLM piensa] → Cadena de razonamiento interno → Output
+```
+
+### Modelos Disponibles
+
+**OpenAI (serie o):**
+```
+o1 (2024) → o3 (2025) → o4-mini (2025)
+```
+
+- **o3**: El más potente de OpenAI, SOTA en benchmarks matemáticos y científicos
+- **o4-mini**: Balance óptimo razonamiento/velocidad/costo. Soporta tools + vision.
+
+**Anthropic:**
+- **Claude Extended Thinking**: Claude 3.7+ puede activar razonamiento profundo
+- El "thinking" es visible y auditable (diferencia clave vs OpenAI)
+
+**Google:**
+- **Gemini Flash Thinking**: Razonamiento económico y rápido
+- **Gemini 2.5 Pro**: Razonamiento integrado
+
+**Open Source:**
+- **DeepSeek R1**: Primer modelo de razonamiento open source de calidad comparable a o1
+
+### Cuándo Usar Modelos de Razonamiento
+
+✅ **Usar cuando:**
+- Matemáticas, física, o ciencias complejas
+- Debugging de código difícil
+- Análisis multi-paso con muchas variables
+- Decisiones estratégicas complejas
+- Cualquier tarea donde la precisión es crítica
+
+❌ **NO usar cuando:**
+- Conversación casual o Q&A simple
+- Extracción de información directa
+- Reformateo de texto
+- Clasificación simple
+
+### API de Modelos de Razonamiento
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+# Los modelos 'o' usan 'reasoning_effort' no 'temperature'
+response = client.chat.completions.create(
+    model="o4-mini",
+    reasoning_effort="high",  # 'low', 'medium', 'high'
+    messages=[
+        {"role": "user", "content": "¿Cuántos ceros tiene 100! (factorial de 100)?"}
+    ]
+)
+
+# Acceder a tokens de razonamiento
+usage = response.usage
+print(f"Tokens de razonamiento: {usage.completion_tokens_details.reasoning_tokens}")
+print(f"Tokens de respuesta: {usage.completion_tokens_details.text_tokens}")
+```
+
+### Diferencias Importantes
+
+| Característica | Modelos Normales (GPT-4o) | Modelos Razonamiento (o3/o4) |
+|----------------|--------------------------|------------------------------|
+| `temperature` | ✅ Soportado | ❌ No (siempre 1) |
+| `reasoning_effort` | ❌ N/A | ✅ 'low'/'medium'/'high' |
+| Velocidad | ⚡⚡⚡ | ⚡ |
+| Costo | 💰💰 | 💰💰💰💰 |
+| Precisión STEM | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Conversación | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
+
+---
+
+## 🔌 OpenAI Responses API {#responses-api}
+
+### ¿Por qué una nueva API?
+
+La **Responses API** (lanzada en 2025) está diseñada para workflows **agénticos**,
+donde el modelo necesita tomar múltiples pasos y usar herramientas.
+
+**Chat Completions vs Responses API:**
+
+```
+Chat Completions (tradicional):
+- Sin estado: debes reenviar todo el historial cada vez
+- Sin herramientas built-in
+- Para conversaciones simples
+
+Responses API (nueva):
+- Con estado: el servidor recuerda la conversación
+- Herramientas built-in: web search, file search, code interpreter
+- Para workflows agénticos multi-paso
+```
+
+### Herramientas Built-in
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+# Búsqueda web integrada
+response = client.responses.create(
+    model="gpt-4.1",
+    tools=[{"type": "web_search_preview"}],
+    input="¿Cuáles son las noticias de IA de esta semana?"
+)
+
+# Code Interpreter
+response = client.responses.create(
+    model="gpt-4.1",
+    tools=[{"type": "code_interpreter", "container": {"type": "auto"}}],
+    input="Analiza estos datos y crea una gráfica: [1, 5, 3, 7, 2]"
+)
+
+# File Search (buscar en documentos subidos)
+response = client.responses.create(
+    model="gpt-4.1",
+    tools=[{"type": "file_search", "vector_store_ids": ["vs_abc123"]}],
+    input="¿Qué dice el documento sobre los términos de uso?"
+)
+```
+
+### Conversación Multi-turno Stateful
+
+```python
+# Primer mensaje
+response1 = client.responses.create(
+    model="gpt-4.1",
+    input="Hola, soy Ana",
+    store=True  # Guardar en servidor
+)
+response_id = response1.id
+
+# Segundo mensaje - referencia al anterior
+response2 = client.responses.create(
+    model="gpt-4.1",
+    input="¿Cómo me llamo?",
+    previous_response_id=response_id  # ¡Sin reenviar historial!
+)
+print(response2.output_text)  # "Te llamas Ana"
+```
+
+---
+
+## 🤔 Extended Thinking (Claude) {#extended-thinking}
+
+### Concepto
+
+**Extended Thinking** es la implementación de Anthropic para razonamiento profundo.
+A diferencia de los modelos de razonamiento de OpenAI (proceso opaco), el "thinking"
+de Claude es visible y auditable.
+
+### Activación
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-3-7-sonnet-20250219",
+    max_tokens=16000,
+    thinking={
+        "type": "enabled",
+        "budget_tokens": 10000  # Tokens máximos para pensar
+    },
+    messages=[{
+        "role": "user",
+        "content": "Demuestra que sqrt(2) es irracional"
+    }]
+)
+
+# Separar thinking de respuesta
+for block in response.content:
+    if block.type == "thinking":
+        print(f"Razonamiento:\n{block.thinking}")
+    elif block.type == "text":
+        print(f"\nRespuesta:\n{block.text}")
+```
+
+### budget_tokens
+
+El `budget_tokens` controla cuánto puede "pensar" Claude:
+- `1024`: Mínimo, razonamiento básico
+- `10000`: Razonamiento moderado (recomendado por defecto)
+- `100000`: Razonamiento muy profundo (problemas extremadamente complejos)
+
+> **Nota:** Más budget_tokens = mejor calidad, pero mayor costo y latencia.
+
+---
+
+## 💻 LLMs Locales y Open Source {#open-source}
+
+### Por qué correr modelos localmente
+
+✅ **Privacidad**: Los datos no salen de tu organización
+✅ **Sin costos de API**: Solo costo de hardware
+✅ **Sin rate limits**: Velocidad limitada solo por tu hardware
+✅ **Control total**: Personalización y fine-tuning completo
+✅ **Offline**: Funciona sin internet
+
+### Ollama (la forma más fácil)
+
+```bash
+# Instalar Ollama (https://ollama.ai)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Descargar modelos
+ollama pull llama3.3          # Meta Llama 3.3 70B
+ollama pull deepseek-r1       # DeepSeek R1 (razonamiento)
+ollama pull qwen2.5:72b       # Qwen 2.5 (multilingüe)
+ollama pull mistral-large     # Mistral Large 2
+ollama pull phi4              # Microsoft Phi-4
+
+# Iniciar servidor
+ollama serve  # localhost:11434
+```
+
+### Usar con cliente OpenAI
+
+Ollama expone una API compatible con OpenAI:
+
+```python
+from openai import OpenAI
+
+# Apuntar al servidor local de Ollama
+client = OpenAI(
+    base_url="http://localhost:11434/v1",
+    api_key="ollama"  # Cualquier string, no se usa
+)
+
+response = client.chat.completions.create(
+    model="llama3.3",  # Nombre del modelo en Ollama
+    messages=[{"role": "user", "content": "¿Qué es NLP?"}]
+)
+print(response.choices[0].message.content)
+```
+
+### Cuándo usar cada opción
+
+| Escenario | Recomendación |
+|-----------|--------------|
+| Prototipado rápido | GPT-4.1-mini (barato y bueno) |
+| Razonamiento complejo | o4-mini o Claude 3.7 Extended Thinking |
+| Mucho contexto | Gemini 2.5 Pro (2M tokens) |
+| Privacidad crítica | Ollama + Llama 4 local |
+| Sin presupuesto API | Ollama + DeepSeek R1 (razonamiento gratuito) |
+| Producción | Depende del caso de uso + benchmark |
+
+---
 
 ### ¿Qué es un Token?
 
@@ -505,14 +824,21 @@ Similar pero con vocabulario diferente
 Costo Total = (Input Tokens × Precio Input) + (Output Tokens × Precio Output)
 ```
 
-**Precios (Nov 2024) por 1M tokens:**
+**Precios (2026) por 1M tokens:**
 
-| Modelo | Input | Output | 1K tokens input | 1K tokens output |
-|--------|-------|--------|-----------------|------------------|
-| gpt-4o | $2.50 | $10.00 | $0.0025 | $0.010 |
-| gpt-4o-mini | $0.15 | $0.60 | $0.00015 | $0.0006 |
-| claude-3-5-sonnet | $3.00 | $15.00 | $0.003 | $0.015 |
-| gemini-1.5-flash | $0.075 | $0.30 | $0.000075 | $0.0003 |
+| Modelo | Input | Output |
+|--------|-------|--------|
+| gpt-4.1 | $2.00 | $8.00 |
+| gpt-4.1-mini | $0.40 | $1.60 |
+| gpt-4o | $2.50 | $10.00 |
+| gpt-4o-mini | $0.15 | $0.60 |
+| o3 | $10.00 | $40.00 |
+| o4-mini | $1.10 | $4.40 |
+| claude-3-7-sonnet | $3.00 | $15.00 |
+| claude-3-5-haiku | $0.80 | $4.00 |
+| gemini-2.5-pro | $1.25 | $10.00 |
+| gemini-2.0-flash | $0.10 | $0.40 |
+| Ollama (local) | 🆓 | 🆓 |
 
 ### Ejemplos de Costo
 
@@ -526,9 +852,10 @@ Costo Total = (Input Tokens × Precio Input) + (Output Tokens × Precio Output)
 - Claude Sonnet: $0.03 + $0.015 = **$0.045**
 
 **Uso Diario** (100K tokens/día):
-- GPT-4o-mini: ~$15/mes
-- GPT-4o: ~$250/mes
-- Gemini Flash: ~$7.5/mes
+- GPT-4.1-mini: ~$12/mes
+- GPT-4o-mini: ~$9/mes
+- Gemini Flash: ~$3/mes
+- Ollama local: $0/mes (solo hardware)
 
 ### Optimizar Costos
 
@@ -795,20 +1122,26 @@ y ejemplos prácticos."""
 ### Documentación Oficial
 
 - [OpenAI API Docs](https://platform.openai.com/docs)
+- [OpenAI Responses API](https://platform.openai.com/docs/api-reference/responses)
 - [Anthropic Claude Docs](https://docs.anthropic.com/)
+- [Anthropic Extended Thinking](https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking)
 - [Google Gemini API](https://ai.google.dev/docs)
+- [Ollama Docs](https://ollama.ai/docs)
 
 ### Papers Importantes
 
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762) - Transformer original
 - [GPT-3 Paper](https://arxiv.org/abs/2005.14165)
-- [Constitutional AI](https://arxiv.org/abs/2212.08073) - Claude's approach
+- [Constitutional AI](https://arxiv.org/abs/2212.08073) - Enfoque de seguridad de Claude
+- [DeepSeek-R1](https://arxiv.org/abs/2501.12948) - Primer reasoning model open source
 
 ### Herramientas
 
 - [tiktoken](https://github.com/openai/tiktoken) - Tokenizador de OpenAI
 - [OpenAI Tokenizer](https://platform.openai.com/tokenizer) - Web tool
 - [LangChain](https://python.langchain.com/) - Framework para aplicaciones con LLMs
+- [instructor](https://github.com/jxnl/instructor) - Structured outputs con Pydantic
+- [Ollama](https://ollama.ai) - LLMs locales fáciles
 
 ### Comunidades
 
@@ -822,7 +1155,7 @@ y ejemplos prácticos."""
 
 Después de dominar este koan, continúa con:
 
-- **Koan 11: AI Agents** - Construye agentes autónomos con LangChain
+- **Koan 11: AI Agents** - Construye agentes autónomos y comprende el Agentic Mode
 - **Koan 12: Semantic Search** - Embeddings y búsqueda vectorial
 - **Koan 13: RAG** - Retrieval-Augmented Generation
 

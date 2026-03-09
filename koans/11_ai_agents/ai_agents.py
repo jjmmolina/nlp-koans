@@ -1,19 +1,25 @@
 """
-Koan 11: AI Agents - Agentes Autónomos con LLMs
+Koan 11: AI Agents - Agentes Autónomos con LLMs y Agentic Mode
 
-Este koan explora cómo crear agentes de IA que pueden:
-- Usar herramientas (tools)
-- Razonar y planificar (ReAct)
-- Mantener memoria de conversaciones
-- Tomar decisiones autónomas
+Este koan explora cómo crear agentes de IA modernos:
+- Tool use (herramientas)
+- ReAct (Reasoning + Acting)
+- Memoria conversacional
+- LangGraph (state machines agénticos)
+- Multi-agente con LangGraph / CrewAI
+- Model Context Protocol (MCP)
+- Agentic workflows (plan-execute)
+- Human-in-the-loop
 
 Librerías:
 - langchain
 - langchain-openai
 - langchain-community
+- langgraph
+- crewai (opcional)
 """
 
-from typing import List, Dict, Any, Callable, Optional
+from typing import List, Dict, Any, Callable, Optional, TypedDict, Annotated
 from dataclasses import dataclass
 
 
@@ -27,7 +33,7 @@ class Tool:
 
 
 def create_simple_agent(
-    tools: List[Tool], llm_provider: str = "openai", model: str = "gpt-4o-mini"
+    tools: List[Tool], llm_provider: str = "openai", model: str = "gpt-4.1-mini"
 ) -> Any:
     """
     Crea un agente simple con herramientas.
@@ -104,7 +110,7 @@ def run_agent(agent: Any, query: str, verbose: bool = True) -> Dict[str, Any]:
     pass
 
 
-def create_react_agent(tools: List[Tool], model: str = "gpt-4o-mini") -> Any:
+def create_react_agent(tools: List[Tool], model: str = "gpt-4.1-mini") -> Any:
     """
     Crea un agente ReAct (Reasoning + Acting).
 
@@ -147,7 +153,7 @@ def create_react_agent(tools: List[Tool], model: str = "gpt-4o-mini") -> Any:
 
 
 def create_conversational_agent(
-    tools: List[Tool], memory_type: str = "buffer", model: str = "gpt-4o-mini"
+    tools: List[Tool], memory_type: str = "buffer", model: str = "gpt-4.1-mini"
 ) -> Any:
     """
     Crea un agente con memoria conversacional.
@@ -400,4 +406,304 @@ def multi_agent_collaboration(
     """
     # TODO: Implementa sistema multi-agente
     # Pista: Crea dos agentes y coordina su ejecución secuencial
+    pass
+
+
+# =============================================================================
+# AGENTIC MODE - SECCIÓN NUEVA (2025-2026)
+# =============================================================================
+
+
+class AgentState(TypedDict):
+    """Estado del agente LangGraph. Define la memoria compartida del grafo."""
+
+    messages: Annotated[List[Dict[str, Any]], "Lista de mensajes de la conversación"]
+    current_step: str
+    tool_results: List[str]
+
+
+def create_langgraph_agent(
+    tools: List[Tool],
+    model: str = "gpt-4.1-mini",
+    max_iterations: int = 10,
+) -> Any:
+    """
+    Crea un agente usando LangGraph — el estándar moderno para agentes en producción.
+
+    **¿Por qué LangGraph?**
+    LangGraph representa la evolución de los agentes: en lugar de un "AgentExecutor"
+    monolítico, modela el agente como un **grafo de estados** donde cada nodo es
+    una función y las aristas son transiciones condicionales. Esto permite:
+    - Ciclos explícitos (el agente puede iterar)
+    - Bifurcaciones (si/si-no)
+    - Estado persistente entre pasos
+    - Human-in-the-loop integrado
+    - Mejor control y debugging
+
+    **Arquitectura del grafo:**
+    ```
+    START → [llm_node] → ¿tool_call?
+                ↓ No          ↓ Sí
+              END       [tool_node]
+                              ↓
+                         [llm_node] → ...
+    ```
+
+    Ejemplo:
+        >>> tools = [create_calculator_tool(), create_search_tool()]
+        >>> agent = create_langgraph_agent(tools)
+        >>> result = agent.invoke({"messages": [{"role": "user", "content": "¿Cuánto es raíz de 144?"}]})
+        >>> print(result["messages"][-1]["content"])
+
+    Args:
+        tools: Lista de herramientas disponibles
+        model: Modelo LLM a usar
+        max_iterations: Límite de iteraciones para evitar bucles infinitos
+
+    Returns:
+        Grafo LangGraph compilado listo para invocar
+
+    Nota:
+        El grafo se invoca con un dict que contiene "messages".
+        La respuesta final está en result["messages"][-1]["content"].
+        Ver THEORY.md para entender la arquitectura completa.
+    """
+    # TODO: Implementa agente LangGraph
+    # Pista: Crea un StateGraph con AgentState, añade nodos y aristas condicionales
+    # Usa create_react_agent de langchain o implementa los nodos manualmente
+    pass
+
+
+def create_agentic_pipeline(
+    task: str,
+    available_tools: List[Tool],
+    model: str = "gpt-4.1",
+    planning_model: str = "o4-mini",
+) -> Dict[str, Any]:
+    """
+    Implementa un pipeline agéntico Plan-Execute para tareas complejas.
+
+    El patrón **Plan-Execute** es una mejora sobre ReAct para tareas largas:
+    1. **Plan**: Un modelo de razonamiento (o4-mini) crea un plan step-by-step
+    2. **Execute**: Un modelo rápido ejecuta cada paso del plan
+    3. **Replan**: Si algo falla, se replantea
+
+    Este patrón es más eficiente que ReAct para tareas predecibles porque:
+    - Separa planificación (cara pero solo 1 vez) de ejecución (barata y repetida)
+    - El plan es visible y editable antes de ejecutar
+    - Más predecible y controlable
+
+    **Flujo:**
+    ```
+    Task → [Planning LLM (o4-mini)] → Plan [{step1}, {step2}, ...]
+                                          ↓
+                                    [Execute step1]
+                                          ↓
+                                    [Execute step2]
+                                          ↓ (si falla)
+                                    [Replan]
+                                          ↓
+                                    [Final Answer]
+    ```
+
+    Ejemplo:
+        >>> tools = [create_search_tool(), create_calculator_tool()]
+        >>> result = create_agentic_pipeline(
+        ...     "Busca el precio del iPhone 16 y calcula el precio con 21% de IVA",
+        ...     tools
+        ... )
+        >>> print(result["plan"])     # Lista de pasos
+        >>> print(result["output"])   # Respuesta final
+
+    Args:
+        task: Tarea compleja a realizar
+        available_tools: Herramientas disponibles
+        model: Modelo para la ejecución de pasos
+        planning_model: Modelo para la planificación (preferiblemente de razonamiento)
+
+    Returns:
+        Dict con 'plan' (lista de pasos), 'steps_results' y 'output' (respuesta final)
+
+    Nota:
+        Usar un modelo de razonamiento (o4-mini) para planificar pero un modelo
+        rápido (gpt-4.1-mini) para ejecutar cada paso optimiza costo y velocidad.
+        Ver THEORY.md para comparar Plan-Execute vs ReAct.
+    """
+    # TODO: Implementa pipeline Plan-Execute
+    # Pista 1: Usa planning_model para generar un plan estructurado (JSON)
+    # Pista 2: Itera sobre los pasos del plan ejecutando con el agente
+    # Pista 3: Maneja fallos con replanificación si es necesario
+    pass
+
+
+def create_multi_agent_crew(
+    task: str,
+    researcher_tools: List[Tool],
+    writer_tools: List[Tool],
+    model: str = "gpt-4.1",
+) -> str:
+    """
+    Crea un sistema multi-agente usando CrewAI o composición manual.
+
+    Los sistemas **multi-agente** dividen tareas complejas entre agentes
+    especializados que colaboran. Cada agente tiene:
+    - **Role**: Su función en el equipo (investigador, escritor, revisor)
+    - **Goal**: Su objetivo específico
+    - **Backstory**: Contexto que configura su comportamiento
+    - **Tools**: Las herramientas que puede usar
+
+    **Arquitectura del Crew:**
+    ```
+    Task
+      ↓
+    [Researcher Agent] → investiga y recopila información
+      ↓ (pasa contexto)
+    [Writer Agent] → escribe el contenido
+      ↓
+    Output
+    ```
+
+    **Frameworks disponibles:**
+    - **CrewAI**: API declarativa de alto nivel, fácil de usar
+    - **LangGraph**: Más control, mejor para producción
+    - **AutoGen**: Microsoft, excelente para agentes que se comunican entre sí
+    - **Smolagents**: HuggingFace, minimalista y flexible
+
+    Ejemplo:
+        >>> research_tools = [create_search_tool()]
+        >>> writer_tools = []
+        >>> result = create_multi_agent_crew(
+        ...     "Escribe un artículo sobre los últimos avances en NLP",
+        ...     research_tools, writer_tools
+        ... )
+        >>> print(result)  # Artículo completo
+
+    Args:
+        task: Tarea compleja que requiere colaboración
+        researcher_tools: Herramientas del agente investigador
+        writer_tools: Herramientas del agente escritor
+        model: Modelo LLM para todos los agentes
+
+    Returns:
+        Resultado final después de la colaboración multi-agente
+
+    Nota:
+        Para una implementación más sofisticada, usa CrewAI directamente.
+        Ver THEORY.md para arquitecturas avanzadas de multi-agente.
+    """
+    # TODO: Implementa sistema multi-agente
+    # Opción A: Usa CrewAI (pip install crewai)
+    # Opción B: Coordina dos agentes LangChain secuencialmente
+    pass
+
+
+def create_human_in_the_loop_agent(
+    tools: List[Tool],
+    model: str = "gpt-4.1",
+    approval_callback: Optional[Callable[[str, str], bool]] = None,
+) -> Any:
+    """
+    Agente con Human-in-the-Loop (HITL): requiere aprobación humana para ciertas acciones.
+
+    En producción, los agentes autónomos pueden tomar acciones destructivas o
+    costosas. El patrón **Human-in-the-Loop** permite que el agente pause y
+    espere aprobación humana antes de ejecutar acciones críticas.
+
+    **Cuándo usar HITL:**
+    - Acciones irreversibles (borrar archivos, enviar emails, hacer pagos)
+    - Acciones costosas (llamadas API caras, consultas a bases de datos grandes)
+    - Decisiones de alto riesgo (cambios en producción, comunicaciones externas)
+    - Durante desarrollo y testing de agentes nuevos
+
+    **Implementación con LangGraph:**
+    LangGraph tiene soporte nativo para HITL mediante `interrupt()`:
+    ```python
+    # El grafo pausa aquí esperando input humano
+    action = interrupt({"message": "¿Aprobar esta acción?", "action": proposed_action})
+    if action["approved"]:
+        execute_action()
+    ```
+
+    Ejemplo:
+        >>> def my_approval(action: str, reason: str) -> bool:
+        ...     print(f"Acción propuesta: {action}")
+        ...     return input("¿Aprobar? (s/n): ").lower() == 's'
+        >>>
+        >>> agent = create_human_in_the_loop_agent(tools, approval_callback=my_approval)
+        >>> result = agent.invoke({"input": "Envía un email de bienvenida"})
+
+    Args:
+        tools: Lista de herramientas (algunas marcarás como "requieren aprobación")
+        model: Modelo LLM
+        approval_callback: Función que recibe (action, reason) y retorna bool.
+                          Si es None, aprueba automáticamente (modo auto).
+
+    Returns:
+        Agente con capacidad de solicitar aprobación humana
+
+    Nota:
+        LangGraph's `interrupt()` es la forma recomendada para HITL en producción.
+        Ver THEORY.md para patrones avanzados de HITL con LangGraph.
+    """
+    # TODO: Implementa agente con Human-in-the-Loop
+    # Pista: Usa interrupt() de LangGraph o wrappea las tools para pedir aprobación
+    pass
+
+
+def setup_mcp_agent(
+    mcp_server_urls: List[str],
+    model: str = "gpt-4.1",
+) -> Any:
+    """
+    Configura un agente que usa herramientas del Model Context Protocol (MCP).
+
+    **Model Context Protocol (MCP)** es un estándar open source creado por
+    Anthropic (2024) para conectar agentes con fuentes de datos y herramientas
+    de forma estandarizada. Es como "USB para AI agents".
+
+    **¿Por qué MCP?**
+    Sin MCP:
+    - Cada herramienta tiene su propia integración custom
+    - Mucho código repetitivo
+    - Difícil de compartir herramientas entre proyectos
+
+    Con MCP:
+    - Un protocolo único para todas las herramientas
+    - Servidores MCP reutilizables (filesystem, databases, APIs)
+    - Compatible con Claude, OpenAI, y otros LLMs
+
+    **Servidores MCP Comunes:**
+    - `@modelcontextprotocol/server-filesystem`: Leer/escribir archivos
+    - `@modelcontextprotocol/server-github`: API de GitHub
+    - `@modelcontextprotocol/server-sqlite`: Base de datos SQLite
+    - `@modelcontextprotocol/server-web-search`: Búsqueda web
+    - `mcp-server-fetch`: HTTP requests
+
+    **Arquitectura MCP:**
+    ```
+    [AI Agent] ←→ [MCP Client] ←→ [MCP Server] ←→ [Resource/Tool]
+    ```
+
+    Ejemplo:
+        >>> # Requiere servidores MCP corriendo
+        >>> agent = setup_mcp_agent(
+        ...     mcp_server_urls=["stdio://mcp-server-filesystem"]
+        ... )
+        >>> result = agent.invoke("Lista los archivos en /tmp/")
+
+    Args:
+        mcp_server_urls: URLs/comandos de los servidores MCP a conectar
+        model: Modelo LLM a usar con las herramientas MCP
+
+    Returns:
+        Agente configurado con herramientas MCP
+
+    Nota:
+        MCP requiere servidores MCP corriendo (Node.js o Python).
+        langchain-mcp-adapters facilita la integración con LangChain.
+        Ver THEORY.md para la arquitectura completa de MCP.
+    """
+    # TODO: Implementa integración MCP
+    # Pista: Usa langchain-mcp-adapters o mcp-use para conectar con servidores MCP
+    # La librería MultiServerMCPClient facilita conectarse a múltiples servidores
     pass

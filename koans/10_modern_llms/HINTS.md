@@ -426,17 +426,254 @@ def safe_llm_call(
 
 ## 🎯 Conceptos Clave
 
-### Modelos Principales (Nov 2024)
+### Modelos Principales (2026)
 
 | Proveedor | Modelo | Contexto | Mejor para |
 |-----------|--------|----------|------------|
-| **OpenAI** | gpt-4o | 128K | Balance precio/calidad |
-| | gpt-4o-mini | 128K | Tareas simples, económico |
-| | o1-preview | 128K | Razonamiento complejo |
-| **Anthropic** | claude-3-5-sonnet | 200K | Código, análisis largo |
-| | claude-3-opus | 200K | Tareas complejas |
-| **Google** | gemini-1.5-pro | 2M | Contexto ultra-largo |
-| | gemini-2.0-flash-exp | 1M | Rápido, multimodal |
+| **OpenAI** | gpt-4.1 | 1M | Balance precio/calidad |
+| | gpt-4.1-mini | 1M | Tareas simples, económico |
+| | o3 | 200K | Razonamiento profundo STEM |
+| | o4-mini | 200K | Razonamiento + velocidad |
+| **Anthropic** | claude-3-7-sonnet | 200K | Extended Thinking |
+| | claude-3-5-haiku | 200K | Velocidad y bajo costo |
+| **Google** | gemini-2.5-pro | 2M | Contexto ultra-largo |
+| | gemini-2.0-flash | 1M | Ultra rápido, multimodal |
+| **Local** | llama3.3 / deepseek-r1 | 128K | Privacidad, sin costo |
+
+---
+
+## 📝 Función 9: `call_reasoning_model()`
+
+### Nivel 1: Concepto
+Los modelos o3/o4-mini razonan internamente antes de responder. Usan `reasoning_effort` en lugar de `temperature`.
+
+### Nivel 2: Implementación
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model=model,  # 'o3', 'o4-mini'
+    reasoning_effort=effort,  # 'low', 'medium', 'high'
+    messages=[{"role": "user", "content": prompt}]
+)
+```
+
+### ✅ Solución
+<details>
+<summary>Click para ver</summary>
+
+```python
+def call_reasoning_model(prompt, model="o4-mini", effort="medium"):
+    from openai import OpenAI
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    response = client.chat.completions.create(
+        model=model,
+        reasoning_effort=effort,
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    content = response.choices[0].message.content
+    reasoning_tokens = 0
+    if hasattr(response.usage, "completion_tokens_details"):
+        reasoning_tokens = getattr(
+            response.usage.completion_tokens_details, "reasoning_tokens", 0
+        ) or 0
+
+    return {"output": content, "reasoning_tokens": reasoning_tokens}
+```
+</details>
+
+---
+
+## 📝 Función 10: `call_with_structured_output()`
+
+### Nivel 1: Concepto
+Structured Outputs garantizan que el modelo devuelva exactamente el JSON Schema especificado.
+
+### Nivel 2: Formato
+```python
+response = client.chat.completions.create(
+    model=model,
+    response_format={
+        "type": "json_schema",
+        "json_schema": {
+            "name": "response_schema",
+            "schema": schema,
+            "strict": True
+        }
+    },
+    messages=messages
+)
+```
+
+### ✅ Solución
+<details>
+<summary>Click para ver</summary>
+
+```python
+def call_with_structured_output(messages, schema, model="gpt-4.1-mini"):
+    import json
+    from openai import OpenAI
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    response = client.chat.completions.create(
+        model=model,
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "name": "response_schema",
+                "schema": schema,
+                "strict": True
+            }
+        },
+        messages=messages
+    )
+
+    return json.loads(response.choices[0].message.content)
+```
+</details>
+
+---
+
+## 📝 Función 11: `call_openai_responses_api()`
+
+### Nivel 1: Concepto
+La Responses API es la nueva API agéntica de OpenAI con herramientas built-in y estado persistente.
+
+### Nivel 2: Implementación
+```python
+response = client.responses.create(
+    model=model,
+    tools=tools or [],
+    input=input_text,
+    store=store
+)
+return {
+    "output_text": response.output_text,
+    "response_id": response.id
+}
+```
+
+### ✅ Solución
+<details>
+<summary>Click para ver</summary>
+
+```python
+def call_openai_responses_api(input_text, tools=None, model="gpt-4.1", store=True):
+    from openai import OpenAI
+
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    response = client.responses.create(
+        model=model,
+        tools=tools or [],
+        input=input_text,
+        store=store
+    )
+
+    return {
+        "output_text": response.output_text,
+        "response_id": response.id
+    }
+```
+</details>
+
+---
+
+## 📝 Función 12: `call_claude_extended_thinking()`
+
+### Nivel 1: Concepto
+Extended Thinking activa el razonamiento profundo de Claude. El proceso de pensamiento es visible.
+
+### Nivel 2: Activación
+```python
+response = client.messages.create(
+    model=model,
+    max_tokens=budget_tokens + 2000,
+    thinking={"type": "enabled", "budget_tokens": budget_tokens},
+    messages=[{"role": "user", "content": prompt}]
+)
+```
+
+### ✅ Solución
+<details>
+<summary>Click para ver</summary>
+
+```python
+def call_claude_extended_thinking(prompt, budget_tokens=5000, model="claude-3-7-sonnet-20250219"):
+    import anthropic
+
+    client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+    response = client.messages.create(
+        model=model,
+        max_tokens=budget_tokens + 2000,
+        thinking={"type": "enabled", "budget_tokens": budget_tokens},
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    thinking_text = ""
+    response_text = ""
+    for block in response.content:
+        if block.type == "thinking":
+            thinking_text = block.thinking
+        elif block.type == "text":
+            response_text = block.text
+
+    return {"thinking": thinking_text, "response": response_text}
+```
+</details>
+
+---
+
+## 📝 Función 13: `call_local_llm()`
+
+### Nivel 1: Concepto
+Ollama expone una API compatible con OpenAI. Usa el cliente OpenAI con base_url diferente.
+
+### Nivel 2: Implementación
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url=f"{base_url}/v1",
+    api_key="ollama"  # Requerido pero no usado por Ollama
+)
+
+response = client.chat.completions.create(
+    model=model,
+    messages=messages
+)
+return response.choices[0].message.content
+```
+
+### ✅ Solución
+<details>
+<summary>Click para ver</summary>
+
+```python
+def call_local_llm(messages, model="llama3.2", base_url="http://localhost:11434"):
+    from openai import OpenAI
+
+    client = OpenAI(
+        base_url=f"{base_url}/v1",
+        api_key="ollama"
+    )
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages
+    )
+    return response.choices[0].message.content
+```
+</details>
+
+---
 
 ### Parámetros Importantes
 
@@ -444,6 +681,12 @@ def safe_llm_call(
 - `0.0-0.3`: Determinista, factual
 - `0.7-1.0`: Balanceado (default)
 - `1.5-2.0`: Creativo, aleatorio
+- ⚠️ Modelos de razonamiento (o3, o4-mini) NO usan temperature
+
+**reasoning_effort** (solo modelos 'o'):
+- `'low'`: Razonamiento rápido y barato
+- `'medium'`: Balance (por defecto)
+- `'high'`: Máxima calidad, más caro
 
 **Max Tokens**:
 - Controla longitud de respuesta
